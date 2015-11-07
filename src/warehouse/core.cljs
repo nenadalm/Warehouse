@@ -93,20 +93,19 @@
 (defn item [data]
   [:ul
    [:li
-    [:span.label "Name:"]
+    [:span.label "Name: "]
     [:span.value (:name data)]]
    [:li
-    [:span.label "Tags:"]
+    [:span.label "Tags: "]
     [:span.value (clojure.string/join ", " (:tags data))]]
    [:li
-    [:span.label "Amount:"]
+    [:span.label "Amount: "]
     [:span.value (:amount data)]]
    [:button "Edit"]])
 
 (defn page []
-  (println (first (:components @app-state)))
   [:div
-   [:label "Search:"
+   [:label "Search: "
     [:input {:name "search", :type "search"}]]
    [:button "Add new"]
    (for [i (:components @app-state)]

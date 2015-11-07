@@ -10,7 +10,8 @@
                  [reagent "0.5.0"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
-            [lein-figwheel "0.4.1"]]
+            [lein-figwheel "0.4.1"]
+            [lein-less "1.7.5"]]
 
   :source-paths ["src"]
 
@@ -33,6 +34,9 @@
                          :main warehouse.core
                          :optimizations :advanced
                          :pretty-print false}}]}
+
+  :less {:source-paths ["src/warehouse/less"]
+         :target-path "resources/public/css"}
 
   :figwheel {
              ;; :http-server-root "public" ;; default and assumes "resources" 
