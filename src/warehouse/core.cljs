@@ -90,29 +90,68 @@
                                         :tags ["linear regulator"]
                                         :amount 9}]}))
 
-(defn item [data]
-  [:ul
-   [:li
-    [:span.label "Name: "]
-    [:span.value (:name data)]]
-   [:li
-    [:span.label "Tags: "]
-    [:span.value (clojure.string/join ", " (:tags data))]]
-   [:li
-    [:span.label "Amount: "]
-    [:span.value (:amount data)]]
-   [:button "Edit"]])
+(defn form [item]
+  [:div
+   [:label "Name: "
+    [:input {:name "name"
+             :type "text"
+             :value (:name @item)
+             :on-change (fn [e]
+                          (swap! item assoc-in [:name] (.-target.value e)))}]]
+  [:div
+   [:label "Tags: "
+    [:input {:name "tags"
+             :type "text"
+             :value (:tags @item)
+             :on-change (fn [e]
+                          (swap! item assoc-in [:tags] (.-target.value e)))}]]]
+  [:div
+   [:label "Amount: "
+    [:input {:name "amount"
+             :type "number"
+             :value (:amount @item)
+             :on-change (fn [e]
+                          (swap! item assoc-in [:amount] (.-target.value e)))}]]]])
+
+(defn item [data k]
+  (let [editing (atom false)]
+    (fn [data]
+      [:div
+       [:ul {:class (when @editing "hide")}
+        [:li
+         [:span.label "Name: "]
+         [:span.value (:name data)]]
+        [:li
+         [:span.label "Tags: "]
+         [:span.value (clojure.string/join ", " (:tags data))]]
+        [:li
+         [:span.label "Amount: "]
+         [:span.value (:amount data)]]
+        [:button {:on-click #(reset! editing true)} "Edit"]]
+       (when @editing
+         (let [edited-item (atom (assoc-in data [:tags] (clojure.string/join ", " (:tags data))))]
+           [:form
+            [form edited-item]
+            [:button {:type "button"
+                      :on-click (fn []
+                                  (swap! app-state assoc-in [:components k]
+                                         (assoc-in
+                                           @edited-item
+                                           [:tags]
+                                           (map clojure.string/trim (clojure.string/split (:tags @edited-item) #","))))
+                                  (reset! editing false))} "Save"]
+            [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
 
 (defn page []
   [:div
    [:label "Search: "
     [:input {:name "search", :type "search"}]]
    [:button "Add new"]
-   (for [i (:components @app-state)]
-     ^{:key i} [item i])])
+   (for [[k v] (map vector (iterate inc 0) (:components @app-state))]
+     ^{:key (:name v)} [item v k])])
 
 (reagent/render-component [page]
-                          (. js/document (getElementById "app")))
+                          (.getElementById js/document "app"))
 
 
 (defn on-js-reload []
