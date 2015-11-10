@@ -5,94 +5,122 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:components [
-                                       {:name "EPR212A408000Z"
-                                        :tags ["optocoupler"]
-                                        :amount 7}
-                                       {:name "2N3904"
-                                        :tags ["transistor"]
-                                        :amount 8}
-                                       {:name "LF33CV"
-                                        :tags ["linear regulator"]
-                                        :amount 10}
-                                       {:name "BD241C"
-                                        :tags ["transistor"]
-                                        :amount 4}
-                                       {:name "HC49/US QM 16.000MHZ"
-                                        :tags ["crystal" "oscillator"]
-                                        :amount 1}
-                                       {:name "MCP23016-I/SP PDIP28 MICROCHIP"
-                                        :tags ["io" "expander"]
-                                        :amount 1}
-                                       {:name "KONPC-SPK-3"
-                                        :tags ["connector"]
-                                        :amount 10}
-                                       {:name "KONPC-SPK-2"
-                                        :tags ["connector"]
-                                        :amount 14}
-                                       {:name "KONPC-SPK-1"
-                                        :tags ["connector"]
-                                        :amount 15}
-                                       {:name "KONPC-SKP-4"
-                                        :tags ["connector"]
-                                        :amount 5}
-                                       {:name "BTK10G"
-                                        :tags ["connector"]
-                                        :amount 8}
-                                       {:name "BL820GD"
-                                        :tags ["connector"]
-                                        :amount 25}
-                                       {:name "AVRProg USB v3"
-                                        :tags ["rs232", "serial", "usb"]
-                                        :amount 1}
-                                       {:name "Micro USB B"
-                                        :tags ["connector" "micro usb" "usb"]
-                                        :amount 3}
-                                       {:name "S1G20"
-                                        :tags ["connector"]
-                                        :amount 8}
-                                       {:name "S1G8"
-                                        :tags ["connector"]
-                                        :amount 1}
-                                       {:name "S1G3"
-                                        :tags ["connector"]
-                                        :amount 1}
-                                       {:name "S2G20"
-                                        :tags ["connector"]
-                                        :amount 10}
-                                       {:name "KONPC-SPK-PI"
-                                        :tags ["connector"]
-                                        :amount 35}
-                                       {:name "USB PCB 2AW"
-                                        :tags ["connector"]
-                                        :amount 6}
-                                       {:name "USB1X90A PCB"
-                                        :tags ["connector"]
-                                        :amount 3}
-                                       {:name "USB PCB AW"
-                                        :tags ["connector"]
-                                        :amount 3}
-                                       {:name "CMM 5/3SQ"
-                                        :tags ["connector"]
-                                        :amount 4}
-                                       {:name "USB AM PCB"
-                                        :tags ["connector"]
-                                        :amount 4}
-                                       {:name "ST-214-C-06"
-                                        :tags ["jack" "audio"]
-                                        :amount 3}
-                                       {:name "USB A/C SET2"
-                                        :tags ["connector" "usb"]
-                                        :amount 10}
-                                       {:name "KMOC3063"
-                                        :tags ["optocoupler"]
-                                        :amount 6}
-                                       {:name "78M05-DPAK"
-                                        :tags ["linear regulator"]
-                                        :amount 9}]
-                          :filtered-components []}))
+(defonce app-state (atom {:components {
+                                       1 {:id 1
+                                          :name "EPR212A408000Z"
+                                          :tags ["optocoupler"]
+                                          :amount 7}
+                                       2 {:id 2
+                                          :name "2N3904"
+                                          :tags ["transistor"]
+                                          :amount 8}
+                                       3 {:id 3
+                                          :name "LF33CV"
+                                          :tags ["linear regulator"]
+                                          :amount 10}
+                                       4 {:id 4
+                                          :name "BD241C"
+                                          :tags ["transistor"]
+                                          :amount 4}
+                                       5 {:id 5
+                                          :name "HC49/US QM 16.000MHZ"
+                                          :tags ["crystal" "oscillator"]
+                                          :amount 1}
+                                       6 {:id 6
+                                          :name "MCP23016-I/SP PDIP28 MICROCHIP"
+                                          :tags ["io" "expander"]
+                                          :amount 1}
+                                       7 {:id 7
+                                          :name "KONPC-SPK-3"
+                                          :tags ["connector"]
+                                          :amount 10}
+                                       8 {:id 8
+                                          :name "KONPC-SPK-2"
+                                          :tags ["connector"]
+                                          :amount 14}
+                                       9 {:id 9
+                                          :name "KONPC-SPK-1"
+                                          :tags ["connector"]
+                                          :amount 15}
+                                       10 {:id 10
+                                           :name "KONPC-SKP-4"
+                                           :tags ["connector"]
+                                           :amount 5}
+                                       11 {:id 11
+                                           :name "BTK10G"
+                                           :tags ["connector"]
+                                           :amount 8}
+                                       12 {:id 12
+                                           :name "BL820GD"
+                                           :tags ["connector"]
+                                           :amount 25}
+                                       13 {:id 13
+                                           :name "AVRProg USB v3"
+                                           :tags ["rs232", "serial", "usb"]
+                                           :amount 1}
+                                       14 {:id 14
+                                           :name "Micro USB B"
+                                           :tags ["connector" "micro usb" "usb"]
+                                           :amount 3}
+                                       15 {:id 15
+                                           :name "S1G20"
+                                           :tags ["connector"]
+                                           :amount 8}
+                                       16 {:id 16
+                                           :name "S1G8"
+                                           :tags ["connector"]
+                                           :amount 1}
+                                       17 {:id 17
+                                           :name "S1G3"
+                                           :tags ["connector"]
+                                           :amount 1}
+                                       18 {:id 18
+                                           :name "S2G20"
+                                           :tags ["connector"]
+                                           :amount 10}
+                                       19 {:id 19
+                                           :name "KONPC-SPK-PI"
+                                           :tags ["connector"]
+                                           :amount 35}
+                                       20 {:id 20
+                                           :name "USB PCB 2AW"
+                                           :tags ["connector"]
+                                           :amount 6}
+                                       21 {:id 21
+                                           :name "USB1X90A PCB"
+                                           :tags ["connector"]
+                                           :amount 3}
+                                       22 {:id 22
+                                           :name "USB PCB AW"
+                                           :tags ["connector"]
+                                           :amount 3}
+                                       23 {:id 23
+                                           :name "CMM 5/3SQ"
+                                           :tags ["connector"]
+                                           :amount 4}
+                                       24 {:id 24
+                                           :name "USB AM PCB"
+                                           :tags ["connector"]
+                                           :amount 4}
+                                       25 {:id 25
+                                           :name "ST-214-C-06"
+                                           :tags ["jack" "audio"]
+                                           :amount 3}
+                                       26 {:id 26
+                                           :name "USB A/C SET2"
+                                           :tags ["connector" "usb"]
+                                           :amount 10}
+                                       27 {:id 27
+                                           :name "KMOC3063"
+                                           :tags ["optocoupler"]
+                                           :amount 6}
+                                       28 {:id 28
+                                           :name "78M05-DPAK"
+                                           :tags ["linear regulator"]
+                                           :amount 9}}
+                          :filter {:val ""
+                                   :search []}}))
 
-(swap! app-state assoc-in [:filtered-components] (:components @app-state))
 (def index (.lunr js/window (fn []
                      (this-as this
                               (.field this "name")
@@ -150,33 +178,34 @@
                                   (reset! editing false))} "Save"]
             [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
 
+(defn get-visible-components []
+  (if (clojure.string/blank? (get-in @app-state [:filter :val]))
+    (:components @app-state)
+    (loop [indexes (map #(get % "ref") (get-in @app-state [:filter :search]))
+          res []]
+      (if (empty? indexes)
+        res
+        (recur (rest indexes) (conj res [(first indexes) (get (:components @app-state) (first indexes))]))))))
+
 (defn page []
   [:div
    [:label "Search: "
     [:input {:name "search",
              :type "search"
              :on-change (fn [e]
-                          (swap! app-state assoc :filtered-components
-                                 (if (clojure.string/blank? (.-target.value e))
-                                   (:components @app-state)
-                                   (loop [indexes (map #(get % "ref") (js->clj (.search index (.-target.value e))))
-                                         res []]
-                                     (if (empty? indexes)
-                                       res
-                                       (recur (rest indexes) (conj res (nth (:components @app-state) (first indexes)))))))))}]]
+                          (swap! app-state assoc-in [:filter :val] (.-target.value e))
+                          (swap! app-state assoc-in [:filter :search] (js->clj (.search index (.-target.value e)))))}]]
    [:button "Add new"]
-   (for [[k v] (map vector (iterate inc 0) (:filtered-components @app-state))]
+   (for [[k v] (get-visible-components)]
      ^{:key (:name v)} [item v k])])
 
 (reagent/render-component [page]
                           (.getElementById js/document "app"))
 
-(doseq [[k component] (map vector (iterate inc 0) (:components @app-state))]
-  (.add index (clj->js {:id k
+(doseq [[k component] (:components @app-state)]
+  (.add index (clj->js {:id (:id component)
                         :name (:name component)
                         :tags (:tags component)})))
-
-(aset js/window "index" index)
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
