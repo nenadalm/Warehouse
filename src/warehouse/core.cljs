@@ -1,6 +1,7 @@
 (ns ^:figwheel-always warehouse.core
-    (:require
-              [reagent.core :as reagent :refer [atom]]))
+  (:require
+    [reagent.core :as reagent :refer [atom]]
+    lunr))
 
 (enable-console-print!)
 
@@ -88,7 +89,13 @@
                                         :amount 6}
                                        {:name "78M05-DPAK"
                                         :tags ["linear regulator"]
-                                        :amount 9}]}))
+                                        :amount 9}]
+                          :filtered-components []}))
+
+(swap! app-state assoc-in [:filtered-components] (:components @app-state))
+(def index (.lunr js/window (fn []
+                     (this-as this
+                              (.field this "name")))))
 
 (defn form [item]
   [:div
@@ -138,21 +145,36 @@
                                          (assoc-in
                                            @edited-item
                                            [:tags]
-                                           (map clojure.string/trim (clojure.string/split (:tags @edited-item) #","))))
+                                           (mapv clojure.string/trim (clojure.string/split (:tags @edited-item) #","))))
                                   (reset! editing false))} "Save"]
             [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
 
 (defn page []
   [:div
    [:label "Search: "
-    [:input {:name "search", :type "search"}]]
+    [:input {:name "search",
+             :type "search"
+             :on-change (fn [e]
+                          (swap! app-state assoc :filtered-components
+                                 (if (clojure.string/blank? (.-target.value e))
+                                   (:components @app-state)
+                                   (loop [indexes (map #(get % "ref") (js->clj (.search index (.-target.value e))))
+                                         res []]
+                                     (if (empty? indexes)
+                                       res
+                                       (recur (rest indexes) (conj res (nth (:components @app-state) (first indexes)))))))))}]]
    [:button "Add new"]
-   (for [[k v] (map vector (iterate inc 0) (:components @app-state))]
+   (for [[k v] (map vector (iterate inc 0) (:filtered-components @app-state))]
      ^{:key (:name v)} [item v k])])
 
 (reagent/render-component [page]
                           (.getElementById js/document "app"))
 
+(doseq [[k component] (map vector (iterate inc 0) (:components @app-state))]
+  (.add index (clj->js {:id k
+                        :name (:name component)})))
+
+(aset js/window "index" index)
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on

@@ -27,6 +27,8 @@
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/out"
+                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
+                                         :provides ["lunr"]}]
                          :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
