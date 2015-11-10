@@ -95,7 +95,8 @@
 (swap! app-state assoc-in [:filtered-components] (:components @app-state))
 (def index (.lunr js/window (fn []
                      (this-as this
-                              (.field this "name")))))
+                              (.field this "name")
+                              (.field this "tags")))))
 
 (defn form [item]
   [:div
@@ -172,7 +173,8 @@
 
 (doseq [[k component] (map vector (iterate inc 0) (:components @app-state))]
   (.add index (clj->js {:id k
-                        :name (:name component)})))
+                        :name (:name component)
+                        :tags (:tags component)})))
 
 (aset js/window "index" index)
 
