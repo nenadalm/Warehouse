@@ -207,6 +207,12 @@
                         :name (:name component)
                         :tags (:tags component)})))
 
+(add-watch app-state nil (fn [k ns os]
+  (doseq [[k component] (:components @ns)]
+    (.update index (clj->js {:id (:id component)
+                          :name (:name component)
+                          :tags (:tags component)})))))
+
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
