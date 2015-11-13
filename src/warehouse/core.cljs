@@ -151,7 +151,7 @@
 
 (defn item [data k]
   (let [editing (atom false)]
-    (fn [data]
+    (fn []
       [:div
        [:ul {:class (when @editing "hide")}
         [:li
@@ -188,16 +188,29 @@
         (recur (rest indexes) (conj res [(first indexes) (get (:components @app-state) (first indexes))]))))))
 
 (defn page []
-  [:div
-   [:label "Search: "
-    [:input {:name "search",
-             :type "search"
-             :on-change (fn [e]
-                          (swap! app-state assoc-in [:filter :val] (.-target.value e))
-                          (swap! app-state assoc-in [:filter :search] (js->clj (.search index (.-target.value e)))))}]]
-   [:button "Add new"]
-   (for [[k v] (get-visible-components)]
-     ^{:key (:name v)} [item v k])])
+  (let [adding (atom false)
+        new-item (atom {:name "" :tags "" :amount 1})]
+    (fn []
+      [:div
+       [:label "Search: "
+        [:input {:name "search",
+                 :type "search"
+                 :on-change (fn [e]
+                              (swap! app-state assoc-in [:filter :val] (.-target.value e))
+                              (swap! app-state assoc-in [:filter :search] (js->clj (.search index (.-target.value e)))))}]]
+         (if (true? @adding)
+           [:form
+             [form new-item]
+             [:button {:type "button"
+                       :on-click (fn []
+                                   (let [k (inc (apply max (keys (:components @app-state))))]
+                                     (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (mapv clojure.string/trim (clojure.string/split (:tags @new-item) #",")))))
+                                   (reset! adding false))} "Save"]
+             [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
+           [:button {:on-click (fn [e]
+                                 (reset! adding true))} "Add new"])
+       (for [[k v] (get-visible-components)]
+         ^{:key (:name v)} [item v k])])))
 
 (reagent/render-component [page]
                           (.getElementById js/document "app"))
