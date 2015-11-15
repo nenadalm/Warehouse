@@ -151,7 +151,7 @@
 
 (defn item [data k]
   (let [editing (atom false)]
-    (fn []
+    (fn [data k]
       [:div
        [:ul {:class (when @editing "hide")}
         [:li
@@ -209,8 +209,10 @@
              [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
            [:button {:on-click (fn [e]
                                  (reset! adding true))} "Add new"])
-       (for [[k v] (get-visible-components)]
-         ^{:key (:name v)} [item v k])])))
+       [:ul {:class "components-list"}
+         (for [[k v] (get-visible-components)]
+           [:li {:class "component"}
+             ^{:key (:name v)} [item v k]])]])))
 
 (reagent/render-component [page]
                           (.getElementById js/document "app"))
