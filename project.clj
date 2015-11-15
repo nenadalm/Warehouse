@@ -13,11 +13,14 @@
             [lein-figwheel "0.4.1"]
             [lein-less "1.7.5"]]
 
+  :hooks [leiningen.cljsbuild]
+
   :source-paths ["src"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
+    :test-commands {"unit" ["/opt/phantomjs/bin/phantomjs" "resources/test/phantom/run.js" "resources/test/test.html"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
@@ -27,6 +30,15 @@
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/out"
+                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
+                                         :provides ["lunr"]}]
+                         :source-map-timestamp true }}
+             {:id "test"
+              :source-paths ["src" "test"]
+              :compiler {:main warehouse.run-all
+                         :asset-path "../public/js/compiled/test/out"
+                         :output-to "resources/public/js/compiled/warehouse-test.js"
+                         :output-dir "resources/public/js/compiled/test/out"
                          :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
                                          :provides ["lunr"]}]
                          :source-map-timestamp true }}
