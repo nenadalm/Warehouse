@@ -7,7 +7,9 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.122"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [reagent "0.5.0"]]
+                 [reagent "0.5.0"]
+                 [org.seleniumhq.selenium/selenium-java "2.48.2"]
+                 [clj-webdriver "0.7.2"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
