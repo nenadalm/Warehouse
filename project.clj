@@ -9,6 +9,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [reagent "0.5.0"]
                  [org.seleniumhq.selenium/selenium-java "2.48.2"]
+                 [com.codeborne/phantomjsdriver "1.2.1"]
                  [clj-webdriver "0.7.2"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]

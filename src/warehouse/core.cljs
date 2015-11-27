@@ -1,7 +1,8 @@
 (ns ^:figwheel-always warehouse.core
   (:require
     [reagent.core :as reagent :refer [atom]]
-    lunr))
+    lunr)
+  (:use [warehouse.function :only [string->array array->string]]))
 
 (enable-console-print!)
 
@@ -126,6 +127,12 @@
                               (.field this "name")
                               (.field this "tags")))))
 
+(defn update-index [index, ns]
+  (doseq [[k component] (:components @ns)]
+    (.update index (clj->js {:id (:id component)
+                          :name (:name component)
+                          :tags (:tags component)}))))
+
 (defn form [item]
   [:div
    [:label "Name: "
@@ -159,22 +166,22 @@
          [:span.value (:name data)]]
         [:li
          [:span.label "Tags: "]
-         [:span.value (clojure.string/join ", " (:tags data))]]
+         [:span.value (array->string (:tags data))]]
         [:li
          [:span.label "Amount: "]
          [:span.value (:amount data)]]
         [:button {:on-click #(reset! editing true)} "Edit"]]
        (when @editing
-         (let [edited-item (atom (assoc-in data [:tags] (clojure.string/join ", " (:tags data))))]
+         (let [edited-item (atom (assoc-in data [:tags] (array->string (:tags data))))]
            [:form
             [form edited-item]
             [:button {:type "button"
                       :on-click (fn []
                                   (swap! app-state assoc-in [:components k]
-                                         (assoc-in
+                                         (assoc
                                            @edited-item
-                                           [:tags]
-                                           (mapv clojure.string/trim (clojure.string/split (:tags @edited-item) #","))))
+                                           :tags
+                                           (string->array (:tags @edited-item))))
                                   (reset! editing false))} "Save"]
             [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
 
@@ -196,15 +203,15 @@
         [:input {:name "search",
                  :type "search"
                  :on-change (fn [e]
-                              (swap! app-state assoc-in [:filter :val] (.-target.value e))
-                              (swap! app-state assoc-in [:filter :search] (js->clj (.search index (.-target.value e)))))}]]
+                              (swap! app-state assoc :filter {:val (.-target.value e)
+                                                              :search (js->clj (.search index (.-target.value e)))}))}]]
          (if (true? @adding)
            [:form
              [form new-item]
              [:button {:type "button"
                        :on-click (fn []
                                    (let [k (inc (apply max (keys (:components @app-state))))]
-                                     (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (mapv clojure.string/trim (clojure.string/split (:tags @new-item) #",")))))
+                                     (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (string->array (:tags @new-item)))))
                                    (reset! adding false))} "Save"]
              [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
            [:button {:on-click (fn [e]
@@ -223,10 +230,7 @@
                         :tags (:tags component)})))
 
 (add-watch app-state nil (fn [k ns os]
-  (doseq [[k component] (:components @ns)]
-    (.update index (clj->js {:id (:id component)
-                          :name (:name component)
-                          :tags (:tags component)})))))
+                           (update-index index ns)))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on

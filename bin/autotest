@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "${0}")/.."
+
+while true; do
+  if inotifywait -r -e modify src/ test/ | grep -P '(\.clj|\.cljs)'; then
+      lein test && notify-send -u low "Tests passed" || notify-send -u critical "Tests failed"
+  fi
+done
+

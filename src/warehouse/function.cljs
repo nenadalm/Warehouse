@@ -13,3 +13,9 @@
             (recur (rest k) (conj res {key (get col1 key)}))
             (recur (rest k) res)))))))
 
+(defn array->string [array]
+  (clojure.string/join ", " array))
+
+(defn string->array [string]
+  (map clojure.string/trim (clojure.string/split string #",")))
+
