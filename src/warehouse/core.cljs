@@ -140,21 +140,21 @@
              :type "text"
              :value (:name @item)
              :on-change (fn [e]
-                          (swap! item assoc-in [:name] (.-target.value e)))}]]
+                          (swap! item assoc :name (.-target.value e)))}]]
   [:div
    [:label "Tags: "
     [:input {:name "tags"
              :type "text"
              :value (:tags @item)
              :on-change (fn [e]
-                          (swap! item assoc-in [:tags] (.-target.value e)))}]]]
+                          (swap! item assoc :tags (.-target.value e)))}]]]
   [:div
    [:label "Amount: "
     [:input {:name "amount"
              :type "number"
              :value (:amount @item)
              :on-change (fn [e]
-                          (swap! item assoc-in [:amount] (.-target.value e)))}]]]])
+                          (swap! item assoc :amount (.-target.value e)))}]]]])
 
 (defn item [data k]
   (let [editing (atom false)]
@@ -172,7 +172,7 @@
          [:span.value (:amount data)]]
         [:button {:on-click #(reset! editing true)} "Edit"]]
        (when @editing
-         (let [edited-item (atom (assoc-in data [:tags] (array->string (:tags data))))]
+         (let [edited-item (atom (assoc data :tags (array->string (:tags data))))]
            [:form
             [form edited-item]
             [:button {:type "button"
