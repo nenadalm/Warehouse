@@ -2,8 +2,8 @@
   (:use [clj-webdriver.taxi :exclude [clear]]
         [clojure.test]))
 
-(System/setProperty "webdriver.chrome.driver" "/home/nenadalm/Downloads/selenium/chromedriver")
-(System/setProperty "phantomjs.binary.path" "/opt/phantomjs/bin/phantomjs")
+;(System/setProperty "webdriver.chrome.driver" "/home/nenadalm/Downloads/selenium/chromedriver")
+;(System/setProperty "phantomjs.binary.path" "/opt/phantomjs/bin/phantomjs")
 
 ;(def browser-spec {:browser :chrome})
 (def browser-spec {:browser :phantomjs})

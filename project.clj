@@ -1,3 +1,5 @@
+(def parameters)
+
 (defproject warehouse "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
@@ -23,7 +25,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
-    :test-commands {"unit" ["/opt/phantomjs/bin/phantomjs" "resources/test/phantom/run.js" "resources/test/test.html"]}
+    :test-commands {"functional" ["phantomjs" "resources/test/phantom/run.js" "resources/test/test.html"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
