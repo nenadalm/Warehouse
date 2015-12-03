@@ -120,7 +120,11 @@
                                            :tags ["linear regulator"]
                                            :amount 9}}
                           :filter {:val ""
-                                   :search []}}))
+                                   :search []}
+                          :notifications [{:type :error
+                                           :message "Something bad happened"}
+                                          {:type :success
+                                           :message "Something good happened"}]}))
 
 (def index (.lunr js/window (fn []
                      (this-as this
@@ -194,11 +198,31 @@
         res
         (recur (rest indexes) (conj res [(first indexes) (get (:components @app-state) (first indexes))]))))))
 
+(defn notification [n k]
+  (let [type (:type n)
+        message (:message n)]
+    [:div {:class (str "notification notification-" (name type))}
+     [:div {:class "message"} message]
+     [:button {:type "button"
+               :class "close"
+               :on-click (fn [e]
+                           (swap! app-state assoc :notifications (concat
+                                                                  (subvec (:notifications @app-state) 0 k)
+                                                                  (subvec (:notifications @app-state) (inc k)))))} "X"]]))
+
+(defn notifications []
+  (let [notifications (:notifications @app-state)]
+    (when (not (empty? notifications))
+      [:div {:class "notifications"}
+       (for [[k n] (map list (range (count notifications)) notifications)]
+         ^{:key n} [notification n k])])))
+
 (defn page []
   (let [adding (atom false)
         new-item (atom {:name "" :tags "" :amount 1})]
     (fn []
       [:div
+       [notifications]
        [:label "Search: "
         [:input {:name "search",
                  :type "search"

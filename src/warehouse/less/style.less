@@ -22,3 +22,35 @@ li {
     padding: 0;
 }
 
+.notifications {
+    @width: 80%;
+
+    position: fixed;
+    width: @width;
+    margin-left: (100% - @width) / 2;
+    text-align: center;
+    top: 0;
+
+    .notification {
+        display: flex;
+        margin: 5px;
+        padding: 2px;
+
+        .message {
+            width: 100%;
+        }
+
+        .close {
+            width: 5%;
+        }
+    }
+
+    .notification-error {
+        background: #ed2f2f;
+    }
+
+    .notification-success {
+        background: #1ce829;
+    }
+}
+
