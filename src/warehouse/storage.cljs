@@ -14,6 +14,8 @@
                  :user "root"
                  :password "root"})
 
+(def rid nil)
+
 (def endpoint (str (:scheme parameters)
      "://"
      (:server parameters)
@@ -21,17 +23,19 @@
      (:port parameters)))
 
 (defn store-state [state]
-  (POST (str endpoint "/document/" (:db parameters)) {:params {:components (:components state)
-                                                               "@class" "AppState"}
+  (PUT (str endpoint "/document/" (:db parameters)) {:params {"@rid" rid
+                                                              :components (:components state)
+                                                              "@class" "AppState"}
                                                      :format :json
                                                      :keywords? true
-                                                     :headers {"Accept-Encoding" "gzip,deflate"
-                                                               "Content-Type" "application/json"
+                                                     :headers {"Content-Type" "application/json"
                                                                "Authorization" (str "Basic " (base64/encodeString (str (:user parameters) ":" (:password parameters))))}}))
 
 (defn load-state [handler error-handler]
   (GET (str endpoint "/query/" (:db parameters) "/SQL/SELECT FROM AppState/1") {:handler (fn [response]
-                                                                                           (handler (first (:result response))))
+                                                                                           (let [document (first (:result response))]
+                                                                                             (def rid ((keyword "@rid") document))
+                                                                                             (handler document)))
                                                                                 :error-handler error-handler
                                                                                 :keywords? true
                                                                                 :response-format :json

@@ -3,7 +3,7 @@
     [reagent.core :as reagent :refer [atom]]
     [warehouse.storage :as storage]
     lunr)
-  (:use [warehouse.function :only [string->array array->string document->state]]))
+  (:use [warehouse.function :only [string->array array->string document->state state->document]]))
 
 (enable-console-print!)
 
@@ -141,7 +141,10 @@
 (defn- on-state-load [response]
   (reset! app-state (document->state response @app-state)))
 
-; (storage/load-state on-state-load nil)
+;(storage/load-state on-state-load nil)
+;(add-watch app-state :storeer (fn [k ns os]
+;                          (println "watch")
+;                          (storage/store-state (state->document @ns))))
 
 (defn form [item]
   [:div
@@ -240,7 +243,9 @@
              [form new-item]
              [:button {:type "button"
                        :on-click (fn []
-                                   (let [k (inc (apply max (keys (:components @app-state))))]
+                                   (let [k (if (empty? (:components @app-state))
+                                             1
+                                             (inc (apply max (keys (:components @app-state)))))]
                                      (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (string->array (:tags @new-item)))))
                                    (reset! adding false))} "Save"]
              [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
@@ -259,7 +264,7 @@
                         :name (:name component)
                         :tags (:tags component)})))
 
-(add-watch app-state nil (fn [k ns os]
+(add-watch app-state :indexer (fn [k ns os]
                            (update-index index ns)))
 
 (defn on-js-reload []
