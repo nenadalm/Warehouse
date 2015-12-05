@@ -13,4 +13,6 @@ pom.xml
 .repl
 .nrepl-port
 /bower_components/
+phantomjsdriver.log
+.lein-failures
 

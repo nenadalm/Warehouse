@@ -1,8 +1,9 @@
 (ns ^:figwheel-always warehouse.core
   (:require
     [reagent.core :as reagent :refer [atom]]
+    [warehouse.storage :as storage]
     lunr)
-  (:use [warehouse.function :only [string->array array->string]]))
+  (:use [warehouse.function :only [string->array array->string document->state]]))
 
 (enable-console-print!)
 
@@ -136,6 +137,11 @@
     (.update index (clj->js {:id (:id component)
                           :name (:name component)
                           :tags (:tags component)}))))
+
+(defn- on-state-load [response]
+  (reset! app-state (document->state response @app-state)))
+
+; (storage/load-state on-state-load nil)
 
 (defn form [item]
   [:div

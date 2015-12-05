@@ -19,3 +19,18 @@
 (defn string->array [string]
   (map clojure.string/trim (clojure.string/split string #",")))
 
+(defn document->state [document current-state]
+  (assoc current-state
+         :components
+         (if (empty? (:components document))
+           {}
+           (apply assoc
+                  {}
+                  (interleave (map #(:id %) (:components document))
+                              (:components document))))))
+
+(defn state->document [current-state]
+  (if (empty? (:components current-state))
+    {:components []}
+    (hash-map :components (vals (:components current-state)))))
+
