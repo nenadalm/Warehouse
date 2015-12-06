@@ -1,4 +1,7 @@
 language: clojure
 
+before_install:
+    - npm install -g bower
+
 install: lein bower install
 
