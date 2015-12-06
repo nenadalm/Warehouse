@@ -3,8 +3,7 @@
 (defproject warehouse "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
-  :license {:name "MIT"
-            :url "FIXME"}
+  :license {:name "MIT"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.122"]
