@@ -32,5 +32,5 @@
 (defn state->document [current-state]
   (if (empty? (:components current-state))
     {:components []}
-    (hash-map :components (vals (:components current-state)))))
+    {:components (vals (:components current-state))}))
 

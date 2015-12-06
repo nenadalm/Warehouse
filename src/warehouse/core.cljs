@@ -89,11 +89,7 @@
 (defn get-visible-components []
   (if (clojure.string/blank? (get-in @app-state [:filter :val]))
     (:components @app-state)
-    (loop [indexes (map #(get % "ref") (get-in @app-state [:filter :search]))
-           res []]
-      (if (empty? indexes)
-        res
-        (recur (rest indexes) (conj res [(first indexes) (get (:components @app-state) (first indexes))]))))))
+    (select-keys (:components @app-state) (map #(get % "ref") (get-in @app-state [:filter :search])))))
 
 (defn notification [n k]
   (let [type (:type n)
@@ -131,9 +127,7 @@
           [form new-item]
           [:button {:type "button"
                     :on-click (fn []
-                                (let [k (if (empty? (:components @app-state))
-                                          1
-                                          (inc (apply max (keys (:components @app-state)))))]
+                                (let [k (or (inc (apply max (keys (:components @app-state)))) 1)]
                                   (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (string->array (:tags @new-item)))))
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
