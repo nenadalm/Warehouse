@@ -1,4 +1,4 @@
-(ns warehouse.storage
+(ns warehouse.storage.orientdb
   (:require [ajax.core :refer [GET POST PUT]]
             [goog.crypt.base64 :as base64]))
 ;db setup:
