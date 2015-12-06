@@ -3,5 +3,10 @@ language: clojure
 before_install:
     - npm install -g bower
 
-install: lein bower install
+install:
+    - lein bower install
+
+before_script:
+    - npm install -g http-server
+    - http-server resources/public/ -p 3449 &
 
