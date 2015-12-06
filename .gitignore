@@ -15,4 +15,5 @@ pom.xml
 /bower_components/
 phantomjsdriver.log
 .lein-failures
+npm-debug.log
 

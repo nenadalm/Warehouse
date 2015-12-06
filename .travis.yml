@@ -1,2 +1,4 @@
 language: clojure
 
+install: lein bower install
+

@@ -15,9 +15,13 @@
                  [alandipert/storage-atom "1.2.4"]
                  [cljs-ajax "0.5.1"]]
 
+  :bower-dependencies [[lunr.js "0.6.0"]]
+  :bower {:directory "bower_components"}
+
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.1"]
-            [lein-less "1.7.5"]]
+            [lein-less "1.7.5"]
+            [lein-bower "0.5.1"]]
 
   :hooks [leiningen.cljsbuild]
 
