@@ -20,8 +20,14 @@ page.open(url, function (status) {
     }, 0);
   }
 
+  var exitStatus = page.evaluate(function() {
+    warehouse.run_all.run();
+
+    return window.testStatus;
+  });
+
   setTimeout(function() { // https://github.com/ariya/phantomjs/issues/12697
-    phantom.exit(0);
+    phantom.exit(exitStatus);
   }, 0);
 });
 
