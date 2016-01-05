@@ -37,9 +37,9 @@
               :figwheel { :on-jsload "warehouse.core/on-js-reload" }
 
               :compiler {:main warehouse.core
-                         :asset-path "js/compiled/out"
+                         :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
-                         :output-dir "resources/public/js/compiled/out"
+                         :output-dir "resources/public/js/compiled/dev/out"
                          :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
                                          :provides ["lunr"]}]
                          :source-map-timestamp true }}
@@ -54,10 +54,14 @@
                          :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
-              :compiler {:output-to "resources/public/js/compiled/warehouse.js"
-                         :main warehouse.core
-                         :optimizations :advanced
-                         :pretty-print false}}]}
+              :compiler {:main warehouse.core
+                         :asset-path "js/compiled/out"
+                         :output-to "resources/public/js/compiled/warehouse.js"
+                         :output-dir "resources/public/js/compiled/out"
+                         ;:optimizations :advanced
+                         :pretty-print false
+                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
+                                         :provides ["lunr"]}]}}]}
 
   :less {:source-paths ["src/warehouse/less"]
          :target-path "resources/public/css"}
