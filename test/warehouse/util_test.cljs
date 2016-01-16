@@ -1,7 +1,7 @@
-(ns warehouse.function-test
+(ns warehouse.util-test
   (:require-macros [cljs.test :refer [deftest is]])
   (:use [cljs.test :only [do-report]]
-        [warehouse.function :only [get-updated-items string->array array->string document->state state->document]]))
+        [warehouse.util :only [get-updated-items string->array array->string document->state state->document]]))
 
 (deftest get-updated-items-test
   (is (empty? (get-updated-items

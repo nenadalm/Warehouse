@@ -1,4 +1,4 @@
-(ns warehouse.function)
+(ns warehouse.util)
 
 (defn get-updated-items
   [col1 col2]

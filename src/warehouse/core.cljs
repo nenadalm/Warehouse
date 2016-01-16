@@ -2,8 +2,8 @@
   (:require
     [reagent.core :as reagent :refer [atom]]
     [warehouse.storage.test :as storage]
-    lunr)
-  (:use [warehouse.function :only [string->array array->string document->state state->document]]))
+    lunr
+    [warehouse.util :as util]))
 
 (enable-console-print!)
 
@@ -27,12 +27,12 @@
                              :tags (:tags component)}))))
 
 (defn- on-state-load [response]
-  (reset! app-state (document->state response @app-state)))
+  (reset! app-state (util/document->state response @app-state)))
 
 (storage/load-state on-state-load nil)
 
 (add-watch app-state :storeer (fn [k ns os]
-                                (storage/store-state (state->document @ns))))
+                                (storage/store-state (util/state->document @ns))))
 
 (defn form [item]
   [:div
@@ -67,13 +67,13 @@
          [:span.value (:name data)]]
         [:li
          [:span.label "Tags: "]
-         [:span.value (array->string (:tags data))]]
+         [:span.value (util/array->string (:tags data))]]
         [:li
          [:span.label "Amount: "]
          [:span.value (:amount data)]]
         [:button {:on-click #(reset! editing true)} "Edit"]]
        (when @editing
-         (let [edited-item (atom (assoc data :tags (array->string (:tags data))))]
+         (let [edited-item (atom (assoc data :tags (util/array->string (:tags data))))]
            [:form
             [form edited-item]
             [:button {:type "button"
@@ -82,7 +82,7 @@
                                          (assoc
                                            @edited-item
                                            :tags
-                                           (string->array (:tags @edited-item))))
+                                           (util/string->array (:tags @edited-item))))
                                   (reset! editing false))} "Save"]
             [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
 
@@ -128,7 +128,7 @@
           [:button {:type "button"
                     :on-click (fn []
                                 (let [k (or (inc (apply max (keys (:components @app-state)))) 1)]
-                                  (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (string->array (:tags @new-item)))))
+                                  (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (util/string->array (:tags @new-item)))))
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
          [:button {:on-click (fn [e]
