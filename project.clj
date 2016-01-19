@@ -15,7 +15,7 @@
                  [alandipert/storage-atom "1.2.4"]
                  [cljs-ajax "0.5.1"]]
 
-  :bower-dependencies [[lunr.js "0.6.0"]]
+  :bower-dependencies [[lunr.js "git@github.com:nenadalm/lunr.js#master"]]
   :bower {:directory "bower_components"}
 
   :plugins [[lein-cljsbuild "1.1.0"]
@@ -58,10 +58,9 @@
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/out"
-                         ;:optimizations :advanced
+                         :optimizations :advanced
                          :pretty-print false
-                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
-                                         :provides ["lunr"]}]}}]}
+                         :libs ["bower_components/lunr.js/lunr.js"]}}]}
 
   :less {:source-paths ["src/warehouse/less"]
          :target-path "resources/public/css"}
