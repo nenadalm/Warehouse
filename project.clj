@@ -15,7 +15,7 @@
                  [alandipert/storage-atom "1.2.4"]
                  [cljs-ajax "0.5.1"]]
 
-  :bower-dependencies [[lunr.js "git@github.com:nenadalm/lunr.js#master"]]
+  :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
   :plugins [[lein-cljsbuild "1.1.0"]
