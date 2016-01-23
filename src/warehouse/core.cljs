@@ -111,6 +111,13 @@
        (for [[k n] (map list (range (count notifications)) notifications)]
          ^{:key n} [notification n k])])))
 
+(defn file-input [name f]
+  [:button
+  [:label
+   [:input {:type "file"
+            :on-change f}]
+   name]])
+
 (defn page []
   (let [adding (atom false)
         new-item (atom {:name "" :tags "" :amount 1})]
@@ -130,7 +137,18 @@
                        (.encodeURIComponent js/window)
                        (str "data:text/json;charset=utf-8,"))
             :download "warehouse_components.json"
-            } "Export"]
+            }
+        [:button "Export"]]
+       [file-input "Import" (fn [e]
+                              (let [reader (js/FileReader.)]
+                                (aset reader
+                                      "onload"
+                                      (fn [e]
+                                        (->> (.-target.result e)
+                                             (.parse js/JSON)
+                                             (#(js->clj % :keywordize-keys true))
+                                             (on-state-load))))
+                                (.readAsText reader (aget e "target" "files" "0"))))]
        (if (true? @adding)
          [:form
           [form new-item]
