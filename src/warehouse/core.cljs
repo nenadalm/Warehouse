@@ -140,14 +140,17 @@
             }
         [:button "Export"]]
        [file-input "Import" (fn [e]
-                              (let [reader (js/FileReader.)]
+                              (let [reader (js/FileReader.)
+                                    this (aget e "currentTarget")]
                                 (aset reader
                                       "onload"
-                                      (fn [e]
-                                        (->> (.-target.result e)
+                                      (fn [reader-event]
+                                        (->> (.-target.result reader-event)
                                              (.parse js/JSON)
                                              (#(js->clj % :keywordize-keys true))
-                                             (on-state-load))))
+                                             (util/merge-documents (util/state->document @app-state))
+                                             (on-state-load))
+                                        (aset this "value" "")))
                                 (.readAsText reader (aget e "target" "files" "0"))))]
        (if (true? @adding)
          [:form

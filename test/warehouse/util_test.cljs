@@ -1,17 +1,17 @@
 (ns warehouse.util-test
   (:require-macros [cljs.test :refer [deftest is]])
-  (:use [cljs.test :only [do-report]]
-        [warehouse.util :only [get-updated-items string->array array->string document->state state->document]]))
+  (:use [cljs.test :only [do-report]])
+  (:require [warehouse.util :as util]))
 
 (deftest get-updated-items-test
-  (is (empty? (get-updated-items
+  (is (empty? (util/get-updated-items
                 {0 {:k "v"}
                  1 {:k "c"}}
 
                 {0 {:k "v"}
                  1 {:k "c"}})))
   (is (= {0 {:k "v-updated"}}
-         (get-updated-items
+         (util/get-updated-items
                 {0 {:k "v-updated"}
                  1 {:k "c"}}
 
@@ -19,17 +19,17 @@
                  1 {:k "c"}}))))
 
 (deftest string->array-test
-  (is (= (string->array "a, b ,c")
+  (is (= (util/string->array "a, b ,c")
          ["a" "b" "c"])))
 
 (deftest array->string-test
-  (is (= (array->string ["a" "b" "c"])
+  (is (= (util/array->string ["a" "b" "c"])
          "a, b, c")))
 
 (deftest document->state-test
   (is (= {:components {}
           :notifications []}
-         (document->state {:components []}
+         (util/document->state {:components []}
                           {:components []
                            :notifications []})))
   (is (= {:components {2 {:id 2
@@ -37,7 +37,7 @@
                        :tags "component"
                        :amount 3}}
           :notifications []}
-         (document->state {:components [{:id 2
+         (util/document->state {:components [{:id 2
                                         :name "second-component"
                                         :tags "component"
                                         :amount 3}]}
@@ -53,14 +53,50 @@
 
 (deftest state->document-test
   (is (= {:components []}
-         (state->document {:components {}})))
+         (util/state->document {:components {}})))
   (is (= {:components [{:id 2
                         :name "second-component"
                         :tags "component"
                         :amount 3}]}
-         (state->document {:components {2 {:id 2
+         (util/state->document {:components {2 {:id 2
                                            :name "second-component"
                                            :tags "component"
                                            :amount 3}}
                            :notifications []}))))
+
+(deftest merge-documents-test
+  (is (= {:components []}
+         (util/merge-documents {:components []}
+                               {:components []})))
+  (is (= {:components [{:id 1
+                        :name "component1"
+                        :tags ["tag"]
+                        :amount 3}]}
+         (util/merge-documents {:components [{:id 1
+                                              :name "component1"
+                                              :tags ["tag"]
+                                              :amount 1}]}
+                               {:components [{:name "component1"
+                                              :amount 2}]})))
+  (is (= {:components [{:id 1
+                       :name "component"
+                       :tags []
+                       :amount 2}]}
+         (util/merge-documents {:components []}
+                               {:components [{:name "component"
+                                             :amount 2}]})))
+  (is (= {:components [{:id 1
+                       :name "component"
+                       :tags []
+                       :amount 2}
+                       {:id 2
+                        :name "imported-component"
+                        :tags []
+                        :amount 1}]}
+         (util/merge-documents {:components [{:id 1
+                                              :name "component"
+                                              :tags []
+                                              :amount 2}]}
+                               {:components [{:name "imported-component"
+                                             :amount 1}]}))))
 

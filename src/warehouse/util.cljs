@@ -32,5 +32,32 @@
 (defn state->document [current-state]
   (if (empty? (:components current-state))
     {:components []}
-    {:components (vals (:components current-state))}))
+    {:components (into [] (vals (:components current-state)))}))
+
+(defn- generate-component-id [existing-components]
+  (if (empty? existing-components)
+    1
+    (inc (apply max (map :id existing-components)))))
+
+(defn merge-documents [document new-items]
+  (let [c (map-indexed vector (:components document))]
+    (assoc document :components
+           (loop [new-items (:components new-items)
+                  components (:components document)]
+             (if (empty? new-items)
+               components
+               (let [item (first new-items)
+                     old-item (first (filter #(= (:name item) (:name (second %))) c))]
+                 (if (empty? old-item)
+                   (let [new-id (generate-component-id components)]
+                     (recur (rest new-items)
+                            (conj components
+                                  {:id new-id
+                                   :name (:name item)
+                                   :tags []
+                                   :amount (:amount item)})))
+                   (recur (rest new-items)
+                          (assoc-in components
+                                    [(first old-item) :amount]
+                                    (+ (:amount item) (:amount (second old-item))))))))))))
 
