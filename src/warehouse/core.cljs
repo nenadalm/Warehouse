@@ -123,6 +123,14 @@
                  :on-change (fn [e]
                               (swap! app-state assoc :filter {:val (.-target.value e)
                                                               :search (js->clj (.search index (.-target.value e)))}))}]]
+       [:a {:href (->> @app-state
+                       (util/state->document)
+                       (clj->js)
+                       (.stringify js/JSON)
+                       (.encodeURIComponent js/window)
+                       (str "data:text/json;charset=utf-8,"))
+            :download "warehouse_components.json"
+            } "Export"]
        (if (true? @adding)
          [:form
           [form new-item]
