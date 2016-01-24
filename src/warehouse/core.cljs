@@ -17,7 +17,6 @@
 
 (defonce index (.lunr js/window (fn []
                                   (this-as this
-                                           (.remove (.-pipeline this) (aget js/window "lunr" "stopWordFilter"))
                                            (.field this "name")
                                            (.field this "tags")))))
 
