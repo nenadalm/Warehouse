@@ -3,6 +3,74 @@
   (:use [cljs.test :only [do-report]])
   (:require [warehouse.util :as util]))
 
+(deftest map-diff-test
+  (is (empty? (util/map-diff) {} {}))
+  (is (empty? (util/map-diff {:a "a"
+                              :b "b"}
+                             {:a "a"
+                              :b "b"})))
+  (is (= {:a ["a" "new-a"]
+          :c ["c" nil]}
+         (util/map-diff {:a "a"
+                         :b "b"
+                         :c "c"}
+                        {:a "new-a"
+                         :b "b"})))
+  (is (= {:a ["old-a" "a"]
+          :c [nil "c"]}
+         (util/map-diff {:a "old-a"
+                         :b "b"}
+                        {:a "a"
+                         :b "b"
+                         :c "c"}))))
+
+(deftest get-change-set-test
+  (is (empty? (util/get-change-set {} {})))
+  (is (empty? (util/get-change-set {0 {:k "v"}
+                                    1 {:k "c"}}
+
+                                   {0 {:k "v"}
+                                    1 {:k "c"}})))
+  (is (= [{:type :update
+           :data [{:k ["v" "v-updated"]}]}]
+         (util/get-change-set {0 {:k "v"}
+                               1 {:k "c"}}
+
+                              {0 {:k "v-updated"}
+                               1 {:k "c"}})))
+  (is (= [{:type :update
+           :data [{:k ["v" "v-updated"]}
+                  {:k ["c" "c-updated"]}]}]
+         (util/get-change-set {0 {:k "v"}
+                               1 {:k "c"}}
+
+                              {0 {:k "v-updated"}
+                               1 {:k "c-updated"}})))
+  (is (= [{:type :create
+           :data [{:k "k-created"}]}]
+         (util/get-change-set {0 {:k "v"}}
+
+                              {0 {:k "v"}
+                               1 {:k "k-created"}})))
+  (is (= [{:type :create
+           :data [{:k "k-created1"}
+                  {:k "k-created2"}]}]
+         (util/get-change-set {0 {:k "v"}}
+
+                              {0 {:k "v"}
+                               1 {:k "k-created1"}
+                               2 {:k "k-created2"}})))
+  (is (= [{:type :create
+           :data [{:k "k-created"}]}
+          {:type :update
+           :data [{:k ["k" "k-updated"]}]}]
+         (util/get-change-set {0 {:k "v"}
+                               1 {:k "k"}}
+
+                              {0 {:k "v"}
+                               1 {:k "k-updated"}
+                               2 {:k "k-created"}}))))
+
 (deftest get-updated-items-test
   (is (empty? (util/get-updated-items
                 {0 {:k "v"}

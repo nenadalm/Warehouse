@@ -2,6 +2,7 @@
   (:require
     [reagent.core :as reagent :refer [atom]]
     [warehouse.storage.test :as storage]
+    [alandipert.storage-atom :refer [local-storage]]
     lunr
     [warehouse.util :as util]))
 
@@ -15,13 +16,15 @@
                                           {:type :success
                                            :message "Something good happened"}]}))
 
+(defonce change-sets (local-storage (atom []) :app-change-sets))
+
 (defonce index (.lunr js/window (fn []
                                   (this-as this
                                            (.field this "name")
                                            (.field this "tags")))))
 
-(defn update-index [index, ns]
-  (doseq [[k component] (:components @ns)]
+(defn update-index [index ns]
+  (doseq [[k component] (:components ns)]
     (.update index (clj->js {:id (:id component)
                              :name (:name component)
                              :tags (:tags component)}))))
@@ -29,10 +32,17 @@
 (defn- on-state-load [response]
   (reset! app-state (util/document->state response @app-state)))
 
-(storage/load-state on-state-load nil)
+(storage/load-state (fn [response]
+                      (on-state-load response)
+                      (add-watch app-state :change-set (fn [k r os ns]
+                                                         (let [cs (util/get-change-set (:components os) (:components ns))]
+                                                           (if-not (empty? cs)
+                                                             (swap! change-sets conj cs))))))
+                    nil)
 
-(add-watch app-state :storeer (fn [k ns os]
-                                (storage/store-state (util/state->document @ns))))
+
+(add-watch app-state :storeer (fn [k r os ns]
+                                (storage/store-state (util/state->document ns))))
 
 (defn form [item]
   [:div
@@ -175,7 +185,7 @@
                         :name (:name component)
                         :tags (:tags component)})))
 
-(add-watch app-state :indexer (fn [k ns os]
+(add-watch app-state :indexer (fn [k r os ns]
                                 (update-index index ns)))
 
 (defn on-js-reload []

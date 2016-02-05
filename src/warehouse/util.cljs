@@ -1,4 +1,38 @@
-(ns warehouse.util)
+(ns warehouse.util
+  (:require [clojure.set :as clojure.set]))
+
+(defn map-diff [m1 m2]
+  (reduce (fn [res k]
+            (let [val1 (get m1 k)
+                  val2 (get m2 k)]
+              (if (= val1 val2)
+                res
+                (assoc res k [val1 val2]))))
+          {}
+          (into #{} (concat (keys m1) (keys m2)))))
+
+(defn get-change-set [old-col new-col]
+  (if (= new-col old-col)
+    []
+    (let [same-keys (keys old-col)
+          created-keys (clojure.set/difference (into #{} (keys new-col)) (into #{} (keys old-col)))
+          ]
+      (let [updates (reduce (fn [res k]
+                              (let [new-val (get new-col k)
+                                    old-val (get old-col k)
+                                    diff (map-diff old-val new-val)]
+                                (if (empty? diff)
+                                  res
+                                  (conj res diff))
+                                )
+                              )
+                            []
+                            same-keys)
+            creates (into [] (map second (select-keys new-col created-keys)))]
+        (into [] (filter (complement #(empty? (:data %))) [{:type :create
+                                                            :data creates}
+                                                           {:type :update
+                                                            :data updates}]))))))
 
 (defn get-updated-items
   [col1 col2]
