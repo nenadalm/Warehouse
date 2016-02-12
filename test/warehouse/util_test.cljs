@@ -26,50 +26,122 @@
 
 (deftest get-change-set-test
   (is (empty? (util/get-change-set {} {})))
-  (is (empty? (util/get-change-set {0 {:k "v"}
-                                    1 {:k "c"}}
+  (is (empty? (util/get-change-set {0 {:id 0
+                                       :name "first"
+                                       :k "v"}
+                                    1 {:id 1
+                                       :name "second"
+                                       :k "c"}}
 
-                                   {0 {:k "v"}
-                                    1 {:k "c"}})))
+                                   {0 {:id 0
+                                       :name "first"
+                                       :k "v"}
+                                    1 {:id 1
+                                       :name "second"
+                                       :k "c"}})))
   (is (= [{:type :update
-           :data [{:k ["v" "v-updated"]}]}]
-         (util/get-change-set {0 {:k "v"}
-                               1 {:k "c"}}
+           :data [{:metadata {:id 0
+                             :name "first"}
+                   :data {:k ["v" "v-updated"]}}]}]
+         (util/get-change-set {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "c"}}
 
-                              {0 {:k "v-updated"}
-                               1 {:k "c"}})))
+                              {0 {:id 0
+                                  :name "first"
+                                  :k "v-updated"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "c"}})))
   (is (= [{:type :update
-           :data [{:k ["v" "v-updated"]}
-                  {:k ["c" "c-updated"]}]}]
-         (util/get-change-set {0 {:k "v"}
-                               1 {:k "c"}}
+           :data [{:metadata {:id 0
+                              :name "first"}
+                   :data {:k ["v" "v-updated"]}}
+                  {:metadata {:id 1
+                              :name "second"}
+                   :data {:k ["c" "c-updated"]}}]}]
+         (util/get-change-set {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "c"}}
 
-                              {0 {:k "v-updated"}
-                               1 {:k "c-updated"}})))
+                              {0 {:id 0
+                                  :name "first"
+                                  :k "v-updated"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "c-updated"}})))
   (is (= [{:type :create
-           :data [{:k "k-created"}]}]
-         (util/get-change-set {0 {:k "v"}}
+           :data [{:metadata {:id 1
+                              :name "second"}
+                   :data {:id 1
+                          :name "second"
+                          :k "k-created"}}]}]
+         (util/get-change-set {0 {:id 0
+                                  :name "first"
+                                  :k "v"}}
 
-                              {0 {:k "v"}
-                               1 {:k "k-created"}})))
+                              {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "k-created"}})))
   (is (= [{:type :create
-           :data [{:k "k-created1"}
-                  {:k "k-created2"}]}]
-         (util/get-change-set {0 {:k "v"}}
+           :data [{:metadata {:id 1
+                              :name "second"}
+                   :data {:id 1
+                          :name "second"
+                          :k "k-created1"}}
+                  {:metadata {:id 2
+                              :name "third"}
+                   :data {:id 2
+                          :name "third"
+                          :k "k-created2"}}]}]
+         (util/get-change-set {0 {:id 0
+                                  :name "first"
+                                  :k "v"}}
 
-                              {0 {:k "v"}
-                               1 {:k "k-created1"}
-                               2 {:k "k-created2"}})))
+                              {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "k-created1"}
+                               2 {:id 2
+                                  :name "third"
+                                  :k "k-created2"}})))
   (is (= [{:type :create
-           :data [{:k "k-created"}]}
+           :data [{:metadata {:id 2
+                              :name "third"}
+                   :data {:id 2
+                          :name "third"
+                          :k "k-created"}}]}
           {:type :update
-           :data [{:k ["k" "k-updated"]}]}]
-         (util/get-change-set {0 {:k "v"}
-                               1 {:k "k"}}
+           :data [{:metadata {:id 1
+                              :name "second"}
+                   :data {:k ["k" "k-updated"]}}]}]
+         (util/get-change-set {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "k"}}
 
-                              {0 {:k "v"}
-                               1 {:k "k-updated"}
-                               2 {:k "k-created"}}))))
+                              {0 {:id 0
+                                  :name "first"
+                                  :k "v"}
+                               1 {:id 1
+                                  :name "second"
+                                  :k "k-updated"}
+                               2 {:id 2
+                                  :name "third"
+                                  :k "k-created"}}))))
 
 (deftest get-updated-items-test
   (is (empty? (util/get-updated-items

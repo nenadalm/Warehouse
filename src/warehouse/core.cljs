@@ -67,6 +67,12 @@
               :on-change (fn [e]
                            (swap! item assoc :amount (.-target.value e)))}]]]])
 
+(defn key->label [key]
+  (get {:name "Name"
+        :tags "Tags"
+        :amount "Amount"}
+       key))
+
 (defn item [data k]
   (let [editing (atom false)]
     (fn [data k]
@@ -127,8 +133,47 @@
             :on-change f}]
    name]])
 
+(defmulti show-change-set (fn [change-set] (:type change-set)))
+
+(defmethod show-change-set :create [{change-set-data :data} change-set]
+  [:ul.change-set
+   (for [component change-set-data]
+     [:li.component
+      (let [data (:data component)
+            metadata (:metadata component)]
+        [:ul
+         [:li (str "Name: " (:name metadata))]
+         [:li "Data:"
+          [:ul
+           (map (fn [[k v] kvs]
+                  (if-not (= k :id)
+                    [:li
+                     [:span.label (str (key->label k) ": ")]
+                     [:span.value v]]))
+                (into [] data))]]])])])
+
+(defmethod show-change-set :update [{change-set-data :data} change-set]
+  [:ul.change-set
+   (for [component change-set-data]
+     [:li.component
+      (let [data (:data component)
+            metadata (:metadata component)]
+        [:ul
+         [:li (str "Name: " (:name metadata))]
+         [:li "Data:"
+          [:ul
+           (map (fn [[k v] kvs]
+                  (if-not (= k :id)
+                    [:li
+                     [:span.label (str (key->label k) ": ")]
+                     [:span.value
+                      [:span.old (first v)]
+                      [:span.new (second v)]]]))
+                data)]]])])])
+
 (defn page []
   (let [adding (atom false)
+        showing-changeset (atom false)
         new-item (atom {:name "" :tags "" :amount 1})]
     (fn []
       [:div
@@ -161,6 +206,12 @@
                                              (on-state-load))
                                         (aset this "value" "")))
                                 (.readAsText reader (aget e "target" "files" "0"))))]
+       (if (false? @adding)
+         [:button {:on-click (fn [e]
+                               (reset! adding true))} "Add new"])
+       [:button {:on-click (fn [e]
+                             (reset! showing-changeset (if (true? @showing-changeset) false true)))}
+        (if (true? @showing-changeset) "Hide changes" "Show changes")]
        (if (true? @adding)
          [:form
           [form new-item]
@@ -169,9 +220,12 @@
                                 (let [k (or (inc (apply max (keys (:components @app-state)))) 1)]
                                   (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (util/string->array (:tags @new-item)))))
                                 (reset! adding false))} "Save"]
-          [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]]
-         [:button {:on-click (fn [e]
-                               (reset! adding true))} "Add new"])
+          [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]])
+       (when (true? @showing-changeset)
+         (for [change-set-col @change-sets]
+           (for [change-set change-set-col]
+             (do
+               (show-change-set change-set)))))
        [:ul {:class "components-list"}
         (for [[k v] (get-visible-components)]
           ^{:key (:name v)} [:li {:class "component"}

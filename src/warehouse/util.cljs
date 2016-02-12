@@ -15,20 +15,25 @@
   (if (= new-col old-col)
     []
     (let [same-keys (keys old-col)
-          created-keys (clojure.set/difference (into #{} (keys new-col)) (into #{} (keys old-col)))
-          ]
+          created-keys (clojure.set/difference (into #{} (keys new-col)) (into #{} (keys old-col)))]
       (let [updates (reduce (fn [res k]
                               (let [new-val (get new-col k)
                                     old-val (get old-col k)
                                     diff (map-diff old-val new-val)]
                                 (if (empty? diff)
                                   res
-                                  (conj res diff))
+                                  (conj res {:metadata {:id (:id old-val)
+                                                        :name (:name old-val)}
+                                             :data diff}))
                                 )
                               )
                             []
                             same-keys)
-            creates (into [] (map second (select-keys new-col created-keys)))]
+            creates (into [] (map (fn [data]
+                                  {:metadata {:id (:id data)
+                                              :name (:name data)}
+                                   :data data})
+                                  (map second (select-keys new-col created-keys))))]
         (into [] (filter (complement #(empty? (:data %))) [{:type :create
                                                             :data creates}
                                                            {:type :update
