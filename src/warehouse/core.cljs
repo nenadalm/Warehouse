@@ -150,7 +150,8 @@
                     [:li
                      [:span.label (str (key->label k) ": ")]
                      [:span.value v]]))
-                (into [] data))]]])])])
+                (into [] data))]]
+         [:button {:on-click #(swap! app-state assoc-in [:components (:id metadata) :amount] 0)} "Revert"]])])])
 
 (defmethod show-change-set :update [{change-set-data :data} change-set]
   [:ul.change-set
