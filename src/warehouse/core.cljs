@@ -135,42 +135,49 @@
 
 (defmulti show-change-set (fn [change-set] (:type change-set)))
 
-(defmethod show-change-set :create [{change-set-data :data} change-set]
-  [:ul.change-set
-   (for [component change-set-data]
-     [:li.component
-      (let [data (:data component)
-            metadata (:metadata component)]
-        [:ul
-         [:li (str "Name: " (:name metadata))]
-         [:li "Data:"
-          [:ul
-           (map (fn [[k v] kvs]
-                  (if-not (= k :id)
-                    [:li
-                     [:span.label (str (key->label k) ": ")]
-                     [:span.value v]]))
-                (into [] data))]]
-         [:button {:on-click #(swap! app-state assoc-in [:components (:id metadata) :amount] 0)} "Revert"]])])])
+(defmethod show-change-set :create [change-set k]
+  (def change-set-data (:data change-set))
+  ^{:key k} [:ul.change-set
+             (map (fn [component k]
+                    ^{:key k} [:li.component
+                               (let [data (:data component)
+                                     metadata (:metadata component)]
+                                 [:ul
+                                  [:li (str "Name: " (:name metadata))]
+                                  [:li "Data:"
+                                   [:ul
+                                    (map (fn [[k v] kvs]
+                                           (if-not (= k :id)
+                                             ^{:key k} [:li
+                                                        [:span.label (str (key->label k) ": ")]
+                                                        [:span.value v]]))
+                                         (into [] data))]]
+                                  [:button {:on-click #(swap! app-state assoc-in [:components (:id metadata) :amount] 0)} "Revert"]])]
+                    )
+                  change-set-data
+                  (range (count change-set-data) 0 -1))])
 
-(defmethod show-change-set :update [{change-set-data :data} change-set]
-  [:ul.change-set
-   (for [component change-set-data]
-     [:li.component
-      (let [data (:data component)
-            metadata (:metadata component)]
-        [:ul
-         [:li (str "Name: " (:name metadata))]
-         [:li "Data:"
-          [:ul
-           (map (fn [[k v] kvs]
-                  (if-not (= k :id)
-                    [:li
-                     [:span.label (str (key->label k) ": ")]
-                     [:span.value
-                      [:span.old (first v)]
-                      [:span.new (second v)]]]))
-                data)]]])])])
+(defmethod show-change-set :update [change-set k]
+  (def change-set-data (:data change-set))
+  ^{:key k} [:ul.change-set
+             (map (fn [component k]
+                    ^{:key k} [:li.component
+                     (let [data (:data component)
+                           metadata (:metadata component)]
+                       [:ul
+                        [:li (str "Name: " (:name metadata))]
+                        [:li "Data:"
+                         [:ul
+                          (map (fn [[k v] kvs]
+                                 (if-not (= k :id)
+                                   ^{:key k}[:li
+                                             [:span.label (str (key->label k) ": ")]
+                                             [:span.value
+                                              [:span.old (first v)]
+                                              [:span.new (second v)]]]))
+                               data)]]])])
+                  change-set-data
+                  (range (count change-set-data) 0 -1))])
 
 (defn page []
   (let [adding (atom false)
@@ -223,10 +230,15 @@
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]])
        (when (true? @showing-changeset)
-         (for [change-set-col @change-sets]
-           (for [change-set change-set-col]
-             (do
-               (show-change-set change-set)))))
+         (let [cs (reverse @change-sets)
+               k1 (range (count cs) 0 -1)]
+
+           (map (fn [change-set-col k2]
+                  (map show-change-set
+                       change-set-col
+                       (map #(str k2 "." %) (range (count change-set-col) 0 -1))))
+                cs
+                k1)))
        [:ul {:class "components-list"}
         (for [[k v] (get-visible-components)]
           ^{:key (:name v)} [:li {:class "component"}
