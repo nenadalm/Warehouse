@@ -15,42 +15,27 @@
   (if (= new-col old-col)
     []
     (let [same-keys (keys old-col)
-          created-keys (clojure.set/difference (into #{} (keys new-col)) (into #{} (keys old-col)))]
-      (let [updates (reduce (fn [res k]
-                              (let [new-val (get new-col k)
-                                    old-val (get old-col k)
-                                    diff (map-diff old-val new-val)]
-                                (if (empty? diff)
-                                  res
-                                  (conj res {:metadata {:id (:id old-val)
-                                                        :name (:name old-val)}
-                                             :data diff}))
-                                )
-                              )
-                            []
-                            same-keys)
-            creates (into [] (map (fn [data]
-                                  {:metadata {:id (:id data)
-                                              :name (:name data)}
-                                   :data data})
-                                  (map second (select-keys new-col created-keys))))]
-        (into [] (filter (complement #(empty? (:data %))) [{:type :create
-                                                            :data creates}
-                                                           {:type :update
-                                                            :data updates}]))))))
-
-(defn get-updated-items
-  [col1 col2]
-  (if (= col1 col2)
-    []
-    (loop [k (keys col1)
-           res {}]
-      (if (empty? k)
-        res
-        (let [key (first k)]
-          (if (and (contains? col2 key) (not= (get col1 key) (get col2 key)))
-            (recur (rest k) (conj res {key (get col1 key)}))
-            (recur (rest k) res)))))))
+          created-keys (clojure.set/difference (into #{} (keys new-col)) (into #{} (keys old-col)))
+          updates (reduce (fn [res k]
+                            (let [new-val (get new-col k)
+                                  old-val (get old-col k)
+                                  diff (map-diff old-val new-val)]
+                              (if (empty? diff)
+                                res
+                                (conj res {:metadata {:id (:id old-val)
+                                                      :name (:name old-val)}
+                                           :data diff}))))
+                          []
+                          same-keys)
+          creates (mapv (fn [data]
+                         {:metadata {:id (:id data)
+                                     :name (:name data)}
+                          :data data})
+                        (map second (select-keys new-col created-keys)))]
+      (filterv (complement #(empty? (:data %))) [{:type :create
+                                                  :data creates}
+                                                 {:type :update
+                                                  :data updates}]))))
 
 (defn array->string [array]
   (clojure.string/join ", " array))
@@ -65,7 +50,7 @@
            {}
            (apply assoc
                   {}
-                  (interleave (map #(:id %) (:components document))
+                  (interleave (map :id (:components document))
                               (:components document))))))
 
 (defn state->document [current-state]
@@ -88,13 +73,12 @@
                (let [item (first new-items)
                      old-item (first (filter #(= (:name item) (:name (second %))) c))]
                  (if (empty? old-item)
-                   (let [new-id (generate-component-id components)]
-                     (recur (rest new-items)
-                            (conj components
-                                  {:id new-id
-                                   :name (:name item)
-                                   :tags []
-                                   :amount (:amount item)})))
+                   (recur (rest new-items)
+                          (conj components
+                                {:id (generate-component-id components)
+                                 :name (:name item)
+                                 :tags []
+                                 :amount (:amount item)}))
                    (recur (rest new-items)
                           (assoc-in components
                                     [(first old-item) :amount]

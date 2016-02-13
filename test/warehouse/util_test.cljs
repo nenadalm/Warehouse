@@ -143,21 +143,6 @@
                                   :name "third"
                                   :k "k-created"}}))))
 
-(deftest get-updated-items-test
-  (is (empty? (util/get-updated-items
-                {0 {:k "v"}
-                 1 {:k "c"}}
-
-                {0 {:k "v"}
-                 1 {:k "c"}})))
-  (is (= {0 {:k "v-updated"}}
-         (util/get-updated-items
-                {0 {:k "v-updated"}
-                 1 {:k "c"}}
-
-                {0 {:k "v"}
-                 1 {:k "c"}}))))
-
 (deftest string->array-test
   (is (= (util/string->array "a, b ,c")
          ["a" "b" "c"])))
