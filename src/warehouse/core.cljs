@@ -73,34 +73,44 @@
         :amount "Amount"}
        key))
 
+(defn key->transformer [key]
+  (if (= key :tags)
+    #(util/array->string %)
+    identity))
+
+(defn property-view [data property]
+  [:li
+   [:span.label (str (key->label property) ": ")]
+   [:span.value ((key->transformer property) (get data property))]])
+
+(defn item-view [data editing]
+  [:ul
+   (property-view data :name)
+   (property-view data :tags)
+   (property-view data :amount)
+   [:button {:on-click #(reset! editing true)} "Edit"]])
+
+(defn item-edit-view [data editing k]
+  (let [edited-item (atom (assoc data :tags (util/array->string (:tags data))))]
+    [:form
+     [form edited-item]
+     [:button {:type "button"
+               :on-click (fn []
+                           (swap! app-state assoc-in [:components k]
+                                  (assoc
+                                    @edited-item
+                                    :tags
+                                    (util/string->array (:tags @edited-item))))
+                           (reset! editing false))} "Save"]
+     [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))
+
 (defn item [data k]
   (let [editing (atom false)]
     (fn [data k]
       [:div
-       [:ul {:class (when @editing "hide")}
-        [:li
-         [:span.label "Name: "]
-         [:span.value (:name data)]]
-        [:li
-         [:span.label "Tags: "]
-         [:span.value (util/array->string (:tags data))]]
-        [:li
-         [:span.label "Amount: "]
-         [:span.value (:amount data)]]
-        [:button {:on-click #(reset! editing true)} "Edit"]]
-       (when @editing
-         (let [edited-item (atom (assoc data :tags (util/array->string (:tags data))))]
-           [:form
-            [form edited-item]
-            [:button {:type "button"
-                      :on-click (fn []
-                                  (swap! app-state assoc-in [:components k]
-                                         (assoc
-                                           @edited-item
-                                           :tags
-                                           (util/string->array (:tags @edited-item))))
-                                  (reset! editing false))} "Save"]
-            [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))])))
+       (if (false? @editing)
+         (item-view data editing)
+         (item-edit-view data editing k))])))
 
 (defn get-visible-components []
   (if (clojure.string/blank? (get-in @app-state [:filter :val]))
@@ -128,15 +138,26 @@
 
 (defn file-input [name f]
   [:button
-  [:label
-   [:input {:type "file"
-            :on-change f}]
-   name]])
+   [:label
+    [:input {:type "file"
+             :on-change f}]
+    name]])
 
 (defmulti show-change-set (fn [change-set] (:type change-set)))
 
-(defmethod show-change-set :create [change-set k]
-  (def change-set-data (:data change-set))
+(defn raw-property-view [value property]
+  ^{:key property} [:li
+                    [:span.label (str (key->label property) ": ")]
+                    [:span.value ((key->transformer property) value)]])
+
+(defn raw-property-changeset-view [values property]
+  ^{:key property} [:li
+                    [:span.label (str (key->label property) ": ")]
+                    [:span.value
+                     [:span.old (first values)]
+                     [:span.new (second values)]]])
+
+(defmethod show-change-set :create [{change-set-data :data} k]
   ^{:key k} [:ul.change-set
              (map (fn [component k]
                     ^{:key k} [:li.component
@@ -148,36 +169,63 @@
                                    [:ul
                                     (map (fn [[k v] kvs]
                                            (if-not (= k :id)
-                                             ^{:key k} [:li
-                                                        [:span.label (str (key->label k) ": ")]
-                                                        [:span.value v]]))
-                                         (into [] data))]]
+                                             ^{:key k} (raw-property-view v k)))
+                                         data)]]
                                   [:button {:on-click #(swap! app-state assoc-in [:components (:id metadata) :amount] 0)} "Revert"]])]
                     )
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
-(defmethod show-change-set :update [change-set k]
-  (def change-set-data (:data change-set))
+(defmethod show-change-set :update [{change-set-data :data} k]
   ^{:key k} [:ul.change-set
              (map (fn [component k]
                     ^{:key k} [:li.component
-                     (let [data (:data component)
-                           metadata (:metadata component)]
-                       [:ul
-                        [:li (str "Name: " (:name metadata))]
-                        [:li "Data:"
-                         [:ul
-                          (map (fn [[k v] kvs]
-                                 (if-not (= k :id)
-                                   ^{:key k}[:li
-                                             [:span.label (str (key->label k) ": ")]
-                                             [:span.value
-                                              [:span.old (first v)]
-                                              [:span.new (second v)]]]))
-                               data)]]])])
+                               (let [data (:data component)
+                                     metadata (:metadata component)]
+                                 [:ul
+                                  [:li (str "Name: " (:name metadata))]
+                                  [:li "Data:"
+                                   [:ul
+                                    (map (fn [[k v] kvs]
+                                           (if-not (= k :id)
+                                             (raw-property-changeset-view v k)))
+                                         data)]]])])
                   change-set-data
                   (range (count change-set-data) 0 -1))])
+
+(defn search []
+  [:label "Search: "
+   [:input {:name "search",
+            :type "search"
+            :on-change (fn [e]
+                         (swap! app-state assoc :filter {:val (.-target.value e)
+                                                         :search (js->clj (.search index (.-target.value e)))}))}]])
+
+(defn export []
+  [:a {:href (->> @app-state
+                  (util/state->document)
+                  (clj->js)
+                  (.stringify js/JSON)
+                  (.encodeURIComponent js/window)
+                  (str "data:text/json;charset=utf-8,"))
+       :download "warehouse_components.json"
+       }
+   [:button "Export"]])
+
+(defn import []
+  [file-input "Import" (fn [e]
+                         (let [reader (js/FileReader.)
+                               this (aget e "currentTarget")]
+                           (aset reader
+                                 "onload"
+                                 (fn [reader-event]
+                                   (->> (.-target.result reader-event)
+                                        (.parse js/JSON)
+                                        (#(js->clj % :keywordize-keys true))
+                                        (util/merge-documents (util/state->document @app-state))
+                                        (on-state-load))
+                                   (aset this "value" "")))
+                           (.readAsText reader (aget e "target" "files" "0"))))])
 
 (defn page []
   (let [adding (atom false)
@@ -186,34 +234,9 @@
     (fn []
       [:div
        [notifications]
-       [:label "Search: "
-        [:input {:name "search",
-                 :type "search"
-                 :on-change (fn [e]
-                              (swap! app-state assoc :filter {:val (.-target.value e)
-                                                              :search (js->clj (.search index (.-target.value e)))}))}]]
-       [:a {:href (->> @app-state
-                       (util/state->document)
-                       (clj->js)
-                       (.stringify js/JSON)
-                       (.encodeURIComponent js/window)
-                       (str "data:text/json;charset=utf-8,"))
-            :download "warehouse_components.json"
-            }
-        [:button "Export"]]
-       [file-input "Import" (fn [e]
-                              (let [reader (js/FileReader.)
-                                    this (aget e "currentTarget")]
-                                (aset reader
-                                      "onload"
-                                      (fn [reader-event]
-                                        (->> (.-target.result reader-event)
-                                             (.parse js/JSON)
-                                             (#(js->clj % :keywordize-keys true))
-                                             (util/merge-documents (util/state->document @app-state))
-                                             (on-state-load))
-                                        (aset this "value" "")))
-                                (.readAsText reader (aget e "target" "files" "0"))))]
+       [search]
+       [export]
+       [import]
        (if (false? @adding)
          [:button {:on-click (fn [e]
                                (reset! adding true))} "Add new"])
