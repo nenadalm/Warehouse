@@ -9,7 +9,7 @@
                  [org.clojure/clojurescript "1.7.122"]
                  [org.clojure/core.async "0.2.374"]
                  [reagent "0.5.1"]
-                 [org.seleniumhq.selenium/selenium-java "2.49.1"]
+                 [org.seleniumhq.selenium/selenium-java "2.52.0"]
                  [com.codeborne/phantomjsdriver "1.2.1"]
                  [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "1.2.4"]
