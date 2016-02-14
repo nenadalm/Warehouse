@@ -2,7 +2,7 @@
 
 # Warehouse
 
-Project which helps know to now which electrical components you have.
+Project which helps you to know which electrical components you have.
 
 # License
 
