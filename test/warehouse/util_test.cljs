@@ -24,6 +24,14 @@
                          :b "b"
                          :c "c"}))))
 
+(deftest revert-changes-test
+  (is (= {:a "a" :b "b" :c "c"}
+         (util/revert-changes {:a "b"
+                               :b "c"
+                               :c "c"}
+                              {:a ["a" "b"]
+                               :b ["b" "c"]}))))
+
 (deftest get-change-set-test
   (is (empty? (util/get-change-set {} {})))
   (is (empty? (util/get-change-set {0 {:id 0

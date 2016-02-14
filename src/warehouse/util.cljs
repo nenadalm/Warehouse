@@ -11,6 +11,9 @@
           {}
           (into #{} (concat (keys m1) (keys m2)))))
 
+(defn revert-changes [m diff]
+  (merge m (map (fn [[k [v]]] [k v]) diff)))
+
 (defn get-change-set [old-col new-col]
   (if (= new-col old-col)
     []

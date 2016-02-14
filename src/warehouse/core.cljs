@@ -178,6 +178,7 @@
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
+
 (defmethod show-change-set :update [{change-set-data :data} k]
   ^{:key k} [:ul.change-set
              (map (fn [component k]
@@ -191,7 +192,12 @@
                                     (map (fn [[k v] kvs]
                                            (if-not (= k :id)
                                              (raw-property-changeset-view v k)))
-                                         data)]]])])
+                                         data)]]
+                                  [:button {:on-click (m/handler-fn
+                                                        (swap! app-state assoc-in [:components (:id metadata)]
+                                                               (util/revert-changes
+                                                                 (get-in @app-state [:components (:id metadata)])
+                                                                 data)))} "Revert"]])])
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
