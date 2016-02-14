@@ -18,9 +18,9 @@
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
-  :plugins [[lein-cljsbuild "1.1.0"]
+  :plugins [[lein-cljsbuild "1.1.2"]
             [lein-ancient "0.6.8"]
-            [lein-figwheel "0.4.1"]
+            [lein-figwheel "0.5.0-6"]
             [lein-less "1.7.5"]
             [lein-bower "0.5.1"]]
 
