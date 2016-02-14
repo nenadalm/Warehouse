@@ -6,7 +6,7 @@
   :license {:name "MIT"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.122"]
+                 [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async "0.2.374"]
                  [reagent "0.5.1"]
                  [org.seleniumhq.selenium/selenium-java "2.52.0"]
