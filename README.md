@@ -2,7 +2,7 @@
 
 # Warehouse
 
-Project which helps kyou to now which electrical components you have.
+Project which helps know to now which electrical components you have.
 
 # License
 
