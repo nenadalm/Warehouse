@@ -4,7 +4,8 @@
     [warehouse.storage.test :as storage]
     [alandipert.storage-atom :refer [local-storage]]
     lunr
-    [warehouse.util :as util]))
+    [warehouse.util :as util])
+  (:require-macros [warehouse.macro :as m]))
 
 (enable-console-print!)
 
@@ -50,21 +51,21 @@
     [:input {:name "name"
              :type "text"
              :value (:name @item)
-             :on-change (fn [e]
+             :on-change (m/handler-fn
                           (swap! item assoc :name (.-target.value e)))}]]
    [:div
     [:label "Tags: "
      [:input {:name "tags"
               :type "text"
               :value (:tags @item)
-              :on-change (fn [e]
+              :on-change (m/handler-fn
                            (swap! item assoc :tags (.-target.value e)))}]]]
    [:div
     [:label "Amount: "
      [:input {:name "amount"
               :type "number"
               :value (:amount @item)
-              :on-change (fn [e]
+              :on-change (m/handler-fn
                            (swap! item assoc :amount (.-target.value e)))}]]]])
 
 (defn key->label [key]
@@ -88,21 +89,21 @@
    (property-view data :name)
    (property-view data :tags)
    (property-view data :amount)
-   [:button {:on-click #(reset! editing true)} "Edit"]])
+   [:button {:on-click (m/handler-fn (reset! editing true))} "Edit"]])
 
 (defn item-edit-view [data editing k]
   (let [edited-item (atom (assoc data :tags (util/array->string (:tags data))))]
     [:form
      [form edited-item]
      [:button {:type "button"
-               :on-click (fn []
+               :on-click (m/handler-fn
                            (swap! app-state assoc-in [:components k]
                                   (assoc
                                     @edited-item
                                     :tags
                                     (util/string->array (:tags @edited-item))))
                            (reset! editing false))} "Save"]
-     [:button {:type "button" :on-click #(reset! editing false)} "Cancel"]]))
+     [:button {:type "button" :on-click (m/handler-fn (reset! editing false))} "Cancel"]]))
 
 (defn item [data k]
   (let [editing (atom false)]
@@ -124,7 +125,7 @@
      [:div {:class "message"} message]
      [:button {:type "button"
                :class "close"
-               :on-click (fn [e]
+               :on-click (m/handler-fn
                            (swap! app-state assoc :notifications (concat
                                                                    (subvec (:notifications @app-state) 0 k)
                                                                    (subvec (:notifications @app-state) (inc k)))))} "X"]]))
@@ -140,7 +141,7 @@
   [:button
    [:label
     [:input {:type "file"
-             :on-change f}]
+             :on-change (m/handler-fn (f))}]
     name]])
 
 (defmulti show-change-set (fn [change-set] (:type change-set)))
@@ -171,7 +172,8 @@
                                            (if-not (= k :id)
                                              ^{:key k} (raw-property-view v k)))
                                          data)]]
-                                  [:button {:on-click #(swap! app-state assoc-in [:components (:id metadata) :amount] 0)} "Revert"]])]
+                                  [:button {:on-click (m/handler-fn
+                                                        (swap! app-state assoc-in [:components (:id metadata) :amount] 0))} "Revert"]])]
                     )
                   change-set-data
                   (range (count change-set-data) 0 -1))])
@@ -197,7 +199,7 @@
   [:label "Search: "
    [:input {:name "search",
             :type "search"
-            :on-change (fn [e]
+            :on-change (m/handler-fn
                          (swap! app-state assoc :filter {:val (.-target.value e)
                                                          :search (js->clj (.search index (.-target.value e)))}))}]])
 
@@ -238,20 +240,20 @@
        [export]
        [import]
        (if (false? @adding)
-         [:button {:on-click (fn [e]
+         [:button {:on-click (m/handler-fn
                                (reset! adding true))} "Add new"])
-       [:button {:on-click (fn [e]
+       [:button {:on-click (m/handler-fn
                              (reset! showing-changeset (if (true? @showing-changeset) false true)))}
         (if (true? @showing-changeset) "Hide changes" "Show changes")]
        (if (true? @adding)
          [:form
           [form new-item]
           [:button {:type "button"
-                    :on-click (fn []
+                    :on-click (m/handler-fn
                                 (let [k (or (inc (apply max (keys (:components @app-state)))) 1)]
                                   (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (util/string->array (:tags @new-item)))))
                                 (reset! adding false))} "Save"]
-          [:button {:type "button" :on-click #(reset! adding false)} "Cancel"]])
+          [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
          (let [cs (reverse @change-sets)
                k1 (range (count cs) 0 -1)]
