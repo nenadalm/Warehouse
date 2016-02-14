@@ -141,7 +141,7 @@
   [:button
    [:label
     [:input {:type "file"
-             :on-change (m/handler-fn (f))}]
+             :on-change f}]
     name]])
 
 (defmulti show-change-set (fn [change-set] (:type change-set)))
@@ -221,7 +221,7 @@
    [:button "Export"]])
 
 (defn import []
-  [file-input "Import" (fn [e]
+  [file-input "Import" (m/handler-fn
                          (let [reader (js/FileReader.)
                                this (aget e "currentTarget")]
                            (aset reader
