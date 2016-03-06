@@ -13,11 +13,8 @@
                  [com.codeborne/phantomjsdriver "1.2.1"]
                  [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "1.2.4"]
-                 [cljs-ajax "0.5.3"]
-                 [com.cemerick/piggieback "0.2.1"]
-                 [org.clojure/tools.nrepl "0.2.10"]
-                 [refactor-nrepl "2.0.0"]]
-  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                 [cljs-ajax "0.5.3"]]
+
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
@@ -25,9 +22,7 @@
             [lein-ancient "0.6.8"]
             [lein-figwheel "0.5.0-6"]
             [lein-less "1.7.5"]
-            [lein-bower "0.5.1"]
-            [refactor-nrepl "2.0.0"]
-            [cider/cider-nrepl "0.10.2"]]
+            [lein-bower "0.5.1"]]
 
   :hooks [leiningen.cljsbuild]
 
@@ -79,12 +74,7 @@
              :css-dirs ["resources/public/css"] ;; watch and update CSS
 
              ;; Start an nREPL server into the running figwheel process
-             :nrepl-port 7888
-
-             ;; Load CIDER, refactor-nrepl and piggieback middleware
-             :nrepl-middleware ["cider.nrepl/cider-middleware"
-                                "refactor-nrepl.middleware/wrap-refactor"
-                                "cemerick.piggieback/wrap-cljs-repl"]
+             ;; :nrepl-port 7888
 
              ;; Server Ring Handler (optional)
              ;; if you want to embed a ring handler into the figwheel http-kit
