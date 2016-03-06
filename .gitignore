@@ -16,4 +16,5 @@ pom.xml
 phantomjsdriver.log
 .lein-failures
 npm-debug.log
+.cljs_rhino_repl
 
