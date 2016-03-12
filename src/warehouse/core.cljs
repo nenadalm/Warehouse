@@ -37,8 +37,8 @@
                       (on-state-load response)
                       (add-watch app-state :change-set (fn [k r os ns]
                                                          (let [cs (util/get-change-set (:components os) (:components ns))]
-                                                           (if-not (empty? cs)
-                                                             (swap! change-sets conj cs))))))
+                                                           (when-not (empty? cs)
+                                                             (swap! change-sets #(take 10 (conj % cs))))))))
                     nil)
 
 
@@ -261,7 +261,7 @@
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
-         (let [cs (reverse @change-sets)
+         (let [cs @change-sets
                k1 (range (count cs) 0 -1)]
 
            (map (fn [change-set-col k2]
