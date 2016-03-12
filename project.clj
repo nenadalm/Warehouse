@@ -6,6 +6,9 @@
   :license {:name "MIT"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/data.json "0.2.6"]
+                 [ring/ring-core "1.4.0"]
+                 [ring/ring-jetty-adapter "1.4.0"]
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async "0.2.374"]
                  [reagent "0.5.1"]
@@ -18,13 +21,16 @@
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
-  :plugins [[lein-cljsbuild "1.1.2"]
+  :plugins [[lein-ring "0.8.11"]
+            [lein-cljsbuild "1.1.2"]
             [lein-ancient "0.6.8"]
             [lein-figwheel "0.5.0-6"]
             [lein-less "1.7.5"]
             [lein-bower "0.5.1"]]
 
   :hooks [leiningen.cljsbuild]
+
+  :ring {:handler warehouse.core/app}
 
   :source-paths ["src"]
 
