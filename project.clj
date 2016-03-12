@@ -39,7 +39,7 @@
 
               :compiler {:main warehouse.core
                          :pretty-print true
-                         :source-map true
+                         :source-map "resources/public/js/compiled/warehouse-map.js"
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"
