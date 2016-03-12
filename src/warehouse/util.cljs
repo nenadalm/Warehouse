@@ -20,7 +20,7 @@
   (merge m
          (map (fn [[k d]]
                 (cond
-                  (every? integer? d) [k (+ (get m k) (apply - (reverse d)))]
+                  (every? integer? d) [k (max 0 (+ (get m k) (apply - d)))]
                   (every? set? d) [k (revert-set (get m k) d)]
                   :else [k (first d)]))
               diff)))

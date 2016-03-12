@@ -32,14 +32,17 @@
                               {:a ["a" "b"]
                                :b ["b" "c"]})))
   (is (= {:name "component"
-          :amount 3
+          :amount 7
+          :amount-min 0
           :tags #{"tag1" "tag3"}}
          (util/revert-changes {:name "new"
                                :amount 5
+                               :amount-min 1
                                :tags #{"tag1" "tag2"}}
                               {:name ["component" "sth"]
                                :amount [10 8]
-                               :tags [#{"tag1" "tag2"} #{"tag1" "tag3"}]}))))
+                               :tags [#{"tag1" "tag2"} #{"tag1" "tag3"}]
+                               :amount-min [1 10]}))))
 
 (deftest get-change-set-test
   (is (empty? (util/get-change-set {} {})))
