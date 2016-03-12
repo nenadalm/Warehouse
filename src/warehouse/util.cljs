@@ -55,7 +55,7 @@
   (clojure.string/join ", " array))
 
 (defn string->array [string]
-  (map clojure.string/trim (clojure.string/split string #",")))
+  (set (map clojure.string/trim (clojure.string/split string #","))))
 
 (defn document->state [document current-state]
   (assoc current-state

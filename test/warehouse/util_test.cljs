@@ -4,7 +4,7 @@
   (:require [warehouse.util :as util]))
 
 (deftest map-diff-test
-  (is (empty? (util/map-diff) {} {}))
+  (is (empty? (util/map-diff {} {})))
   (is (empty? (util/map-diff {:a "a"
                               :b "b"}
                              {:a "a"
@@ -161,11 +161,11 @@
                                   :k "k-created"}}))))
 
 (deftest string->array-test
-  (is (= (util/string->array "a, b ,c")
-         ["a" "b" "c"])))
+  (is (= (util/string->array "a, b ,c, a")
+         #{"a" "b" "c"})))
 
 (deftest array->string-test
-  (is (= (util/array->string ["a" "b" "c"])
+  (is (= (util/array->string #{"a" "b" "c"})
          "a, b, c")))
 
 (deftest document->state-test
