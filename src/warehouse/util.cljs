@@ -11,11 +11,17 @@
           {}
           (into #{} (concat (keys m1) (keys m2)))))
 
+(defn revert-set [s [o n]]
+  (let [add (clojure.set/difference n o)
+        remove (clojure.set/difference o n)]
+    (apply #(conj (clojure.set/difference s remove) %) add)))
+
 (defn revert-changes [m diff]
   (merge m
          (map (fn [[k d]]
                 (cond
                   (every? integer? d) [k (+ (get m k) (apply - (reverse d)))]
+                  (every? set? d) [k (revert-set (get m k) d)]
                   :else [k (first d)]))
               diff)))
 
