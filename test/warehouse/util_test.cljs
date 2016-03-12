@@ -30,7 +30,13 @@
                                :b "c"
                                :c "c"}
                               {:a ["a" "b"]
-                               :b ["b" "c"]}))))
+                               :b ["b" "c"]})))
+  (is (= {:name "component"
+          :amount 3}
+         (util/revert-changes {:name "new"
+                               :amount 5}
+                              {:name ["component" "sth"]
+                               :amount [10 8]}))))
 
 (deftest get-change-set-test
   (is (empty? (util/get-change-set {} {})))
