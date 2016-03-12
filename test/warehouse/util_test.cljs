@@ -1,5 +1,5 @@
 (ns warehouse.util-test
-  (:require-macros [cljs.test :refer [deftest is]])
+  (:require-macros [cljs.test :refer [deftest is testing]])
   (:use [cljs.test :only [do-report]])
   (:require [warehouse.util :as util]))
 
@@ -176,22 +176,41 @@
                            :notifications []})))
   (is (= {:components {2 {:id 2
                        :name "second-component"
-                       :tags "component"
+                       :tags #{"component"}
                        :amount 3}}
           :notifications []}
          (util/document->state {:components [{:id 2
                                         :name "second-component"
-                                        :tags "component"
+                                        :tags #{"component"}
                                         :amount 3}]}
                           {:components {1 {:id 1
                                            :name "EPR212A408000Z"
-                                           :tags ["optocoupler"]
+                                           :tags #{"optocoupler"}
                                            :amount 7}
                                         2 {:id 2
                                            :name "2N3904"
-                                           :tags ["transistor"]
+                                           :tags #{"transistor"}
                                            :amount 8}}
-                           :notifications []}))))
+                           :notifications []})))
+  (testing "vector transforms into set to maintain BC"
+    (is (= {:components {2 {:id 2
+                            :name "second-component"
+                            :tags #{"component"}
+                            :amount 3}}
+            :notifications []}
+           (util/document->state {:components [{:id 2
+                                                :name "second-component"
+                                                :tags ["component"]
+                                                :amount 3}]}
+                                 {:components {1 {:id 1
+                                                  :name "EPR212A408000Z"
+                                                  :tags ["optocoupler"]
+                                                  :amount 7}
+                                               2 {:id 2
+                                                  :name "2N3904"
+                                                  :tags ["transistor"]
+                                                  :amount 8}}
+                                  :notifications []})))))
 
 (deftest state->document-test
   (is (= {:components []}

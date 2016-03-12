@@ -144,19 +144,24 @@
              :on-change f}]
     name]])
 
-(defmulti show-change-set (fn [change-set] (:type change-set)))
-
 (defn raw-property-view [value property]
   ^{:key property} [:li
                     [:span.label (str (key->label property) ": ")]
                     [:span.value ((key->transformer property) value)]])
 
+(defn model->view [value]
+  (cond
+    (set? value) (util/array->string value)
+    :else value))
+
 (defn raw-property-changeset-view [values property]
   ^{:key property} [:li
                     [:span.label (str (key->label property) ": ")]
                     [:span.value
-                     [:span.old (first values)]
-                     [:span.new (second values)]]])
+                     [:span.old (model->view (first values))]
+                     [:span.new (model->view (second values))]]])
+
+(defmulti show-change-set (fn [change-set] (:type change-set)))
 
 (defmethod show-change-set :create [{change-set-data :data} k]
   ^{:key k} [:ul.change-set
@@ -177,7 +182,6 @@
                     )
                   change-set-data
                   (range (count change-set-data) 0 -1))])
-
 
 (defmethod show-change-set :update [{change-set-data :data} k]
   ^{:key k} [:ul.change-set

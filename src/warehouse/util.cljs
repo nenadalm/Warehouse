@@ -65,7 +65,11 @@
            (apply assoc
                   {}
                   (interleave (map :id (:components document))
-                              (:components document))))))
+                              (map (fn [component]
+                                     (into {} (map (fn [[k v]]
+                                                     [k (if (vector? v) (set v) v)])
+                                                   component)))
+                                   (:components document)))))))
 
 (defn state->document [current-state]
   (if (empty? (:components current-state))
