@@ -262,6 +262,7 @@
                     :on-click (m/handler-fn
                                 (let [k (or (inc (apply max (keys (:components @app-state)))) 1)]
                                   (swap! app-state assoc-in [:components k] (assoc @new-item :id k :tags (util/string->array (:tags @new-item)))))
+                                (reset! new-item {:name "" :tags "" :amount 1})
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
