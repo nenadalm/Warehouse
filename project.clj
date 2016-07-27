@@ -41,11 +41,11 @@
     :builds [{:id "dev"
               :source-paths ["src"]
 
-              :figwheel { :on-jsload "warehouse.core/on-js-reload" }
+              :figwheel {:on-jsload "warehouse.core/on-js-reload"}
 
               :compiler {:main warehouse.core
                          :pretty-print true
-                         :source-map "resources/public/js/compiled/warehouse-map.js"
+                         :source-map true
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"
