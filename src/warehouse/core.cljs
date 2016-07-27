@@ -205,13 +205,15 @@
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
+(defn update-filter [val]
+  (swap! app-state assoc :filter {:val val
+                                  :search (js->clj (.search index val))}))
+
 (defn search []
   [:label "Search: "
    [:input {:name "search",
             :type "search"
-            :on-change (m/handler-fn
-                         (swap! app-state assoc :filter {:val (.-target.value e)
-                                                         :search (js->clj (.search index (.-target.value e)))}))}]])
+            :on-change (m/handler-fn (update-filter (.-target.value e)))}]])
 
 (defn export []
   [:a {:href (->> @app-state
@@ -289,7 +291,9 @@
                         :tags (:tags component)})))
 
 (add-watch app-state :indexer (fn [k r os ns]
-                                (update-index index ns)))
+                                (when-not (identical? (:components os) (:components ns))
+                                  (update-index index ns)
+                                  (update-filter (get-in ns [:filter :val])))))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
