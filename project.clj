@@ -7,13 +7,13 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [ring/ring-core "1.4.0"]
-                 [ring/ring-jetty-adapter "1.4.0"]
+                 [ring/ring-core "1.5.0"]
+                 [ring/ring-jetty-adapter "1.5.0"]
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async "0.2.374"]
                  [reagent "0.5.1"]
-                 [org.seleniumhq.selenium/selenium-java "2.52.0"]
-                 [com.codeborne/phantomjsdriver "1.2.1"]
+                 [org.seleniumhq.selenium/selenium-java "2.53.1"]
+                 [com.codeborne/phantomjsdriver "1.3.0"]
                  [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "1.2.4"]
                  [cljs-ajax "0.5.3"]]
@@ -45,7 +45,7 @@
 
               :compiler {:main warehouse.core
                          :pretty-print true
-                         :source-map true
+                         :source-map "resources/public/js/compiled/warehouse.js"
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"

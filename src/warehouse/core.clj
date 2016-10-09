@@ -23,12 +23,14 @@
     (catch Exception e '())))
 
 (defn handler [request]
-  (let [components (ges-handler request)]
-    (if (empty? components)
-      {:status 404}
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str components)})))
+  (if (= (:request-method request) :post)
+    (let [components (ges-handler request)]
+      (if (empty? components)
+        {:status 404}
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str components)}))
+    {:status 204}))
 
 (def app (-> handler
              wrap-params))
