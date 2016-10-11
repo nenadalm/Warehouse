@@ -16,9 +16,9 @@ before_script:
 
     - http-server resources/public/ -p 3449 &
 
-    - lein cljsbuild min
+    - lein cljsbuild once min
 
 script:
-    - lein test
     - lein cljsbuild test
+    - lein test
 
