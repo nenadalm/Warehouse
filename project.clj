@@ -21,14 +21,12 @@
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
-  :plugins [[lein-ring "0.8.11"]
-            [lein-cljsbuild "1.1.2"]
-            [lein-ancient "0.6.8"]
-            [lein-figwheel "0.5.0-6"]
+  :plugins [[lein-ring "0.9.7"]
+            [lein-cljsbuild "1.1.4"]
+            [lein-ancient "0.6.10"]
+            [lein-figwheel "0.5.4-7"]
             [lein-less "1.7.5"]
             [lein-bower "0.5.1"]]
-
-  :hooks [leiningen.cljsbuild]
 
   :ring {:handler warehouse.core/app}
 
@@ -44,8 +42,6 @@
               :figwheel {:on-jsload "warehouse.core/on-js-reload"}
 
               :compiler {:main warehouse.core
-                         :pretty-print true
-                         :source-map "resources/public/js/compiled/warehouse.js"
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"
