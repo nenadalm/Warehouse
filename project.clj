@@ -10,13 +10,13 @@
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
                  [org.clojure/clojurescript "1.7.228"]
-                 [org.clojure/core.async "0.2.374"]
-                 [reagent "0.5.1"]
+                 [org.clojure/core.async "0.2.391"]
+                 [reagent "0.6.0"]
                  [org.seleniumhq.selenium/selenium-java "2.53.1"]
                  [com.codeborne/phantomjsdriver "1.3.0"]
                  [clj-webdriver "0.7.2"]
-                 [alandipert/storage-atom "1.2.4"]
-                 [cljs-ajax "0.5.3"]]
+                 [alandipert/storage-atom "2.0.1"]
+                 [cljs-ajax "0.5.8"]]
 
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
