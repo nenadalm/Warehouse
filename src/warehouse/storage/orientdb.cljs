@@ -31,14 +31,16 @@
                                                      :headers {"Content-Type" "application/json"
                                                                "Authorization" (str "Basic " (base64/encodeString (str (:user parameters) ":" (:password parameters))))}}))
 
-(defn load-state [handler error-handler]
-  (GET (str endpoint "/query/" (:db parameters) "/SQL/SELECT FROM AppState/1") {:handler (fn [response]
-                                                                                           (let [document (first (:result response))]
-                                                                                             (def rid ((keyword "@rid") document))
-                                                                                             (handler document)))
-                                                                                :error-handler error-handler
-                                                                                :keywords? true
-                                                                                :response-format :json
-                                                                                :headers {"Content-Type" "application/json"
-                                                                                         "Authorization" (str "Basic " (base64/encodeString (str (:user parameters) ":" (:password parameters))))}}))
+; todo: fix the commented code below (def) throws warning
+;(defn load-state [handler error-handler]
+  ;(GET (str endpoint "/query/" (:db parameters) "/SQL/SELECT FROM AppState/1")
+       ;{:handler (fn [response]
+                   ;(let [document (first (:result response))]
+                     ;(def rid ((keyword "@rid") document))
+                     ;(handler document)))
+        ;:error-handler error-handler
+        ;:keywords? true
+        ;:response-format :json
+        ;:headers {"Content-Type" "application/json"
+                  ;"Authorization" (str "Basic " (base64/encodeString (str (:user parameters) ":" (:password parameters))))}}))
 

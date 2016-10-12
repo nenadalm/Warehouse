@@ -14,9 +14,9 @@ before_script:
     - sudo rm -rf /usr/local/phantomjs/bin/phantomjs
     - sudo mv phantomjs /usr/local/phantomjs/bin/phantomjs
 
-    - http-server resources/public/ -p 3449 &
+    - http-server resources/public/ -p 3449 | tee http-server.log &
 
-    - lein cljsbuild once min
+    - lein cljsbuild once min | tee cljsbuild.log
     - lein less once
 
 script:
@@ -24,4 +24,6 @@ script:
     - lein test
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     - grep 'Error' http-server.log  && $(exit 1) || $(exit 0)
+    # check that there are no warnings in clojurescript compilation
+    - grep 'WARNING' cljsbuild.log && $(exit 1) || $(exit 0)
 
