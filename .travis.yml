@@ -17,8 +17,11 @@ before_script:
     - http-server resources/public/ -p 3449 &
 
     - lein cljsbuild once min
+    - lein less once
 
 script:
     - lein cljsbuild test
     - lein test
+    # check that there are no errors in http server after running selenium tests (like 404 on styles...)
+    - grep 'Error' http-server.log  && $(exit 1) || $(exit 0)
 
