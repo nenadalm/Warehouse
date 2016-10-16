@@ -4,10 +4,12 @@
     [warehouse.storage.test :as storage]
     [alandipert.storage-atom :refer [local-storage]]
     lunr
-    [warehouse.util :as util])
+    [warehouse.util :as util]
+    [secretary.core :as secretary :refer-macros [defroute]])
   (:require-macros [warehouse.macro :as m]))
 
 (enable-console-print!)
+(secretary/set-config! :prefix "#")
 
 (defonce app-state (atom {:components {}
                           :filter {:val ""
@@ -15,7 +17,17 @@
                           :notifications [{:type :error
                                            :message "Something bad happened"}
                                           {:type :success
-                                           :message "Something good happened"}]}))
+                                           :message "Something good happened"}]
+                          :page "index"}))
+
+(defroute app-homepage "/" []
+  (swap! app-state assoc :page "index"))
+(defroute app-processes "/processes" []
+  (swap! app-state assoc :page "processes"))
+
+(secretary/dispatch! (.-hash js/location))
+(.addEventListener js/window "hashchange" (fn [e]
+                                            (secretary/dispatch! (.-hash js/location))))
 
 (defonce change-sets (local-storage (atom []) :app-change-sets))
 
@@ -241,13 +253,12 @@
                                    (aset this "value" "")))
                            (.readAsText reader (aget e "target" "files" "0"))))])
 
-(defn page []
+(defn component-list []
   (let [adding (atom false)
         showing-changeset (atom false)
         new-item (atom {:name "" :tags "" :amount 1})]
     (fn []
       [:div
-       [notifications]
        [search]
        [export]
        [import]
@@ -281,6 +292,36 @@
         (for [[k v] (get-visible-components)]
           ^{:key (:name v)} [:li {:class "component"}
                              [item v k]])]])))
+
+
+(defn process [p]
+  [:tr
+   [:td (:title p)]
+   [:td (:state p)]
+   [:td (:created-at p)]])
+
+(defn processes []
+  (let [data {:title "Retrieving data from url"}]
+    (fn []
+      [:table
+       [:tr
+        [:th "Title"]
+        [:th "State"]
+        [:th "Created at"]]
+       [process data]
+       [process data]
+       [process data]
+       [process data]])))
+
+(defn page []
+  [:div
+   [notifications]
+   [:ul
+    [:li [:a {:href (app-homepage)} "List"]]
+    [:li [:a {:href (app-processes)} "Processes"]]]
+   (case (:page @app-state)
+     "index" [component-list]
+     "processes" [processes])])
 
 (reagent/render-component [page]
                           (.getElementById js/document "app"))

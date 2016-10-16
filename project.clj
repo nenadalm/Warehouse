@@ -16,7 +16,8 @@
                  [com.codeborne/phantomjsdriver "1.3.0"]
                  [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "2.0.1"]
-                 [cljs-ajax "0.5.8"]]
+                 [cljs-ajax "0.5.8"]
+                 [secretary "1.2.3"]]
 
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
