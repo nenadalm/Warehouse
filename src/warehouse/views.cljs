@@ -3,6 +3,7 @@
     [reagent.core :as reagent :refer [atom]]
     [warehouse.change-set :as change-set]
     [warehouse.util :as util]
+    [warehouse.routes :as routes]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
@@ -254,8 +255,8 @@
     [:div
      [notifications]
      [:ul
-      [:li [:a {:href "/"} "List"]]
-      [:li [:a {:href "/processes"} "Processes"]]]
+      [:li [:a {:href (routes/homepage)} "List"]]
+      [:li [:a {:href (routes/processes)} "Processes"]]]
      (case @active-tab
        "index" [component-list]
        "processes" [processes])]))

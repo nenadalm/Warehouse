@@ -3,8 +3,8 @@
     [reagent.core :as reagent :refer [atom]]
     [warehouse.storage.test :as storage]
     [warehouse.util :as util]
-    [secretary.core :as secretary :refer-macros [defroute]]
-    [re-frame.core :refer [reg-event-db dispatch dispatch-sync]]
+    [secretary.core :as secretary]
+    [re-frame.core :refer [reg-event-db dispatch-sync]]
     [re-frame.db :as db]
     [warehouse.subs]
     [warehouse.events]
@@ -14,12 +14,6 @@
   (:require-macros [warehouse.macro :as m]))
 
 (enable-console-print!)
-(secretary/set-config! :prefix "#")
-
-(defroute app-homepage "/" []
-  (dispatch [:page-change "index"]))
-(defroute app-processes "/processes" []
-  (dispatch [:page-change "processes"]))
 
 (secretary/dispatch! (.-hash js/location))
 (.addEventListener js/window "hashchange" (fn [e]
