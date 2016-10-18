@@ -1,6 +1,7 @@
 (ns warehouse.events
   (:require
     [warehouse.util :as util]
+    [warehouse.index :as index]
     [re-frame.core :refer [reg-event-db]]))
 
 (reg-event-db
@@ -59,7 +60,7 @@
 (reg-event-db
   :filter-update
   (fn
-    [db [_ val index]]
+    [db [_ val]]
     (assoc db :filter {:val val
-                       :search (js->clj (.search index val))})))
+                       :search (js->clj (.search index/index val))})))
 
