@@ -2,7 +2,7 @@
   (:require
     [warehouse.util :as util]
     [warehouse.index :as index]
-    [re-frame.core :refer [reg-event-db]]))
+    [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx inject-cofx]]))
 
 (reg-event-db
   :state-loaded
@@ -57,10 +57,16 @@
     [db [_ page]]
     (assoc db :page page)))
 
-(reg-event-db
+(reg-cofx
+  :search-result
+  (fn [cofx _]
+    (assoc cofx :search-result (js->clj (.search index/index (second (:event cofx)))))))
+
+(reg-event-fx
   :filter-update
+  [(inject-cofx :search-result)]
   (fn
-    [db [_ val]]
-    (assoc db :filter {:val val
-                       :search (js->clj (.search index/index val))})))
+    [cofx [_ val]]
+    {:db (assoc (:db cofx) :filter {:val val
+                                    :search (:search-result cofx)})}))
 
