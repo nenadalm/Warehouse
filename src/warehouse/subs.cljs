@@ -1,5 +1,6 @@
 (ns warehouse.subs
   (:require
+    [warehouse.util :as util]
     [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
@@ -27,4 +28,15 @@
   (fn
     [db _]
     db))
+
+(reg-sub
+  :state-data-uri
+  (fn
+    [db _]
+    (->> db
+         (util/state->document)
+         (clj->js)
+         (.stringify js/JSON)
+         (.encodeURIComponent js/window)
+         (str "data:text/json;charset=utf-8,"))))
 

@@ -162,15 +162,10 @@
             :on-change (m/handler-fn (dispatch [:filter-update (.-target.value e)]))}]])
 
 (defn export []
-  [:a {:href (->> @(subscribe [:state])
-                  (util/state->document)
-                  (clj->js)
-                  (.stringify js/JSON)
-                  (.encodeURIComponent js/window)
-                  (str "data:text/json;charset=utf-8,"))
-       :download "warehouse_components.json"
-       }
-   [:button "Export"]])
+  (let [state-data-uri (subscribe [:state-data-uri])]
+    [:a {:href @state-data-uri
+         :download "warehouse_components.json"}
+     [:button "Export"]]))
 
 (defn import []
   [file-input "Import" (m/handler-fn
