@@ -1,7 +1,6 @@
 (ns warehouse.views
   (:require
     [reagent.core :as reagent :refer [atom]]
-    [warehouse.change-set :as change-set]
     [warehouse.util :as util]
     [warehouse.routes :as routes]
     [re-frame.core :refer [dispatch subscribe]])
@@ -187,7 +186,8 @@
   (let [adding (atom false)
         showing-changeset (atom false)
         new-item (atom {:name "" :tags "" :amount 1})
-        visible-components (subscribe [:visible-components])]
+        visible-components (subscribe [:visible-components])
+        change-sets (subscribe [:change-sets])]
     (fn []
       [:div
        [search]
@@ -209,7 +209,7 @@
                                 (reset! adding false))} "Save"]
           [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
-         (let [cs @change-set/change-sets
+         (let [cs @change-sets
                k1 (range (count cs) 0 -1)]
 
            (map (fn [change-set-col k2]

@@ -26,6 +26,7 @@
                           (util/document->state
                             response
                             {:components {}
+                             :change-sets @change-set/change-sets
                              :filter {:val ""
                                       :search []}
                              :notifications [{:type :error
@@ -43,7 +44,6 @@
                           (.getElementById js/document "app"))
 
 (index/initialize)
-(change-set/initialize-watches)
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on

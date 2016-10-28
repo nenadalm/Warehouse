@@ -40,3 +40,9 @@
          (.encodeURIComponent js/window)
          (str "data:text/json;charset=utf-8,"))))
 
+(reg-sub
+  :change-sets
+  (fn
+    [db _]
+    (:change-sets db)))
+

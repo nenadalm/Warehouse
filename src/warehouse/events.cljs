@@ -2,7 +2,8 @@
   (:require
     [warehouse.util :as util]
     [warehouse.index :as index]
-    [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx inject-cofx]]))
+    [warehouse.change-set :as change-set]
+    [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
 (reg-event-db
   :state-loaded
@@ -10,26 +11,56 @@
     [db [_ response]]
     (util/document->state response db)))
 
-(reg-event-db
+(reg-fx
+  :change-sets
+  (fn
+    [value]
+    (when-not (empty? value)
+      (reset! change-set/change-sets value))))
+
+(defn normalize-item [item]
+  (assoc item
+         :tags (util/string->array (:tags item))))
+
+(defn add-change-set [col change-set]
+  (take 10 (conj col change-set)))
+
+(reg-event-fx
+  :components-change
+  (fn
+    [cofx [_ old-components new-components]]
+    (let [change-set (util/get-change-set old-components new-components)
+          new-db (-> (:db cofx)
+                     (assoc :change-sets (add-change-set (get-in cofx [:db :change-sets]) change-set)))]
+      {:db new-db
+       :change-sets (:change-sets new-db)})))
+
+(reg-event-fx
   :item-save
   (fn
-    [db [_ k item]]
-    (assoc-in
-      db
-      [:components k]
-      (assoc
-        item
-        :tags
-        (util/string->array (:tags item))))))
+    [cofx [_ k item]]
+    (let [old-components (get-in cofx [:db :components])
+          new-components (assoc old-components
+                                k (normalize-item item))
+          new-db (-> (:db cofx)
+                     (assoc :components new-components))]
+      {:db new-db
+       :dispatch [:components-change old-components new-components]})))
 
-(reg-event-db
+(reg-event-fx
   :item-create
   (fn
-    [db [_ item]]
-    (let [k (or (inc (apply max (keys (:components db)))) 1)]
-      (assoc-in db
-                [:components k]
-                (assoc item :id k :tags (util/string->array (:tags item)))))))
+    [cofx [_ item]]
+    (let [old-components (get-in cofx [:db :components])
+          k (or (inc (apply max (keys old-components))) 1)
+          new-components (assoc old-components
+                                k (-> item
+                                      (normalize-item)
+                                      (assoc :id k)))
+          new-db (-> (:db cofx)
+                     (assoc :components new-components))]
+      {:db new-db
+       :dispatch [:components-change old-components new-components]})))
 
 (reg-event-db
   :notification-close
@@ -39,17 +70,19 @@
                                (subvec (:notifications db) 0 notification-key)
                                (subvec (:notifications db) (inc notification-key))))))
 
-(reg-event-db
+(reg-event-fx
   :revert-change
   (fn
-    [db [_ type metadata data]]
-    (case type
-      :create (assoc-in db [:components (:id metadata) :amount] 0)
-      :update (assoc-in db
-                        [:components (:id metadata)]
-                        (util/revert-changes
-                          (get-in db [:components (:id metadata)])
-                          data)))))
+    [cofx [_ type metadata data]]
+    (let [old-components (get-in cofx [:db :components])
+          new-components (case type
+                           :create (assoc-in old-components [(:id metadata) :amount] 0)
+                           :update (->> (util/revert-changes (get old-components (:id metadata)) data)
+                                        (assoc old-components (:id metadata))))
+          new-db (-> (:db cofx)
+                     (assoc :components new-components))]
+      {:db new-db
+       :dispatch [:components-change old-components new-components]})))
 
 (reg-event-db
   :page-change
