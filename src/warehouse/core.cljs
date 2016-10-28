@@ -1,7 +1,6 @@
 (ns ^:figwheel-always warehouse.core
   (:require
     [reagent.core :as reagent :refer [atom]]
-    [warehouse.storage.test :as storage]
     [warehouse.util :as util]
     [secretary.core :as secretary]
     [re-frame.core :refer [reg-event-db dispatch-sync]]
@@ -19,25 +18,6 @@
 (.addEventListener js/window "hashchange" (fn [e]
                                             (secretary/dispatch! (.-hash js/location))))
 
-(reg-event-db
-  :initialize-db
-  (fn [_ _]
-    (storage/load-state (fn [response]
-                          (util/document->state
-                            response
-                            {:components {}
-                             :change-sets @change-set/change-sets
-                             :filter {:val ""
-                                      :search []}
-                             :notifications [{:type :error
-                                              :message "Something bad happened"}
-                                             {:type :success
-                                              :message "Something good happened"}]
-                             :page "index"}))
-                        nil)))
-
-(add-watch db/app-db :storeer (fn [k r os ns]
-                                (storage/store-state (util/state->document ns))))
 
 (dispatch-sync [:initialize-db])
 (reagent/render-component [view/page]

@@ -3,6 +3,7 @@
     [warehouse.util :as util]
     [warehouse.index :as index]
     [warehouse.change-set :as change-set]
+    [warehouse.storage.test :as storage]
     [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
 (reg-event-db
@@ -11,12 +12,45 @@
     [db [_ response]]
     (util/document->state response db)))
 
+(reg-cofx
+  :state
+  (fn [cofx _ ]
+    (assoc cofx :state (storage/load-state (fn [response]
+                                             response)
+                                           nil))))
+
+(reg-cofx
+  :change-sets
+  (fn [cofx _]
+    (assoc cofx :change-sets @change-set/change-sets)))
+
+(reg-event-fx
+  :initialize-db
+  [(inject-cofx :state) (inject-cofx :change-sets)]
+  (fn [cofx _]
+    {:db (util/document->state
+           (:state cofx)
+           {:components {}
+            :change-sets (:change-sets cofx)
+            :filter {:val ""
+                     :search []}
+            :notifications [{:type :error
+                             :message "Something bad happened"}
+                            {:type :success
+                             :message "Something good happened"}]
+            :page "index"})}))
+
 (reg-fx
   :change-sets
   (fn
     [value]
     (when-not (empty? value)
       (reset! change-set/change-sets value))))
+
+(reg-fx
+  :state
+  (fn [value]
+    (storage/store-state value)))
 
 (defn normalize-item [item]
   (assoc item
@@ -33,7 +67,8 @@
           new-db (-> (:db cofx)
                      (assoc :change-sets (add-change-set (get-in cofx [:db :change-sets]) change-set)))]
       {:db new-db
-       :change-sets (:change-sets new-db)})))
+       :change-sets (:change-sets new-db)
+       :state (util/state->document new-db)})))
 
 (reg-event-fx
   :item-save
