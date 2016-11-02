@@ -84,7 +84,9 @@
   (fn
     [cofx [_ item]]
     (let [old-components (get-in cofx [:db :components])
-          k (or (inc (apply max (keys old-components))) 1)
+          k (if (empty? old-components)
+              1
+              (inc (apply max (keys old-components))))
           new-components (assoc old-components
                                 k (-> item
                                       (normalize-item)
