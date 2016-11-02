@@ -43,7 +43,7 @@
 
               :figwheel {:on-jsload "warehouse.core/on-js-reload"}
 
-              :compiler {:main warehouse.core
+              :compiler {:main warehouse.dev
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"
@@ -61,7 +61,7 @@
                          :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
-              :compiler {:main warehouse.core
+              :compiler {:main warehouse.prod
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/out"

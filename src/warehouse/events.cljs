@@ -3,8 +3,15 @@
     [warehouse.util :as util]
     [warehouse.index :as index]
     [warehouse.change-set :as change-set]
-    [warehouse.storage.test :as storage]
+    [warehouse.storage.storage :refer [storage]]
     [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
+
+(def default-state {:components {}
+                    :change-sets []
+                    :filter {:val ""
+                             :search []}
+                    :notifications []
+                    :page "index"})
 
 (reg-event-db
   :state-loaded
@@ -15,9 +22,7 @@
 (reg-cofx
   :state
   (fn [cofx _ ]
-    (assoc cofx :state (storage/load-state (fn [response]
-                                             response)
-                                           nil))))
+    (assoc cofx :state ((:load-state storage)))))
 
 (reg-cofx
   :change-sets
@@ -30,15 +35,7 @@
   (fn [cofx _]
     {:db (util/document->state
            (:state cofx)
-           {:components {}
-            :change-sets (:change-sets cofx)
-            :filter {:val ""
-                     :search []}
-            :notifications [{:type :error
-                             :message "Something bad happened"}
-                            {:type :success
-                             :message "Something good happened"}]
-            :page "index"})}))
+           (assoc default-state :change-sets (:change-sets cofx)))}))
 
 (reg-fx
   :change-sets
@@ -50,7 +47,7 @@
 (reg-fx
   :state
   (fn [value]
-    (storage/store-state value)))
+    ((:store-state storage) value)))
 
 (defn normalize-item [item]
   (assoc item
