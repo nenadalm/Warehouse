@@ -162,9 +162,10 @@
 
 (defn export []
   (let [state-data-uri (subscribe [:state-data-uri])]
-    [:a {:href @state-data-uri
-         :download "warehouse_components.json"}
-     [:button "Export"]]))
+    (fn []
+      [:a {:href @state-data-uri
+           :download "warehouse_components.json"}
+       [:button "Export"]])))
 
 (defn import []
   [file-input "Import" (m/handler-fn
@@ -245,14 +246,20 @@
         [process data]
         [process data]]])))
 
+(defn nav []
+  [:ul
+   [:li [:a {:href (routes/homepage)} "List"]]
+   [:li [:a {:href (routes/processes)} "Processes"]]])
+
+
 (defn page []
-  (let [active-tab (subscribe [:active-tab])]
-    [:div
-     [notifications]
-     [:ul
-      [:li [:a {:href (routes/homepage)} "List"]]
-      [:li [:a {:href (routes/processes)} "Processes"]]]
-     (case @active-tab
-       "index" [component-list]
-       "processes" [processes])]))
+  (let [active-tab (subscribe [:active-tab])
+        show-nav (subscribe [:show-nav])]
+    (fn []
+      [:div
+       [notifications]
+       (when @show-nav [nav])
+       (case @active-tab
+         "index" [component-list]
+         "processes" [processes])])))
 

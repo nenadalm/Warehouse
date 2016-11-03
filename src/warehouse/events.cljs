@@ -11,6 +11,7 @@
                     :filter {:val ""
                              :search []}
                     :notifications []
+                    :show-nav false
                     :page "index"})
 
 (reg-event-db
