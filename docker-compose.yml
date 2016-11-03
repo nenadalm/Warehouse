@@ -8,15 +8,12 @@ services:
             - "2424:2424"
             - "2480:2480"
     backend:
-        build:
-            context: .
-            dockerfile: dockerfiles/Clojure
+        image: nenadalm/warehouse
         network_mode: host
         volumes:
-            - .:/usr/src/app
+            - .:/tmp/src
         security_opt:
             - label:disable
-        working_dir: /usr/src/app
         command: sh -c 'lein deps && lein ring server-headless'
         ports:
             - "3000:3000"
