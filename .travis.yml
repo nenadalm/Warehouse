@@ -27,3 +27,6 @@ script:
     # check that there are no warnings in clojurescript compilation
     - grep 'WARNING' cljsbuild.log && $(exit 1) || $(exit 0)
 
+after_success:
+    - bin/deploy
+
