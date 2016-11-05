@@ -6,7 +6,7 @@ TEST_ARGS="$@"
 MESSAGE_EXPIRATION=60000 # 1 minute
 
 function run_tests {
-    lein test "${TEST_ARGS}" && notify-send -t "${MESSAGE_EXPIRATION}" -u low "Tests passed" || notify-send -t "${MESSAGE_EXPIRATION}" -u critical "Tests failed"
+    lein cljsbuild test && notify-send -t "${MESSAGE_EXPIRATION}" -u low "Tests passed" || notify-send -t "${MESSAGE_EXPIRATION}" -u critical "Tests failed"
 }
 
 run_tests

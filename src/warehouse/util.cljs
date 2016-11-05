@@ -95,7 +95,7 @@
                           (conj components
                                 {:id (generate-component-id components)
                                  :name (:name item)
-                                 :tags []
+                                 :tags (vec (:tags item))
                                  :amount (:amount item)}))
                    (recur (rest new-items)
                           (assoc-in components

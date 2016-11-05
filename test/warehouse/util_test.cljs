@@ -248,7 +248,15 @@
                        :amount 2}]}
          (util/merge-documents {:components []}
                                {:components [{:name "component"
-                                             :amount 2}]})))
+                                              :amount 2}]})))
+  (is (= {:components [{:id 1
+                       :name "component"
+                       :tags ["tag"]
+                       :amount 2}]}
+         (util/merge-documents {:components []}
+                               {:components [{:name "component"
+                                              :tags ["tag"]
+                                              :amount 2}]})))
   (is (= {:components [{:id 1
                        :name "component"
                        :tags []
