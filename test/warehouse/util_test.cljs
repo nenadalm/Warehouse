@@ -4,25 +4,27 @@
   (:require [warehouse.util :as util]))
 
 (deftest map-diff-test
-  (is (empty? (util/map-diff {} {})))
-  (is (empty? (util/map-diff {:a "a"
-                              :b "b"}
-                             {:a "a"
-                              :b "b"})))
-  (is (= {:a ["a" "new-a"]
-          :c ["c" nil]}
-         (util/map-diff {:a "a"
-                         :b "b"
-                         :c "c"}
-                        {:a "new-a"
-                         :b "b"})))
-  (is (= {:a ["old-a" "a"]
-          :c [nil "c"]}
-         (util/map-diff {:a "old-a"
-                         :b "b"}
-                        {:a "a"
-                         :b "b"
-                         :c "c"}))))
+  (testing "same maps"
+    (is (empty? (util/map-diff {} {})))
+    (is (empty? (util/map-diff {:a "a"
+                                :b "b"}
+                               {:a "a"
+                                :b "b"}))))
+  (testing "different maps"
+    (is (= {:a ["a" "new-a"]
+            :c ["c" nil]}
+           (util/map-diff {:a "a"
+                           :b "b"
+                           :c "c"}
+                          {:a "new-a"
+                           :b "b"})))
+    (is (= {:a ["old-a" "a"]
+            :c [nil "c"]}
+           (util/map-diff {:a "old-a"
+                           :b "b"}
+                          {:a "a"
+                           :b "b"
+                           :c "c"})))))
 
 (deftest revert-changes-test
   (is (= {:a "a" :b "b" :c "c"}
@@ -45,20 +47,21 @@
                                :amount-min [1 10]}))))
 
 (deftest get-change-set-test
-  (is (empty? (util/get-change-set {} {})))
-  (is (empty? (util/get-change-set {0 {:id 0
-                                       :name "first"
-                                       :k "v"}
-                                    1 {:id 1
-                                       :name "second"
-                                       :k "c"}}
+  (testing "sampe maps"
+    (is (empty? (util/get-change-set {} {})))
+    (is (empty? (util/get-change-set {0 {:id 0
+                                         :name "first"
+                                         :k "v"}
+                                      1 {:id 1
+                                         :name "second"
+                                         :k "c"}}
 
-                                   {0 {:id 0
-                                       :name "first"
-                                       :k "v"}
-                                    1 {:id 1
-                                       :name "second"
-                                       :k "c"}})))
+                                     {0 {:id 0
+                                         :name "first"
+                                         :k "v"}
+                                      1 {:id 1
+                                         :name "second"
+                                         :k "c"}}))))
   (is (= [{:type :update
            :data [{:metadata {:id 0
                              :name "first"}
@@ -75,7 +78,8 @@
                                   :k "v-updated"}
                                1 {:id 1
                                   :name "second"
-                                  :k "c"}})))
+                                  :k "c"}}))
+      "single update")
   (is (= [{:type :update
            :data [{:metadata {:id 0
                               :name "first"}
@@ -95,7 +99,8 @@
                                   :k "v-updated"}
                                1 {:id 1
                                   :name "second"
-                                  :k "c-updated"}})))
+                                  :k "c-updated"}}))
+      "double update")
   (is (= [{:type :create
            :data [{:metadata {:id 1
                               :name "second"}
@@ -111,7 +116,8 @@
                                   :k "v"}
                                1 {:id 1
                                   :name "second"
-                                  :k "k-created"}})))
+                                  :k "k-created"}}))
+      "single create")
   (is (= [{:type :create
            :data [{:metadata {:id 1
                               :name "second"}
@@ -135,7 +141,8 @@
                                   :k "k-created1"}
                                2 {:id 2
                                   :name "third"
-                                  :k "k-created2"}})))
+                                  :k "k-created2"}}))
+      "double create")
   (is (= [{:type :create
            :data [{:metadata {:id 2
                               :name "third"}
@@ -161,7 +168,8 @@
                                   :k "k-updated"}
                                2 {:id 2
                                   :name "third"
-                                  :k "k-created"}}))))
+                                  :k "k-created"}}))
+      "create and update"))
 
 (deftest string->array-test
   (is (= (util/string->array "a, b ,c, a")
@@ -175,26 +183,27 @@
   (is (= {:components {}
           :notifications []}
          (util/document->state {:components []}
-                          {:components []
-                           :notifications []})))
+                               {:components []
+                                :notifications []}))
+         "empty components")
   (is (= {:components {2 {:id 2
-                       :name "second-component"
-                       :tags #{"component"}
-                       :amount 3}}
+                          :name "second-component"
+                          :tags #{"component"}
+                          :amount 3}}
           :notifications []}
          (util/document->state {:components [{:id 2
-                                        :name "second-component"
-                                        :tags #{"component"}
-                                        :amount 3}]}
-                          {:components {1 {:id 1
-                                           :name "EPR212A408000Z"
-                                           :tags #{"optocoupler"}
-                                           :amount 7}
-                                        2 {:id 2
-                                           :name "2N3904"
-                                           :tags #{"transistor"}
-                                           :amount 8}}
-                           :notifications []})))
+                                              :name "second-component"
+                                              :tags #{"component"}
+                                              :amount 3}]}
+                               {:components {1 {:id 1
+                                                :name "EPR212A408000Z"
+                                                :tags #{"optocoupler"}
+                                                :amount 7}
+                                             2 {:id 2
+                                                :name "2N3904"
+                                                :tags #{"transistor"}
+                                                :amount 8}}
+                                :notifications []})))
   (testing "vector transforms into set to maintain BC"
     (is (= {:components {2 {:id 2
                             :name "second-component"
@@ -231,7 +240,8 @@
 (deftest merge-documents-test
   (is (= {:components []}
          (util/merge-documents {:components []}
-                               {:components []})))
+                               {:components []}))
+      "empty components")
   (is (= {:components [{:id 1
                         :name "component1"
                         :tags ["tag"]
@@ -241,14 +251,16 @@
                                               :tags ["tag"]
                                               :amount 1}]}
                                {:components [{:name "component1"
-                                              :amount 2}]})))
+                                              :amount 2}]}))
+      "components with the same name")
   (is (= {:components [{:id 1
                        :name "component"
                        :tags []
                        :amount 2}]}
          (util/merge-documents {:components []}
                                {:components [{:name "component"
-                                              :amount 2}]})))
+                                              :amount 2}]}))
+      "new component without tags")
   (is (= {:components [{:id 1
                        :name "component"
                        :tags ["tag"]
@@ -256,7 +268,8 @@
          (util/merge-documents {:components []}
                                {:components [{:name "component"
                                               :tags ["tag"]
-                                              :amount 2}]})))
+                                              :amount 2}]}))
+      "new component with tags")
   (is (= {:components [{:id 1
                        :name "component"
                        :tags []
@@ -270,5 +283,6 @@
                                               :tags []
                                               :amount 2}]}
                                {:components [{:name "imported-component"
-                                             :amount 1}]}))))
+                                              :amount 1}]}))
+      "existing and imported components"))
 
