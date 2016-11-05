@@ -175,11 +175,10 @@
                                  "onload"
                                  (fn [reader-event]
                                    (dispatch
-                                     [:state-loaded
+                                     [:import-document
                                       (->> (.-target.result reader-event)
                                            (.parse js/JSON)
-                                           (#(js->clj % :keywordize-keys true))
-                                           (util/merge-documents (util/state->document @(subscribe [:state]))))])
+                                           (#(js->clj % :keywordize-keys true)))])
                                    (aset this "value" "")))
                            (.readAsText reader (aget e "target" "files" "0"))))])
 
