@@ -24,12 +24,10 @@
   :import-document
   (fn
     [cofx [_ document]]
-    (println document)
     (let [db (:db cofx)
           new-db (util/document->state (util/merge-documents (util/state->document db) document) db)
           old-components (:components db)
           new-components (:components new-db)]
-      (println new-db)
       {:db new-db
        :dispatch [:components-change old-components new-components]})))
 
