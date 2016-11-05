@@ -35,5 +35,5 @@ chmod 600 .travis/id_rsa
 ssh-add .travis/id_rsa
 
 git push "${REPO}" "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git subtree push --subtree resources "${REPO}" "${SUBTREE_BRANCH}"
+git subtree push --prefix resources/public "${REPO}" "${SUBTREE_BRANCH}"
 
