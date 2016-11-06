@@ -23,12 +23,12 @@
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}
 
-  :plugins [[lein-ring "0.9.7"]
-            [lein-cljsbuild "1.1.4"]
-            [lein-ancient "0.6.10"]
-            [lein-figwheel "0.5.4-7"]
-            [lein-less "1.7.5"]
-            [lein-bower "0.5.1"]]
+  ; set plugins using aliases helps decrease "$ time lein help" significantly
+  :aliases {"ring" ["update-in" ":plugins" "conj" "[lein-ring \"0.9.7\"]" "--" "ring"]
+            "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
+            "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
+            "bower" ["update-in" ":plugins" "conj" "[lein-bower \"0.5.1\"]" "--" "bower"]
+            "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.4-7\"]" "--" "figwheel"]}
 
   :ring {:handler warehouse.core/app}
 
