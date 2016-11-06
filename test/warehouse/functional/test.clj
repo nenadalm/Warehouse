@@ -4,12 +4,13 @@
 
 ;(System/setProperty "webdriver.chrome.driver" "/home/nenadalm/Downloads/selenium/chromedriver")
 ;(def browser-spec {:browser :chrome})
-;(implicit-wait 3000)
 
 (def browser-spec {:browser :phantomjs})
 
 (set-driver! browser-spec)
 (set-finder! xpath-finder)
+
+;(implicit-wait 3000)
 
 (def params {:base-url "http://localhost:3449"})
 
@@ -51,10 +52,39 @@
                  :expected-tags-string "rs232, serial, usb"
                  :amount 1}]})
 
+(def not-empty? (complement empty?))
+(defn fixture-path [filename]
+  (.getCanonicalPath (clojure.java.io/file (str "test/warehouse/functional/" filename))))
+
 (defn clear [q]
   (send-keys q (clojure.string/join
                  ""
                  (repeat (count (value q)) (clj-webdriver.core/key-code :back_space)))))
+
+(defn upload-file
+  "This function exists because of bug in ghost driver https://github.com/ariya/phantomjs/issues/10993"
+  [path]
+  (let [driver (:webdriver *driver*)]
+    (if (instance? org.openqa.selenium.phantomjs.PhantomJSDriver driver)
+      (let [script (str "this.uploadFile('input[type=file]', '" path "')")]
+        (.executePhantomJS driver script (make-array Object 0)))
+      (send-keys "//input[@type='file']" path))))
+
+(deftest import-export []
+  ; reset env
+  (to (:base-url params))
+  (execute-script "localStorage.clear();")
+
+  (to (:base-url params))
+
+  ; guard: there is zero components
+  (is (empty? (elements "//li[@class='ccomponent']")))
+
+  (upload-file (fixture-path "export.json"))
+
+  (is (not-empty? (elements "//li[@class='component']")))
+  (refresh)
+  (is (not-empty? (elements "//li[@class='component']"))))
 
 (defn create-component [component]
   (click "//button[contains(text(), 'Add new')]")
