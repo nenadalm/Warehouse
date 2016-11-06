@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eu
+
+OUTPUT=dependencies
+
+mkdir -p "${OUTPUT}"
+mvn eclipse:eclipse -DdownloadSources
+sed -rn '/sourcepath/{s/.*sourcepath="M2_REPO.([^"]*).*/\1/;p}' .classpath | (cd "${OUTPUT}" && xargs -i jar xf "${HOME}/.m2/repository/{}")
+
