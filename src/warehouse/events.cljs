@@ -4,15 +4,93 @@
     [warehouse.index :as index]
     [warehouse.change-set :as change-set]
     [warehouse.storage.storage :refer [storage]]
-    [re-frame.core :refer [reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
+    [ajax.core :refer [POST]]
+    [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
 (def default-state {:components {}
                     :change-sets []
                     :filter {:val ""
                              :search []}
                     :notifications []
+                    :processes {}
                     :show-nav false
                     :page "index"})
+
+(reg-event-db
+  :import
+  (fn [db [_ type]]
+   (assoc db
+          :import-form
+          [{:name "username"
+            :type "text"
+            :label "Username"}
+           {:name "password"
+            :type "password"
+            :label "Password"}
+           {:name "url"
+            :type "text"
+            :label "Url"}])))
+
+(reg-event-db
+  :import-cancel
+  (fn [db _]
+    (dissoc db :import-form)))
+
+(defn next-key
+  "Returns next numeric index in map `m`"
+  [m]
+  (if (empty? m)
+    1
+    (inc (apply max (keys m)))))
+
+(defn process-create [{:keys [db]} [_ process]]
+  (let [k (next-key (:processes db))
+        p (assoc process
+                 :id k
+                 :state :pending)]
+    {:db (dissoc (assoc-in db [:processes k] p)
+                 :import-form)
+     :process p}))
+
+(defmulti run-process #(:type %))
+
+(defmethod run-process :xhr [process]
+  (POST (:url process)
+        :params (:data process)
+        :format :json
+        :response-format :json
+        :keywords? true
+        :headers {"Content-Type" "application/json"}
+        :handler (fn [response]
+                   (dispatch [:success "Import succeeded"])
+                   (dispatch [:import-document {:components response}]))
+        :error-handler #(dispatch [:error "Import failed"])))
+
+(defn add-notification [db notification]
+  (let [old-notifications (:notifications db)
+        new-notifications (conj old-notifications notification)]
+    (assoc db :notifications new-notifications)))
+
+(reg-event-db
+  :error
+  (fn [db [_ message]]
+    (add-notification db {:type :error
+                          :message message})))
+
+(reg-event-db
+  :success
+  (fn [db [_ message]]
+    (add-notification db {:type :success
+                          :message message})))
+
+(reg-fx
+  :process
+  (fn [process]
+    (run-process process)))
+
+(reg-event-fx
+  :process-create
+  process-create)
 
 (reg-event-db
   :state-loaded
@@ -96,9 +174,7 @@
   (fn
     [cofx [_ item]]
     (let [old-components (get-in cofx [:db :components])
-          k (if (empty? old-components)
-              1
-              (inc (apply max (keys old-components))))
+          k (next-key old-components)
           new-components (assoc old-components
                                 k (-> item
                                       (normalize-item)

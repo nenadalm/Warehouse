@@ -1,6 +1,7 @@
 (ns warehouse.core
   (:require [clojure.data.json :as json])
-  (:use [ring.middleware.params]
+  (:use [ring.middleware.params :refer [wrap-params]]
+        [ring.middleware.json :refer [wrap-json-params]]
         [clj-webdriver.taxi]))
 
 (set-driver! {:browser :phantomjs})
@@ -8,7 +9,7 @@
 
 (defn ges-handler [request]
   (try
-    (let [params (assoc (:form-params request)
+    (let [params (assoc (:params request)
                         "login-url" "https://www.ges.cz/cz/prihlasit/")]
       (to (get params "login-url"))
       (input-text "//input[@name='nickname']" (get params "username"))
@@ -22,16 +23,26 @@
            (elements "//table[@class='final-cart']//tr[not(@class='line')]")))
     (catch Exception e '())))
 
+(defn post-handler [request]
+  (let [components (ges-handler request)]
+    (if (empty? components)
+      {:status 404}
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str components)})))
+
+(defn options-handler [request]
+  {:status 200
+   :headers {"Access-Control-Allow-Headers" "Content-Type"}})
+
 (defn handler [request]
-  (if (= (:request-method request) :post)
-    (let [components (ges-handler request)]
-      (if (empty? components)
-        {:status 404}
-        {:status 200
-         :headers {"Content-Type" "application/json"}
-         :body (json/write-str components)}))
-    {:status 204}))
+  (let [response (condp = (:request-method request)
+                   :post (post-handler request)
+                   :options (options-handler request)
+                   {:status 404})]
+    (assoc-in response [:headers "Access-Control-Allow-Origin"] "*")))
 
 (def app (-> handler
-             wrap-params))
+             (wrap-json-params)
+             (wrap-params)))
 

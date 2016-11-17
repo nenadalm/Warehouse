@@ -168,26 +168,70 @@
        [:button "Export"]])))
 
 (defn import []
-  [file-input "Import" (m/handler-fn
-                         (let [reader (js/FileReader.)
-                               this (aget e "currentTarget")]
-                           (aset reader
-                                 "onload"
-                                 (fn [reader-event]
-                                   (dispatch
-                                     [:import-document
-                                      (->> (.-target.result reader-event)
-                                           (.parse js/JSON)
-                                           (#(js->clj % :keywordize-keys true)))])
-                                   (aset this "value" "")))
-                           (.readAsText reader (aget e "target" "files" "0"))))])
+  (let [show-nav (subscribe [:show-nav])]
+    [:div.dropdown
+     {:on-click (m/handler-fn
+                  (when (not= (.-tagName (.-target e)) "INPUT")
+                    (.toggle (.-classList (.-currentTarget e)) "open")))}
+     [:button "Import"]
+     [:ul
+      [:li
+       [file-input "From file" (m/handler-fn
+                                 (let [reader (js/FileReader.)
+                                       this (aget e "currentTarget")]
+                                   (aset reader
+                                         "onload"
+                                         (fn [reader-event]
+                                           (dispatch
+                                             [:import-document
+                                              (->> (.-target.result reader-event)
+                                                   (.parse js/JSON)
+                                                   (#(js->clj % :keywordize-keys true)))])
+                                           (aset this "value" "")))
+                                   (.readAsText reader (aget e "target" "files" "0"))))]]
+      (when @show-nav
+        [:li
+         [:button {:on-click (m/handler-fn
+                               (dispatch [:import :ges]))}
+          "From ges"]])]]))
+
+(defn iterator->map
+  "Converts js iterator i into clojurescript map"
+  [i]
+  (->> i
+       (.from js/Array)
+       (js->clj)
+       (into {})))
+
+(defn import-form [data]
+  [:form.import
+   (for [item data]
+     ^{:key (:name item)} [:div
+                           [:label (:label item) ": "
+                            [:input {:type (:type item)
+                                     :name (:name item)}]]])
+   [:button {:type "button"
+             :on-click (m/handler-fn
+                         (let [process-data (->> "form.import"
+                                                 (.querySelector js/document)
+                                                 (new js/FormData)
+                                                 (iterator->map))]
+                           (dispatch [:process-create {:type :xhr
+                                                       :url "http://localhost:3000"
+                                                       :title "Ges import"
+                                                       :data process-data}])))}
+    "Save"]
+   [:button {:type "button"
+             :on-click (m/handler-fn (dispatch [:import-cancel]))}
+    "Cancel"]])
 
 (defn component-list []
   (let [adding (atom false)
         showing-changeset (atom false)
         new-item (atom {:name "" :tags "" :amount 1})
         visible-components (subscribe [:visible-components])
-        change-sets (subscribe [:change-sets])]
+        change-sets (subscribe [:change-sets])
+        import-form-data (subscribe [:import-form])]
     (fn []
       [:div
        [search]
@@ -199,6 +243,7 @@
        [:button {:on-click (m/handler-fn
                              (reset! showing-changeset (if (true? @showing-changeset) false true)))}
         (if (true? @showing-changeset) "Hide changes" "Show changes")]
+       (if (not-empty @import-form-data) [import-form @import-form-data])
        (if (true? @adding)
          [:form
           [form new-item]
@@ -231,22 +276,20 @@
    [:td (:created-at p)]])
 
 (defn processes []
-  (let [data {:title "Retrieving data from url"}]
+  (let [data (subscribe [:processes])]
     (fn []
-      [:table
+      [:table.processes
        [:thead
         [:tr
          [:th "Title"]
          [:th "State"]
          [:th "Created at"]]]
        [:tbody
-        [process data]
-        [process data]
-        [process data]
-        [process data]]])))
+        (for [[_ p] @data]
+          ^{:key (:id p)} [process p])]])))
 
 (defn nav []
-  [:ul
+  [:ul.menu
    [:li [:a {:href (routes/homepage)} "List"]]
    [:li [:a {:href (routes/processes)} "Processes"]]])
 

@@ -9,6 +9,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
+                 [ring/ring-json "0.4.0"]
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async "0.2.391"]
                  [reagent "0.6.0"]
