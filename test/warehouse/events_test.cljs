@@ -3,17 +3,6 @@
   (:use [cljs.test :only [do-report]])
   (:require [warehouse.events :as events]))
 
-(deftest next-key-test
-  (is (= 1 (events/next-key nil)))
-  (is (= 1 (events/next-key {}))
-      "Empty map")
-  (is (= 3 (events/next-key {1 "first" 2 "second"}))
-      "Map with sorted numeric keys without holes")
-  (is (= 3 (events/next-key {2 "second" 1 "first"}))
-      "Map with unsorted numeric keys without holes")
-  (is (= 4 (events/next-key {1 "first" 3 "third"}))
-      "Map with sorted numeric keys with holes"))
-
 (deftest process-create-test
   (is (=
        {:db {:processes {1 {:title "import1"

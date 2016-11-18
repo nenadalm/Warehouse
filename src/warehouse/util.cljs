@@ -102,3 +102,10 @@
                                     [(first old-item) :amount]
                                     (+ (:amount item) (:amount (second old-item))))))))))))
 
+(defn next-key
+  "Returns next numeric index in map `m`"
+  [m]
+  (if (empty? m)
+    1
+    (inc (apply max (keys m)))))
+

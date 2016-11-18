@@ -9,10 +9,10 @@
   (enable-console-print!)
   (storage/set-storage! test-storage/storage)
   (set! default-state (assoc default-state
-                             :notifications [{:type :error
-                                              :message "Something bad happened"}
-                                             {:type :success
-                                              :message "Something good happened"}]
+                             :notifications {1 {:type :error
+                                                :message "Something bad happened"}
+                                             2 {:type :success
+                                                :message "Something good happened"}}
                              :show-nav true)))
 
 (defn on-js-reload []

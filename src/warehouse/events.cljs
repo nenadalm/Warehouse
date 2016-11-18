@@ -4,6 +4,7 @@
     [warehouse.index :as index]
     [warehouse.change-set :as change-set]
     [warehouse.storage.storage :refer [storage]]
+    [warehouse.notifications.db :refer [add-notification]]
     [ajax.core :refer [POST]]
     [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
@@ -11,7 +12,6 @@
                     :change-sets []
                     :filter {:val ""
                              :search []}
-                    :notifications []
                     :processes {}
                     :show-nav false
                     :page "index"})
@@ -36,15 +36,8 @@
   (fn [db _]
     (dissoc db :import-form)))
 
-(defn next-key
-  "Returns next numeric index in map `m`"
-  [m]
-  (if (empty? m)
-    1
-    (inc (apply max (keys m)))))
-
 (defn process-create [{:keys [db]} [_ process]]
-  (let [k (next-key (:processes db))
+  (let [k (util/next-key (:processes db))
         p (assoc process
                  :id k
                  :state :pending)]
@@ -65,11 +58,6 @@
                    (dispatch [:success "Import succeeded"])
                    (dispatch [:import-document {:components response}]))
         :error-handler #(dispatch [:error "Import failed"])))
-
-(defn add-notification [db notification]
-  (let [old-notifications (:notifications db)
-        new-notifications (conj old-notifications notification)]
-    (assoc db :notifications new-notifications)))
 
 (reg-event-db
   :error
@@ -174,7 +162,7 @@
   (fn
     [cofx [_ item]]
     (let [old-components (get-in cofx [:db :components])
-          k (next-key old-components)
+          k (util/next-key old-components)
           new-components (assoc old-components
                                 k (-> item
                                       (normalize-item)
@@ -183,14 +171,6 @@
                      (assoc :components new-components))]
       {:db new-db
        :dispatch [:components-change old-components new-components]})))
-
-(reg-event-db
-  :notification-close
-  (fn
-    [db [_ notification-key]]
-    (assoc db :notifications (concat
-                               (subvec (:notifications db) 0 notification-key)
-                               (subvec (:notifications db) (inc notification-key))))))
 
 (reg-event-fx
   :revert-change

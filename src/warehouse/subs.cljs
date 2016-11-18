@@ -30,12 +30,6 @@
       (select-keys (:components db) (map #(get % "ref") (get-in db [:filter :search]))))))
 
 (reg-sub
-  :notifications
-  (fn
-    [db _]
-    (:notifications db)))
-
-(reg-sub
   :active-tab
   (fn
     [db _]

@@ -3,6 +3,7 @@
     [reagent.core :as reagent :refer [atom]]
     [warehouse.util :as util]
     [warehouse.routes :as routes]
+    [warehouse.notifications.views :refer [notifications]]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
@@ -69,25 +70,6 @@
        (if (false? @editing)
          (item-view data editing)
          (item-edit-view data editing k))])))
-
-(defn notification [n k]
-  (let [type (:type n)
-        message (:message n)]
-    [:div {:class (str "notification notification-" (name type))}
-     [:div {:class "message"} message]
-     [:button {:type "button"
-               :class "close"
-               :on-click (m/handler-fn
-                           (dispatch [:notification-close k]))} "X"]]))
-
-(defn notifications []
-  (let [notifications (subscribe [:notifications])]
-    (fn
-      []
-      (when (not (empty? @notifications))
-        [:div {:class "notifications"}
-         (for [[k n] (map list (range (count @notifications)) @notifications)]
-           ^{:key n} [notification n k])]))))
 
 (defn file-input [name f]
   [:button

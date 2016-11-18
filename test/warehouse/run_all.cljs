@@ -1,7 +1,8 @@
 (ns warehouse.run-all
   (:require [cljs.test :refer-macros [run-all-tests run-tests]]
             [warehouse.util-test]
-            [warehouse.events-test]))
+            [warehouse.events-test]
+            [warehouse.notifications.db-test]))
 
 (enable-console-print!)
 

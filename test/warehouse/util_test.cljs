@@ -286,3 +286,14 @@
                                               :amount 1}]}))
       "existing and imported components"))
 
+(deftest next-key-test
+  (is (= 1 (util/next-key nil)))
+  (is (= 1 (util/next-key {}))
+      "Empty map")
+  (is (= 3 (util/next-key {1 "first" 2 "second"}))
+      "Map with sorted numeric keys without holes")
+  (is (= 3 (util/next-key {2 "second" 1 "first"}))
+      "Map with unsorted numeric keys without holes")
+  (is (= 4 (util/next-key {1 "first" 3 "third"}))
+      "Map with sorted numeric keys with holes"))
+
