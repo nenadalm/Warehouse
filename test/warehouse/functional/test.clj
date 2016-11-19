@@ -2,9 +2,6 @@
   (:use [clj-webdriver.taxi :exclude [clear]]
         [clojure.test]))
 
-;(System/setProperty "webdriver.chrome.driver" "/home/nenadalm/Downloads/selenium/chromedriver")
-;(def browser-spec {:browser :chrome})
-
 (def browser-spec {:browser :phantomjs})
 
 (set-driver! browser-spec)
@@ -206,6 +203,7 @@
   ;;;;;;;;;;;;;; Search new component ;;;;;;;;;;;;;
 
   ; guard
+  (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "new-component")
   (wait-until (= 0 (count (elements "//li[@class='component']"))))
   (clear "//input[@name='search']")
