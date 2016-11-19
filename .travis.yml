@@ -30,9 +30,9 @@ script:
     - lein cljsbuild test
     - lein test
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
-    - ! grep 'Error' http-server.log
+    - "! grep 'Error' http-server.log"
     # check that there are no warnings in clojurescript compilation
-    - ! grep --perl-regexp '(ERROR|WARNING)' cljsbuild.log
+    - "! grep --perl-regexp '(ERROR|WARNING)' cljsbuild.log"
 
 after_success:
     - bin/deploy
