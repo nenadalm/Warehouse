@@ -1,12 +1,5 @@
 version: '2'
 services:
-    orientdb:
-        image: orientdb/orientdb
-        environment:
-            ORIENTDB_ROOT_PASSWORD: root
-        ports:
-            - "2424:2424"
-            - "2480:2480"
     backend:
         image: nenadalm/warehouse
         network_mode: host
