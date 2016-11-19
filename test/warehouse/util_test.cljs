@@ -297,3 +297,15 @@
   (is (= 4 (util/next-key {1 "first" 3 "third"}))
       "Map with sorted numeric keys with holes"))
 
+; skipped due to missing support for iterator in phantomjs
+;(deftest iterator->map-test
+  ;(is (= {}
+         ;(util/iterator->map (new js/Map)))
+      ;"Empty iterator")
+  ;(is (= {"prop1" "val1"
+          ;"prop2" "val2"}
+         ;(util/iterator->map (doto (new js/Map)
+                               ;(.set "prop1" "val1")
+                               ;(.set "prop2" "val2"))))
+      ;"Iterator with some entries"))
+

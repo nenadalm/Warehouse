@@ -172,14 +172,6 @@
                                (dispatch [:import :ges]))}
           "From ges"]])]]))
 
-(defn iterator->map
-  "Converts js iterator i into clojurescript map"
-  [i]
-  (->> i
-       (.from js/Array)
-       (js->clj)
-       (into {})))
-
 (defn import-form [data]
   [:form.import
    (for [item data]
@@ -192,7 +184,7 @@
                          (let [process-data (->> "form.import"
                                                  (.querySelector js/document)
                                                  (new js/FormData)
-                                                 (iterator->map))]
+                                                 (util/iterator->map))]
                            (dispatch [:process-create {:type :xhr
                                                        :url "http://localhost:3000"
                                                        :title "Ges import"

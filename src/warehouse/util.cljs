@@ -109,3 +109,11 @@
     1
     (inc (apply max (keys m)))))
 
+(defn iterator->map
+  "Converts js iterator i into clojurescript map"
+  [i]
+  (->> i
+       (.from js/Array)
+       (js->clj)
+       (into {})))
+
