@@ -19,7 +19,8 @@
                  [alandipert/storage-atom "2.0.1"]
                  [cljs-ajax "0.5.8"]
                  [secretary "1.2.3"]
-                 [re-frame "0.8.0"]]
+                 [re-frame "0.8.0"]
+                 [pjstadig/humane-test-output "0.8.1"]]
 
   :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
   :bower {:directory "bower_components"}

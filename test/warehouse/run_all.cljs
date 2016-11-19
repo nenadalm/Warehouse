@@ -1,5 +1,6 @@
 (ns warehouse.run-all
   (:require [cljs.test :refer-macros [run-all-tests]]
+            [pjstadig.humane-test-output]
             [warehouse.util-test]
             [warehouse.events-test]
             [warehouse.notifications.db-test]))
