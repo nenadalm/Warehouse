@@ -4,6 +4,7 @@
     [warehouse.util :as util]
     [warehouse.routes :as routes]
     [warehouse.notifications.views :refer [notifications]]
+    [warehouse.search.views :refer [search]]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
@@ -135,12 +136,6 @@
                                                         (dispatch [:revert-change :update metadata data]))} "Revert"]])])
                   change-set-data
                   (range (count change-set-data) 0 -1))])
-
-(defn search []
-  [:label "Search: "
-   [:input {:name "search"
-            :type "search"
-            :on-change (m/handler-fn (dispatch [:filter-update (.-target.value e)]))}]])
 
 (defn export []
   (let [state-data-uri (subscribe [:state-data-uri])]

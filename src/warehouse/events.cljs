@@ -1,7 +1,6 @@
 (ns warehouse.events
   (:require
     [warehouse.util :as util]
-    [warehouse.index :as index]
     [warehouse.change-set :as change-set]
     [warehouse.storage.storage :refer [storage]]
     [warehouse.notifications.db :refer [add-notification]]
@@ -191,17 +190,4 @@
   (fn
     [db [_ page]]
     (assoc db :page page)))
-
-(reg-cofx
-  :search-result
-  (fn [cofx _]
-    (assoc cofx :search-result (js->clj (.search index/index (second (:event cofx)))))))
-
-(reg-event-fx
-  :filter-update
-  [(inject-cofx :search-result)]
-  (fn
-    [cofx [_ val]]
-    {:db (assoc (:db cofx) :filter {:val val
-                                    :search (:search-result cofx)})}))
 

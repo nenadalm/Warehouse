@@ -1,27 +1,21 @@
 (ns warehouse.index
   (:require
     lunr
+    [warehouse.search.db :as search-db]
     [re-frame.db :as db]
     [re-frame.core :refer [dispatch]]))
 
-(defonce index (.lunr js/window (fn []
-                                  (this-as this
-                                           (.field this "name")
-                                           (.field this "tags")))))
-
-(defn update-index [index ns]
-  (doseq [[k component] (:components ns)]
-    (.update index (clj->js {:id (:id component)
-                             :name (:name component)
-                             :tags (:tags component)}))))
+(defn update-index [ns]
+  (search-db/update-index (map (fn [[_ component]]
+                           {:id (:id component)
+                            :name (:name component)
+                            :tags (:tags component)})
+                         (:components ns))))
 
 (defn initialize []
-  (doseq [[k component] (:components @db/app-db)]
-    (.add index (clj->js {:id (:id component)
-                          :name (:name component)
-                          :tags (:tags component)})))
+  (search-db/initialize ["name" "tags"])
+  (update-index @db/app-db)
   (add-watch db/app-db :indexer (fn [k r os ns]
                                   (when-not (identical? (:components os) (:components ns))
-                                    (update-index index ns)
-                                    (dispatch [:filter-update (get-in ns [:filter :val]) index])))))
+                                    (update-index ns)))))
 
