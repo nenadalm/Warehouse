@@ -10,8 +10,6 @@
 (set-driver! browser-spec)
 (set-finder! xpath-finder)
 
-;(implicit-wait 3000)
-
 (def params {:base-url "http://localhost:3449"})
 
 (def fixtures {:components
@@ -53,6 +51,7 @@
                  :amount 1}]})
 
 (def not-empty? (complement empty?))
+
 (defn fixture-path [filename]
   (.getCanonicalPath (clojure.java.io/file (str "test/warehouse/functional/" filename))))
 
@@ -75,22 +74,22 @@
   (to (:base-url params))
   (execute-script "localStorage.clear();")
 
-  (to (:base-url params))
+  (refresh)
 
   ; guard: there is zero components
   (is (empty? (elements "//li[@class='ccomponent']")))
 
   (upload-file (fixture-path "export.json"))
 
-  (is (not-empty? (elements "//li[@class='component']")))
+  (wait-until (not-empty? (elements "//li[@class='component']")))
   (refresh)
-  (is (not-empty? (elements "//li[@class='component']"))))
+  (wait-until (not-empty? (elements "//li[@class='component']"))))
 
 (defn create-component [component]
   (click "//button[contains(text(), 'Add new')]")
+  (wait-until (present? "//input[@name='name']"))
   (input-text "//input[@name='name']" (:name component))
   (input-text "//input[@name='tags']" (:tags-string component))
-  ;todo: comment and check tests
   (clear "//input[@name='amount']")
   (input-text "//input[@name='amount']" (str (:amount component)))
   (click "//button[contains(text(), 'Save')]"))
@@ -115,7 +114,7 @@
     (create-component component)
 
     ; check values of created components
-    (is (present? (component-value-selector (:id component) (:name component))))
+    (wait-until (present? (component-value-selector (:id component) (:name component))))
     (is (present? (component-value-selector (:id component) (:expected-tags-string component))))
     (is (present? (component-value-selector (:id component) (:amount component))))
 
@@ -131,14 +130,12 @@
 
   ;;;;;;;;;;;;; Edit form with cancel ;;;;;;;;;;;;;
 
-  (to "http://localhost:3449")
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'optocoupler')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '7')]"))
   (click "//button[contains(text(), 'Edit')]")
-  (wait-until (present? "//input[@name]"))
 
-  (is (present? "//input[@name='name' and @value='EPR212A408000Z']"))
+  (wait-until (present? "//input[@name='name' and @value='EPR212A408000Z']"))
   (is (present? "//input[@name='tags' and @value='optocoupler']"))
   (is (present? "//input[@name='amount' and @value='7']"))
 
@@ -149,22 +146,16 @@
   (input-text "//input[@name='tags']" "tag1, tag2")
   (input-text "//input[@name='amount']" "20")
   (click "//button[contains(text(), 'Cancel')]")
-  (wait-until (present? "//li[@class='component'][1]"))
 
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
+  (wait-until (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'optocoupler')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '7')]"))
 
   ;;;;;;;;;;;;; Edit form with save ;;;;;;;;;;;;;
 
-  (to "http://localhost:3449")
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'optocoupler')]"))
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '7')]"))
   (click "//button[contains(text(), 'Edit')]")
-  (wait-until (present? "//input[@name]"))
 
-  (is (present? "//input[@name='name' and @value='EPR212A408000Z']"))
+  (wait-until (present? "//input[@name='name' and @value='EPR212A408000Z']"))
   (is (present? "//input[@name='tags' and @value='optocoupler']"))
   (is (present? "//input[@name='amount' and @value='7']"))
 
@@ -175,59 +166,54 @@
   (input-text "//input[@name='tags']" "tag1, tag2")
   (input-text "//input[@name='amount']" "20")
   (click "//button[contains(text(), 'Save')]")
-  (wait-until (present? "//li[@class='component'][1]"))
 
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'new name')]"))
+  (wait-until (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'new name')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'tag1, tag2')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '20')]"))
 
   ;;;;;;;;;;;;; Search component ;;;;;;;;;;;;;
-
-  (to "http://localhost:3449")
 
   ; guard
   (is (< 1 (count (elements "//li[@class='component']"))))
 
   ; linear regulator by name
   (input-text "//input[@name='search']" "LF")
-  (is (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until (= 1 (count (elements "//li[@class='component']"))))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'LF33CV')]"))
 
   ; avr programmer by tag
   (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "rs232")
-  (is (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until (= 1 (count (elements "//li[@class='component']"))))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'AVRProg USB v3')]"))
 
   ;;;;;;;;;;;;; Search edited component ;;;;;;;;;;;;;
 
-  (to "http://localhost:3449")
-
   ; guard
-  (input-text "//input[@name='search']" "wtf")
-  (is (= 0 (count (elements "//li[@class='component']"))))
   (clear "//input[@name='search']")
-  (wait-until (exists? "//li[@class='component']"))
+  (input-text "//input[@name='search']" "wtf")
+  (wait-until (= 0 (count (elements "//li[@class='component']"))))
+  (clear "//input[@name='search']")
+  (wait-until (present? "//li[@class='component']"))
 
   (click "//button[contains(text(), 'Edit')]")
   (clear "//input[@name='name']")
   (input-text "//input[@name='name']" "wtf")
   (click "//button[contains(text(), 'Save')]")
   (input-text "//input[@name='search']" "wtf")
-  (is (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until (= 1 (count (elements "//li[@class='component']"))))
 
-  ;;;;;;;;;;;;; Search new component ;;;;;;;;;;;;;
-
-  (to "http://localhost:3449")
+  ;;;;;;;;;;;;;; Search new component ;;;;;;;;;;;;;
 
   ; guard
   (input-text "//input[@name='search']" "new-component")
-  (is (= 0 (count (elements "//li[@class='component']"))))
+  (wait-until (= 0 (count (elements "//li[@class='component']"))))
   (clear "//input[@name='search']")
 
   (click "//button[contains(text(), 'Add new')]")
+  (wait-until (present? "//input[@name='name']"))
   (input-text "//input[@name='name']" "new-component")
   (click "//button[contains(text(), 'Save')]")
   (input-text "//input[@name='search']" "new-component")
-  (is (= 1 (count (elements "//li[@class='component']")))))
+  (wait-until (= 1 (count (elements "//li[@class='component']")))))
 
