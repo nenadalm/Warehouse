@@ -6,33 +6,34 @@ cache:
 
 
 before_install:
-    - phantomjs --version
-    - export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH
-    - phantomjs --version
-    - if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi
-    - if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi
-    - if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi
-    - phantomjs --version
+    - 'phantomjs --version'
+    - 'export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH'
+    - 'phantomjs --version'
+    - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+    - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+    - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+    - 'phantomjs --version'
 
-    - npm install -g bower
+    - 'npm install -g bower'
 
 install:
-    - lein bower install
+    - 'lein bower install'
 
 before_script:
-    - npm install -g http-server
-    - http-server resources/public/ -p 3449 | tee http-server.log &
+    - 'npm install -g http-server'
+    - 'http-server resources/public/ -p 3449 2>&1 | tee http-server.log &'
 
-    - lein cljsbuild once min | tee cljsbuild.log
-    - lein less once
+    - 'lein cljsbuild once min 2>&1 | tee cljsbuild.log'
+    - 'lein less once'
 
 script:
     - lein cljsbuild test
     - lein test
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     - "! grep 'Error' http-server.log"
-    # check that there are no warnings in clojurescript compilation
-    - "! grep --perl-regexp '(ERROR|WARNING)' cljsbuild.log"
+    # check that there are no errors or warnings in clojurescript compilation
+    # also ignore redefining uuid by cognitect warning
+    - "! grep --perl-regexp '(ERROR|WARNING((?!cognitect.transit/uuid).)*)$' cljsbuild.log"
 
 after_success:
     - bin/deploy

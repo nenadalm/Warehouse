@@ -5,13 +5,12 @@
   :url "http://example.com/FIXME"
   :license {:name "MIT"}
 
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.json "0.2.6"]
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
                  [ring/ring-json "0.4.0"]
-                 [org.clojure/clojurescript "1.7.228"]
-                 [org.clojure/core.async "0.2.391"]
+                 [org.clojure/clojurescript "1.9.293"]
                  [reagent "0.6.0"]
                  [org.seleniumhq.selenium/selenium-java "2.53.1"]
                  [com.codeborne/phantomjsdriver "1.3.0"]

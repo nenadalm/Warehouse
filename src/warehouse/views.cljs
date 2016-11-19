@@ -144,7 +144,7 @@
            :download "warehouse_components.json"}
        [:button "Export"]])))
 
-(defn import []
+(defn import-button []
   (let [show-nav (subscribe [:show-nav])]
     [:div.dropdown
      {:on-click (m/handler-fn
@@ -205,7 +205,7 @@
       [:div
        [search]
        [export]
-       [import]
+       [import-button]
        (if (false? @adding)
          [:button {:on-click (m/handler-fn
                                (reset! adding true))} "Add new"])
