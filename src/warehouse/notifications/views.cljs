@@ -1,6 +1,6 @@
 (ns warehouse.notifications.views
   (:require
-    [warehouse.notificatios.subs]
+    [warehouse.notifications.subs]
     [warehouse.notifications.events]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros

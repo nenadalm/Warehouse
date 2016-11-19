@@ -1,4 +1,4 @@
-(ns warehouse.notificatios.subs
+(ns warehouse.notifications.subs
   (:require
     [re-frame.core :refer [reg-sub]]))
 
