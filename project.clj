@@ -14,6 +14,7 @@
                  [reagent "0.6.0"]
                  [org.seleniumhq.selenium/selenium-java "3.0.1"]
                  [org.seleniumhq.selenium/selenium-htmlunit-driver "2.52.0"]
+                 [org.seleniumhq.selenium/selenium-firefox-driver "3.0.1"]
                  [com.codeborne/phantomjsdriver "1.3.0"]
                  [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "2.0.1"]

@@ -55,7 +55,8 @@
 (defn clear [q]
   (send-keys q (clojure.string/join
                  ""
-                 (repeat (count (value q)) (clj-webdriver.core/key-code :back_space)))))
+                 (conj (repeat (count (value q)) (clj-webdriver.core/key-code :back_space))
+                       (clj-webdriver.core/key-code :end)))))
 
 (defn upload-file
   "This function exists because of bug in ghost driver https://github.com/ariya/phantomjs/issues/10993"
@@ -78,13 +79,13 @@
 
   (upload-file (fixture-path "export.json"))
 
-  (wait-until (not-empty? (elements "//li[@class='component']")))
+  (wait-until #(not-empty? (elements "//li[@class='component']")))
   (refresh)
-  (wait-until (not-empty? (elements "//li[@class='component']"))))
+  (wait-until #(not-empty? (elements "//li[@class='component']"))))
 
 (defn create-component [component]
   (click "//button[contains(text(), 'Add new')]")
-  (wait-until (present? "//input[@name='name']"))
+  (wait-until #(present? "//input[@name='name']"))
   (input-text "//input[@name='name']" (:name component))
   (input-text "//input[@name='tags']" (:tags-string component))
   (clear "//input[@name='amount']")
@@ -111,7 +112,7 @@
     (create-component component)
 
     ; check values of created components
-    (wait-until (present? (component-value-selector (:id component) (:name component))))
+    (wait-until #(present? (component-value-selector (:id component) (:name component))))
     (is (present? (component-value-selector (:id component) (:expected-tags-string component))))
     (is (present? (component-value-selector (:id component) (:amount component))))
 
@@ -132,7 +133,7 @@
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '7')]"))
   (click "//button[contains(text(), 'Edit')]")
 
-  (wait-until (present? "//input[@name='name' and @value='EPR212A408000Z']"))
+  (wait-until #(present? "//input[@name='name' and @value='EPR212A408000Z']"))
   (is (present? "//input[@name='tags' and @value='optocoupler']"))
   (is (present? "//input[@name='amount' and @value='7']"))
 
@@ -144,7 +145,7 @@
   (input-text "//input[@name='amount']" "20")
   (click "//button[contains(text(), 'Cancel')]")
 
-  (wait-until (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
+  (wait-until #(present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'EPR212A408000Z')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'optocoupler')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '7')]"))
 
@@ -152,7 +153,7 @@
 
   (click "//button[contains(text(), 'Edit')]")
 
-  (wait-until (present? "//input[@name='name' and @value='EPR212A408000Z']"))
+  (wait-until #(present? "//input[@name='name' and @value='EPR212A408000Z']"))
   (is (present? "//input[@name='tags' and @value='optocoupler']"))
   (is (present? "//input[@name='amount' and @value='7']"))
 
@@ -164,7 +165,7 @@
   (input-text "//input[@name='amount']" "20")
   (click "//button[contains(text(), 'Save')]")
 
-  (wait-until (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'new name')]"))
+  (wait-until #(present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'new name')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'tag1, tag2')]"))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), '20')]"))
 
@@ -175,13 +176,13 @@
 
   ; linear regulator by name
   (input-text "//input[@name='search']" "LF")
-  (wait-until (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until #(= 1 (count (elements "//li[@class='component']"))))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'LF33CV')]"))
 
   ; avr programmer by tag
   (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "rs232")
-  (wait-until (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until #(= 1 (count (elements "//li[@class='component']"))))
   (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'AVRProg USB v3')]"))
 
   ;;;;;;;;;;;;; Search edited component ;;;;;;;;;;;;;
@@ -189,29 +190,29 @@
   ; guard
   (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "wtf")
-  (wait-until (= 0 (count (elements "//li[@class='component']"))))
+  (wait-until #(= 0 (count (elements "//li[@class='component']"))))
   (clear "//input[@name='search']")
-  (wait-until (present? "//li[@class='component']"))
+  (wait-until #(present? "//li[@class='component']"))
 
   (click "//button[contains(text(), 'Edit')]")
   (clear "//input[@name='name']")
   (input-text "//input[@name='name']" "wtf")
   (click "//button[contains(text(), 'Save')]")
   (input-text "//input[@name='search']" "wtf")
-  (wait-until (= 1 (count (elements "//li[@class='component']"))))
+  (wait-until #(= 1 (count (elements "//li[@class='component']"))))
 
   ;;;;;;;;;;;;;; Search new component ;;;;;;;;;;;;;
 
   ; guard
   (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "new-component")
-  (wait-until (= 0 (count (elements "//li[@class='component']"))))
+  (wait-until #(= 0 (count (elements "//li[@class='component']"))))
   (clear "//input[@name='search']")
 
   (click "//button[contains(text(), 'Add new')]")
-  (wait-until (present? "//input[@name='name']"))
+  (wait-until #(present? "//input[@name='name']"))
   (input-text "//input[@name='name']" "new-component")
   (click "//button[contains(text(), 'Save')]")
   (input-text "//input[@name='search']" "new-component")
-  (wait-until (= 1 (count (elements "//li[@class='component']")))))
+  (wait-until #(= 1 (count (elements "//li[@class='component']")))))
 
