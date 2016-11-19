@@ -40,7 +40,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
-    :test-commands {"functional" ["phantomjs" "resources/test/phantom/run.js" "resources/test/test.html"]}
+    :test-commands {"cljs" ["phantomjs" "resources/test/phantom/run.js" "resources/test/test.html"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
