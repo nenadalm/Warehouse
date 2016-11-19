@@ -1,5 +1,5 @@
 (ns warehouse.run-all
-  (:require [cljs.test :refer-macros [run-all-tests run-tests]]
+  (:require [cljs.test :refer-macros [run-all-tests]]
             [warehouse.util-test]
             [warehouse.events-test]
             [warehouse.notifications.db-test]))
@@ -7,7 +7,7 @@
 (enable-console-print!)
 
 (defn exit [code]
-  (aset js/window "testStatus" code))
+  (aset js/window "teststatus" code))
 
 (defmethod cljs.test/report [:cljs.test/default :end-run-tests] [m]
   (if (cljs.test/successful? m)

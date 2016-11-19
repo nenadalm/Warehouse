@@ -1,7 +1,7 @@
 (ns warehouse.util-test
-  (:require-macros [cljs.test :refer [deftest is testing]])
-  (:use [cljs.test :only [do-report]])
-  (:require [warehouse.util :as util]))
+  (:require
+    [cljs.test :refer-macros [deftest is testing]]
+    [warehouse.util :as util]))
 
 (deftest map-diff-test
   (testing "same maps"

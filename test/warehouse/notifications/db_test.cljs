@@ -1,7 +1,7 @@
 (ns warehouse.notifications.db-test
-  (:require-macros [cljs.test :refer [deftest is testing]])
-  (:use [cljs.test :only [do-report]])
-  (:require [warehouse.notifications.db :as db]))
+  (:require
+    [cljs.test :refer-macros [deftest is testing]]
+    [warehouse.notifications.db :as db]))
 
 (deftest add-notification-test
   (is (= {:notifications {1 {:type :error
