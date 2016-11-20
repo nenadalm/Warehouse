@@ -1,13 +1,7 @@
-(ns warehouse.functional.test
+(ns warehouse.selenium.test
   (:use [clj-webdriver.taxi :exclude [clear]]
-        [clojure.test]))
-
-(def browser-spec {:browser :phantomjs})
-
-(set-driver! browser-spec)
-(set-finder! xpath-finder)
-
-(def params {:base-url "http://localhost:3449"})
+        [clojure.test]
+        [warehouse.selenium.config]))
 
 (def fixtures {:components
                [{:id 1
@@ -50,13 +44,7 @@
 (def not-empty? (complement empty?))
 
 (defn fixture-path [filename]
-  (.getCanonicalPath (clojure.java.io/file (str "test/warehouse/functional/" filename))))
-
-(defn clear [q]
-  (send-keys q (clojure.string/join
-                 ""
-                 (conj (repeat (count (value q)) (clj-webdriver.core/key-code :back_space))
-                       (clj-webdriver.core/key-code :end)))))
+  (.getCanonicalPath (clojure.java.io/file (str "test/warehouse/selenium/" filename))))
 
 (defn upload-file
   "This function exists because of bug in ghost driver https://github.com/ariya/phantomjs/issues/10993"
@@ -69,7 +57,7 @@
 
 (deftest import-export []
   ; reset env
-  (to (:base-url params))
+  (to base-url)
   (execute-script "localStorage.clear();")
 
   (refresh)
@@ -100,10 +88,9 @@
   ;;;;;;;;;;;;; Create components ;;;;;;;;;;;;;
 
   ; reset env
-  (to (:base-url params))
+  (to base-url)
   (execute-script "localStorage.clear();")
-
-  (to (:base-url params))
+  (refresh)
 
   ; guard: there is zero components
   (is (empty? (elements "//li[@class='component']")))
