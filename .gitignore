@@ -15,7 +15,9 @@ pom.xml
 .lein-plugins/
 .repl
 .nrepl-port
+.lein-git-deps/
 /bower_components/
+node_modules/
 phantomjsdriver.log
 .lein-failures
 npm-debug.log

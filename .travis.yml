@@ -41,6 +41,8 @@ install:
 before_script:
     - 'export DISPLAY=:99.0'
     - 'sh -e /etc/init.d/xvfb start'
+    - npm install
+    - lein git-deps
     - 'npm install -g http-server'
     - 'http-server resources/public/ -p 3449 2>&1 | tee http-server.log &'
 
