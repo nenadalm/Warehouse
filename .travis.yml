@@ -29,28 +29,7 @@ before_install:
             mkdir geckodriver
             wget https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz -O geckodriver/geckodriver.tar.gz
             tar -xvf geckodriver/geckodriver.tar.gz -C geckodriver
-            mv geckodriver/geckodriver geckodriver/real-geckodriver
             rm geckodriver/geckodriver.tar.gz
-            printf '#!/usr/bin/env bash
-
-            args=("$@")
-
-            # remove --binary or -b option
-            for i in "${!args[@]}"; do
-                if [[ "${args[$i]}" =~ ^(--binary|-b)(=.*)?$ ]]; then
-                    unset args[$i]
-                    if [[ ! "${args[$(($i + 1))]}" =~ ^- ]]; then
-                        unset args[$(($i + 1))]
-                    fi
-                fi
-            done
-
-            args+=("--binary")
-            args+=("$(which firefox)")
-
-            real-geckodriver "${args[@]}"
-            ' > geckodriver/geckodriver
-            chmod +x geckodriver/geckodriver;
         fi
         geckodriver --version
 
@@ -69,6 +48,7 @@ before_script:
     - 'lein less once'
 
 script:
+    - alias firefox-bin='firefox'
     - lein cljsbuild test
     - 'SELENIUM_BROWSER=phantomjs lein test'
     - 'SELENIUM_BROWSER=firefox lein test'
