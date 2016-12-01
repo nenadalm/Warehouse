@@ -22,7 +22,6 @@ before_install:
     - 'phantomjs --version'
 
     # geckodriver
-    - rm -rf geckodriver
     - |
         export PATH=$PWD/geckodriver:$PATH
         if ! type geckodriver > /dev/null 2>&1; then
