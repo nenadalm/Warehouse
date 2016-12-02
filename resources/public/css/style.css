@@ -1,0 +1,85 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.hide {
+  display: none;
+}
+.component,
+form {
+  margin: 10px 0;
+  background: #7F9FF5;
+  color: #000;
+}
+body {
+  background: #fff;
+}
+input[type=file] {
+  display: none;
+}
+li {
+  list-style: none;
+  padding: 0;
+}
+table.processes {
+  border-collapse: collapse;
+}
+table.processes,
+table.processes th,
+table.processes tr,
+table.processes td {
+  border: 1px solid;
+  padding: 5px;
+}
+.menu li {
+  display: inline-block;
+  background: #7F9FF5;
+  padding: 5px;
+  margin: 2px;
+}
+.dropdown {
+  display: inline-block;
+}
+.dropdown ul {
+  display: none;
+  position: absolute;
+}
+.dropdown.open ul {
+  display: block;
+}
+.notifications {
+  position: fixed;
+  width: 80%;
+  margin-left: 10%;
+  text-align: center;
+  top: 0;
+}
+.notifications .notification {
+  display: flex;
+  margin: 5px;
+  padding: 2px;
+}
+.notifications .notification .message {
+  width: 100%;
+}
+.notifications .notification .close {
+  width: 5%;
+}
+.notifications .notification-error {
+  background: #ed2f2f;
+}
+.notifications .notification-success {
+  background: #1ce829;
+}
+.change-set {
+  padding-left: 20px;
+  border: 1px solid #7F9FF5;
+  margin: 5px;
+}
+.change-set .component > ul > li > * {
+  display: inline-block;
+  vertical-align: top;
+}
+.change-set .old {
+  text-decoration: line-through;
+}
