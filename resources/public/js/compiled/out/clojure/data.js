@@ -18,10 +18,10 @@ return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMP
  */
 clojure.data.vectorize = (function clojure$data$vectorize(m){
 if(cljs.core.seq(m)){
-return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (result,p__15650){
-var vec__15651 = p__15650;
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15651,(0),null);
-var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15651,(1),null);
+return cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (result,p__19329){
+var vec__19330 = p__19329;
+var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19330,(0),null);
+var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19330,(1),null);
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(result,k,v);
 }),cljs.core.vec(cljs.core.repeat.cljs$core$IFn$_invoke$arity$2(cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.max,cljs.core.keys(m)),null)),m);
 } else {
@@ -34,10 +34,10 @@ return null;
 clojure.data.diff_associative_key = (function clojure$data$diff_associative_key(a,b,k){
 var va = cljs.core.get.cljs$core$IFn$_invoke$arity$2(a,k);
 var vb = cljs.core.get.cljs$core$IFn$_invoke$arity$2(b,k);
-var vec__15657 = (clojure.data.diff.cljs$core$IFn$_invoke$arity$2 ? clojure.data.diff.cljs$core$IFn$_invoke$arity$2(va,vb) : clojure.data.diff.call(null,va,vb));
-var a_STAR_ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15657,(0),null);
-var b_STAR_ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15657,(1),null);
-var ab = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15657,(2),null);
+var vec__19336 = (clojure.data.diff.cljs$core$IFn$_invoke$arity$2 ? clojure.data.diff.cljs$core$IFn$_invoke$arity$2(va,vb) : clojure.data.diff.call(null,va,vb));
+var a_STAR_ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19336,(0),null);
+var b_STAR_ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19336,(1),null);
+var ab = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19336,(2),null);
 var in_a = cljs.core.contains_QMARK_(a,k);
 var in_b = cljs.core.contains_QMARK_(b,k);
 var same = (in_a) && (in_b) && ((!((ab == null))) || (((va == null)) && ((vb == null))));
@@ -47,23 +47,23 @@ return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMP
  * Diff associative things a and b, comparing only keys in ks (if supplied).
  */
 clojure.data.diff_associative = (function clojure$data$diff_associative(var_args){
-var args15660 = [];
-var len__7692__auto___15663 = arguments.length;
-var i__7693__auto___15664 = (0);
+var args19339 = [];
+var len__7692__auto___19342 = arguments.length;
+var i__7693__auto___19343 = (0);
 while(true){
-if((i__7693__auto___15664 < len__7692__auto___15663)){
-args15660.push((arguments[i__7693__auto___15664]));
+if((i__7693__auto___19343 < len__7692__auto___19342)){
+args19339.push((arguments[i__7693__auto___19343]));
 
-var G__15665 = (i__7693__auto___15664 + (1));
-i__7693__auto___15664 = G__15665;
+var G__19344 = (i__7693__auto___19343 + (1));
+i__7693__auto___19343 = G__19344;
 continue;
 } else {
 }
 break;
 }
 
-var G__15662 = args15660.length;
-switch (G__15662) {
+var G__19341 = args19339.length;
+switch (G__19341) {
 case 2:
 return clojure.data.diff_associative.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
 
@@ -73,7 +73,7 @@ return clojure.data.diff_associative.cljs$core$IFn$_invoke$arity$3((arguments[(0
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args15660.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args19339.length)].join('')));
 
 }
 });
@@ -250,8 +250,8 @@ return clojure.data.atom_diff(a,b);
 (clojure.data.Diff["_"] = true);
 
 (clojure.data.diff_similar["_"] = (function (a,b){
-return (function (){var G__15670 = (((clojure.data.equality_partition(a) instanceof cljs.core.Keyword))?clojure.data.equality_partition(a).fqn:null);
-switch (G__15670) {
+return (function (){var G__19349 = (((clojure.data.equality_partition(a) instanceof cljs.core.Keyword))?clojure.data.equality_partition(a).fqn:null);
+switch (G__19349) {
 case "atom":
 return clojure.data.atom_diff;
 

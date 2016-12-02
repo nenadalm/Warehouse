@@ -4,7 +4,7 @@ goog.require('cljs.core');
 goog.require('alandipert.storage_atom');
 if(typeof warehouse.change_set.change_sets !== 'undefined'){
 } else {
-warehouse.change_set.change_sets = alandipert.storage_atom.local_storage((function (){var G__15025 = cljs.core.PersistentVector.EMPTY;
-return (cljs.core.atom.cljs$core$IFn$_invoke$arity$1 ? cljs.core.atom.cljs$core$IFn$_invoke$arity$1(G__15025) : cljs.core.atom.call(null,G__15025));
+warehouse.change_set.change_sets = alandipert.storage_atom.local_storage((function (){var G__18545 = cljs.core.PersistentVector.EMPTY;
+return (cljs.core.atom.cljs$core$IFn$_invoke$arity$1 ? cljs.core.atom.cljs$core$IFn$_invoke$arity$1(G__18545) : cljs.core.atom.call(null,G__18545));
 })(),cljs.core.cst$kw$app_DASH_change_DASH_sets);
 }
