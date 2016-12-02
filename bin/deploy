@@ -25,7 +25,7 @@ lein clean
 lein less once
 lein cljsbuild once min
 
-git add .
+git add --force resources/public
 git commit -m "Travis-CI: update resources"
 
 # ssh key
