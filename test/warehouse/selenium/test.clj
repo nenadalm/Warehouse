@@ -182,6 +182,7 @@
   (wait-until #(present? "//li[@class='component']"))
 
   (click "//button[contains(text(), 'Edit')]")
+  (wait-until #(present? "//input[@name='name']"))
   (clear "//input[@name='name']")
   (input-text "//input[@name='name']" "wtf")
   (click "//button[contains(text(), 'Save')]")
