@@ -10,12 +10,6 @@
     (:processes db)))
 
 (reg-sub
-  :import-form
-  (fn
-    [db _]
-    (:import-form db)))
-
-(reg-sub
   :show-nav
   (fn
     [db _]

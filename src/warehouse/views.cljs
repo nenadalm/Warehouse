@@ -5,6 +5,7 @@
     [warehouse.routes :as routes]
     [warehouse.notifications.views :refer [notifications]]
     [warehouse.search.views :refer [search]]
+    [warehouse.component-import.views :refer [import-button import-form]]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
@@ -72,13 +73,6 @@
          (item-view data editing)
          (item-edit-view data editing k))])))
 
-(defn file-input [name f]
-  [:button
-   [:label
-    [:input {:type "file"
-             :on-change f}]
-    name]])
-
 (defn raw-property-view [value property]
   ^{:key property} [:li
                     [:span.label (str (key->label property) ": ")]
@@ -143,56 +137,6 @@
       [:a {:href @state-data-uri
            :download "warehouse_components.json"}
        [:button "Export"]])))
-
-(defn import-button []
-  (let [show-nav (subscribe [:show-nav])]
-    [:div.dropdown
-     {:on-click (m/handler-fn
-                  (when (not= (.-tagName (.-target e)) "INPUT")
-                    (.toggle (.-classList (.-currentTarget e)) "open")))}
-     [:button "Import"]
-     [:ul
-      [:li
-       [file-input "From file" (m/handler-fn
-                                 (let [reader (js/FileReader.)
-                                       this (aget e "currentTarget")]
-                                   (aset reader
-                                         "onload"
-                                         (fn [reader-event]
-                                           (dispatch
-                                             [:import-document
-                                              (->> (.-target.result reader-event)
-                                                   (.parse js/JSON)
-                                                   (#(js->clj % :keywordize-keys true)))])
-                                           (aset this "value" "")))
-                                   (.readAsText reader (aget e "target" "files" "0"))))]]
-      (when @show-nav
-        [:li
-         [:button {:on-click (m/handler-fn
-                               (dispatch [:import :ges]))}
-          "From ges"]])]]))
-
-(defn import-form [data]
-  [:form.import
-   (for [item data]
-     ^{:key (:name item)} [:div
-                           [:label (:label item) ": "
-                            [:input {:type (:type item)
-                                     :name (:name item)}]]])
-   [:button {:type "button"
-             :on-click (m/handler-fn
-                         (let [process-data (->> "form.import"
-                                                 (.querySelector js/document)
-                                                 (new js/FormData)
-                                                 (util/iterator->map))]
-                           (dispatch [:process-create {:type :xhr
-                                                       :url "http://localhost:3000/handler/ges"
-                                                       :title "Ges import"
-                                                       :data process-data}])))}
-    "Save"]
-   [:button {:type "button"
-             :on-click (m/handler-fn (dispatch [:import-cancel]))}
-    "Cancel"]])
 
 (defn component-list []
   (let [adding (atom false)
