@@ -15,7 +15,9 @@
 (s/defschema ProviderDescription {:type s/Str
                                   :homepage s/Str
                                   :icon s/Str
-                                  :params {s/Keyword {:type s/Str}}})
+                                  :params [{:name s/Str
+                                            :type s/Str
+                                            :secret s/Bool}]})
 
 (defn wrap-component-handler [component-handler]
   (fn [request]
@@ -65,9 +67,15 @@
 (def ges-description {:type "ges"
                       :homepage "http://www.ges.cz"
                       :icon "http://www.ges.cz/favicon.ico"
-                      :params {:username {:type "string"}
-                               :password {:type "string"}
-                               :url {:type "string"}}})
+                      :params [{:name "user"
+                                :type "string"
+                                :secret false}
+                               {:name "password"
+                                :type "string"
+                                :secret true}
+                               {:name "url"
+                                :type "string"
+                                :secret false}]})
 ;;; END GES
 
 (defapi app-api
