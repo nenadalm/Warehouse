@@ -4,8 +4,8 @@ goog.require('cljs.core');
 goog.require('alandipert.storage_atom');
 if(typeof warehouse.storage.local.app_state !== 'undefined'){
 } else {
-warehouse.storage.local.app_state = alandipert.storage_atom.local_storage((function (){var G__30183 = new cljs.core.PersistentArrayMap(null, 1, [cljs.core.cst$kw$components,cljs.core.PersistentVector.EMPTY], null);
-return (cljs.core.atom.cljs$core$IFn$_invoke$arity$1 ? cljs.core.atom.cljs$core$IFn$_invoke$arity$1(G__30183) : cljs.core.atom.call(null,G__30183));
+warehouse.storage.local.app_state = alandipert.storage_atom.local_storage((function (){var G__30261 = new cljs.core.PersistentArrayMap(null, 1, [cljs.core.cst$kw$components,cljs.core.PersistentVector.EMPTY], null);
+return (cljs.core.atom.cljs$core$IFn$_invoke$arity$1 ? cljs.core.atom.cljs$core$IFn$_invoke$arity$1(G__30261) : cljs.core.atom.call(null,G__30261));
 })(),cljs.core.cst$kw$app_DASH_state);
 }
 warehouse.storage.local.storage = new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$store_DASH_state,(function (state){
