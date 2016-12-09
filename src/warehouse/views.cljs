@@ -186,7 +186,7 @@
                                                  (new js/FormData)
                                                  (util/iterator->map))]
                            (dispatch [:process-create {:type :xhr
-                                                       :url "http://localhost:3000"
+                                                       :url "http://localhost:3000/handler/ges"
                                                        :title "Ges import"
                                                        :data process-data}])))}
     "Save"]

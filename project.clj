@@ -10,6 +10,7 @@
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
                  [ring/ring-json "0.4.0"]
+                 [metosin/compojure-api "1.2.0-alpha1"]
                  [org.clojure/clojurescript "1.9.293"]
                  [reagent "0.6.0"]
                  [org.seleniumhq.selenium/selenium-java "3.0.1"]
