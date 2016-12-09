@@ -76,7 +76,7 @@
                          :pretty-print false
                          :libs ["bower_components/lunr.js/lunr.js"]}}]}
 
-  :less {:source-paths ["src/warehouse/less"]
+  :less {:source-paths ["resources/less"]
          :target-path "resources/public/css"}
 
   :figwheel {
