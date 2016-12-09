@@ -13,23 +13,23 @@ return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(res,k,new cljs.core.Persist
 }
 }),cljs.core.PersistentArrayMap.EMPTY,cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentHashSet.EMPTY,cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.keys(m1),cljs.core.keys(m2))));
 });
-warehouse.util.revert_set = (function warehouse$util$revert_set(s,p__19570){
-var vec__19574 = p__19570;
-var o = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19574,(0),null);
-var n = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19574,(1),null);
+warehouse.util.revert_set = (function warehouse$util$revert_set(s,p__30094){
+var vec__30098 = p__30094;
+var o = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30098,(0),null);
+var n = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30098,(1),null);
 var add = clojure.set.difference.cljs$core$IFn$_invoke$arity$2(n,o);
 var remove = clojure.set.difference.cljs$core$IFn$_invoke$arity$2(o,n);
-return cljs.core.apply.cljs$core$IFn$_invoke$arity$2(((function (add,remove,vec__19574,o,n){
-return (function (p1__19569_SHARP_){
-return cljs.core.conj.cljs$core$IFn$_invoke$arity$2(clojure.set.difference.cljs$core$IFn$_invoke$arity$2(s,remove),p1__19569_SHARP_);
-});})(add,remove,vec__19574,o,n))
+return cljs.core.apply.cljs$core$IFn$_invoke$arity$2(((function (add,remove,vec__30098,o,n){
+return (function (p1__30093_SHARP_){
+return cljs.core.conj.cljs$core$IFn$_invoke$arity$2(clojure.set.difference.cljs$core$IFn$_invoke$arity$2(s,remove),p1__30093_SHARP_);
+});})(add,remove,vec__30098,o,n))
 ,add);
 });
 warehouse.util.revert_changes = (function warehouse$util$revert_changes(m,diff){
-return cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([m,cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__19581){
-var vec__19582 = p__19581;
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19582,(0),null);
-var d = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19582,(1),null);
+return cljs.core.merge.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([m,cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__30105){
+var vec__30106 = p__30105;
+var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30106,(0),null);
+var d = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30106,(1),null);
 if(cljs.core.every_QMARK_(cljs.core.integer_QMARK_,d)){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [k,(function (){var x__6915__auto__ = (0);
 var y__6916__auto__ = (cljs.core.get.cljs$core$IFn$_invoke$arity$2(m,k) + cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core._,d));
@@ -69,8 +69,8 @@ return new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$metadata,new 
 });})(same_keys,created_keys,updates))
 ,cljs.core.map.cljs$core$IFn$_invoke$arity$2(cljs.core.second,cljs.core.select_keys(new_col,created_keys)));
 return cljs.core.filterv(cljs.core.complement(((function (same_keys,created_keys,updates,creates){
-return (function (p1__19585_SHARP_){
-return cljs.core.empty_QMARK_(cljs.core.cst$kw$data.cljs$core$IFn$_invoke$arity$1(p1__19585_SHARP_));
+return (function (p1__30109_SHARP_){
+return cljs.core.empty_QMARK_(cljs.core.cst$kw$data.cljs$core$IFn$_invoke$arity$1(p1__30109_SHARP_));
 });})(same_keys,created_keys,updates,creates))
 ),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$type,cljs.core.cst$kw$create,cljs.core.cst$kw$data,creates], null),new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$type,cljs.core.cst$kw$update,cljs.core.cst$kw$data,updates], null)], null));
 }
@@ -83,10 +83,10 @@ return cljs.core.set(cljs.core.map.cljs$core$IFn$_invoke$arity$2(clojure.string.
 });
 warehouse.util.document__GT_state = (function warehouse$util$document__GT_state(document,current_state){
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(current_state,cljs.core.cst$kw$components,((cljs.core.empty_QMARK_(cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document)))?cljs.core.PersistentArrayMap.EMPTY:cljs.core.apply.cljs$core$IFn$_invoke$arity$3(cljs.core.assoc,cljs.core.PersistentArrayMap.EMPTY,cljs.core.interleave.cljs$core$IFn$_invoke$arity$2(cljs.core.map.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$id,cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document)),cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (component){
-return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__19590){
-var vec__19591 = p__19590;
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19591,(0),null);
-var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__19591,(1),null);
+return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__30114){
+var vec__30115 = p__30114;
+var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30115,(0),null);
+var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30115,(1),null);
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [k,((cljs.core.vector_QMARK_(v))?cljs.core.set(v):v)], null);
 }),component));
 }),cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document))))));
@@ -115,21 +115,21 @@ return components;
 } else {
 var item = cljs.core.first(new_items__$1);
 var old_item = cljs.core.first(cljs.core.filter.cljs$core$IFn$_invoke$arity$2(((function (new_items__$1,components,item,c){
-return (function (p1__19594_SHARP_){
-return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(cljs.core.second(p1__19594_SHARP_)));
+return (function (p1__30118_SHARP_){
+return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(cljs.core.second(p1__30118_SHARP_)));
 });})(new_items__$1,components,item,c))
 ,c));
 if(cljs.core.empty_QMARK_(old_item)){
-var G__19595 = cljs.core.rest(new_items__$1);
-var G__19596 = cljs.core.conj.cljs$core$IFn$_invoke$arity$2(components,new cljs.core.PersistentArrayMap(null, 4, [cljs.core.cst$kw$id,warehouse.util.generate_component_id(components),cljs.core.cst$kw$name,cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$tags,cljs.core.vec(cljs.core.cst$kw$tags.cljs$core$IFn$_invoke$arity$1(item)),cljs.core.cst$kw$amount,cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item)], null));
-new_items__$1 = G__19595;
-components = G__19596;
+var G__30119 = cljs.core.rest(new_items__$1);
+var G__30120 = cljs.core.conj.cljs$core$IFn$_invoke$arity$2(components,new cljs.core.PersistentArrayMap(null, 4, [cljs.core.cst$kw$id,warehouse.util.generate_component_id(components),cljs.core.cst$kw$name,cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$tags,cljs.core.vec(cljs.core.cst$kw$tags.cljs$core$IFn$_invoke$arity$1(item)),cljs.core.cst$kw$amount,cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item)], null));
+new_items__$1 = G__30119;
+components = G__30120;
 continue;
 } else {
-var G__19597 = cljs.core.rest(new_items__$1);
-var G__19598 = cljs.core.assoc_in(components,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.first(old_item),cljs.core.cst$kw$amount], null),(cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item) + cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(cljs.core.second(old_item))));
-new_items__$1 = G__19597;
-components = G__19598;
+var G__30121 = cljs.core.rest(new_items__$1);
+var G__30122 = cljs.core.assoc_in(components,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.first(old_item),cljs.core.cst$kw$amount], null),(cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item) + cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(cljs.core.second(old_item))));
+new_items__$1 = G__30121;
+components = G__30122;
 continue;
 }
 }
