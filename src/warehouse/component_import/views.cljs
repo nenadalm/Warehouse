@@ -17,7 +17,7 @@
   [:li
    [:button {:on-click (m/handler-fn
                          (dispatch [:import provider]))}
-    "From " provider]])
+    "From " (:type provider)]])
 
 (defn import-button []
   (let [component-providers (subscribe [:component-providers])]
@@ -43,12 +43,12 @@
                                              (aset this "value" "")))
                                      (.readAsText reader (aget e "target" "files" "0"))))]]
         (for [provider @component-providers]
-          ^{:key provider} [component-provider provider])
+          ^{:key (:type provider)} [component-provider provider])
         ]])))
 
 (defn import-form [data]
   [:form.import
-   (for [item data]
+   (for [item (:fields data)]
      ^{:key (:name item)} [:div
                            [:label (:label item) ": "
                             [:input {:type (:type item)
@@ -60,8 +60,8 @@
                                                  (new js/FormData)
                                                  (util/iterator->map))]
                            (dispatch [:process-create {:type :xhr
-                                                       :url "http://localhost:3000/handler/ges"
-                                                       :title "Ges import"
+                                                       :url (:action data)
+                                                       :title "Import"
                                                        :data process-data}])))}
     "Save"]
    [:button {:type "button"

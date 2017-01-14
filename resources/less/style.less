@@ -20,6 +20,9 @@ body {
 input[type=file] {
     display: none;
 }
+button {
+    position: relative;
+}
 
 li {
     list-style: none;
@@ -57,6 +60,7 @@ table.processes {
 
 .notifications {
     @width: 80%;
+    z-index: 1;
 
     position: fixed;
     width: @width;
@@ -99,6 +103,45 @@ table.processes {
 
     .old {
         text-decoration: line-through;
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    opacity: 0.6;
+}
+
+@loader-width: 10%;
+.loader {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: @loader-width;
+    height: 50%;
+    border-radius: 1em;
+    position: absolute;
+    background-color: #826f6f;
+    vertical-align: middle;
+    margin: auto 0;
+    z-index: 1;
+    animation-name: loader;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-direction: alternate;
+}
+@keyframes loader {
+    0% {
+        margin-left: 0;
+    }
+    100% {
+        margin-left: calc(100% - @loader-width);
     }
 }
 
