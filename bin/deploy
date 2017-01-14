@@ -36,5 +36,5 @@ git add --force resources/public
 git commit -m "Travis-CI: update resources"
 
 git push "${REPO}" "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git subtree push --prefix resources/public "${REPO}" "${SUBTREE_BRANCH}"
+git subtree push --prefix resources/public "${REPO}" "${TARGET_BRANCH}:${SUBTREE_BRANCH}"
 
