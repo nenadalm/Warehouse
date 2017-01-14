@@ -12,6 +12,12 @@ if [[ "${TRAVIS_PULL_REQUEST}" != "false" || "${TRAVIS_BRANCH}" != "${SOURCE_BRA
     exit 0
 fi
 
+# ssh key
+openssl aes-256-cbc -K $encrypted_c07dc22e265d_key -iv $encrypted_c07dc22e265d_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
+eval "$(ssh-agent -s)"
+chmod 600 .travis/id_rsa
+ssh-add .travis/id_rsa
+
 git config user.name "Travis CI"
 git config user.email "travis@example.com"
 
@@ -27,12 +33,6 @@ lein cljsbuild once min
 
 git add --force resources/public
 git commit -m "Travis-CI: update resources"
-
-# ssh key
-openssl aes-256-cbc -K $encrypted_c07dc22e265d_key -iv $encrypted_c07dc22e265d_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
-eval "$(ssh-agent -s)"
-chmod 600 .travis/id_rsa
-ssh-add .travis/id_rsa
 
 git push "${REPO}" "${TARGET_BRANCH}:${TARGET_BRANCH}"
 git subtree push --prefix resources/public "${REPO}" "${SUBTREE_BRANCH}"
