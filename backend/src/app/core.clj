@@ -1,4 +1,4 @@
-(ns warehouse.core
+(ns app.core
   (:require [clojure.data.json :as json]
             [schema.core :as s])
   (:use [ring.middleware.params :refer [wrap-params]]

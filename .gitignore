@@ -1,3 +1,5 @@
+/backend/target/
+
 /resources/public/js/compiled/**
 /resources/public/css/**
 /dependencies/
