@@ -15,12 +15,12 @@ window.addEventListener("hashchange",(function (e){
 return secretary.core.dispatch_BANG_(location.hash);
 }));
 
-var G__30768_30771 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$initialize_DASH_db], null);
-(re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1(G__30768_30771) : re_frame.core.dispatch_sync.call(null,G__30768_30771));
+var G__15355_15358 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$initialize_DASH_db], null);
+(re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1(G__15355_15358) : re_frame.core.dispatch_sync.call(null,G__15355_15358));
 
-var G__30769_30772 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [warehouse.views.page], null);
-var G__30770_30773 = document.getElementById("app");
-(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__30769_30772,G__30770_30773) : reagent.core.render_component.call(null,G__30769_30772,G__30770_30773));
+var G__15356_15359 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [warehouse.views.page], null);
+var G__15357_15360 = document.getElementById("app");
+(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__15356_15359,G__15357_15360) : reagent.core.render_component.call(null,G__15356_15359,G__15357_15360));
 
 return warehouse.index.initialize();
 });

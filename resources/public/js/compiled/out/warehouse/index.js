@@ -6,10 +6,10 @@ goog.require('warehouse.search.db');
 goog.require('re_frame.db');
 goog.require('re_frame.core');
 warehouse.index.update_index = (function warehouse$index$update_index(ns){
-return warehouse.search.db.update_index(cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__30070){
-var vec__30071 = p__30070;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30071,(0),null);
-var component = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__30071,(1),null);
+return warehouse.search.db.update_index(cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__14657){
+var vec__14658 = p__14657;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14658,(0),null);
+var component = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14658,(1),null);
 return new cljs.core.PersistentArrayMap(null, 3, [cljs.core.cst$kw$id,cljs.core.cst$kw$id.cljs$core$IFn$_invoke$arity$1(component),cljs.core.cst$kw$name,cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(component),cljs.core.cst$kw$tags,cljs.core.cst$kw$tags.cljs$core$IFn$_invoke$arity$1(component)], null);
 }),cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(ns)));
 });
