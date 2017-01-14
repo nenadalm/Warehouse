@@ -15,6 +15,7 @@
 (s/defschema ProviderDescription {:type s/Str
                                   :homepage s/Str
                                   :icon s/Str
+                                  :action s/Str
                                   :params [{:name s/Str
                                             :type s/Str
                                             :secret s/Bool}]})
@@ -37,6 +38,12 @@
 (s/defschema Request {:username s/Str
                       :password s/Str
                       :url s/Str})
+
+; testing handler
+;(defn- ges-handler- [request]
+  ;(let [params (:params request)]
+    ;[{:name (:username params)
+      ;:amount 1}]))
 
 (defn- ges-handler- [request]
   (try
@@ -67,7 +74,8 @@
 (def ges-description {:type "ges"
                       :homepage "http://www.ges.cz"
                       :icon "http://www.ges.cz/favicon.ico"
-                      :params [{:name "user"
+                      :action "http://localhost:3000/handler/ges"
+                      :params [{:name "username"
                                 :type "string"
                                 :secret false}
                                {:name "password"
