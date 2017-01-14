@@ -1,16 +1,10 @@
-(def parameters)
-
 (defproject warehouse "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+  :description "Frontend for 'Warehouse' project"
+  :url "http://github.com/nenadalm/warehouse"
   :license {:name "MIT"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [ring/ring-core "1.5.0"]
-                 [ring/ring-jetty-adapter "1.5.0"]
-                 [ring/ring-json "0.4.0"]
-                 [metosin/compojure-api "1.2.0-alpha1"]
                  [org.clojure/clojurescript "1.9.293"]
                  [reagent "0.6.0"]
                  [org.seleniumhq.selenium/selenium-java "3.0.1"]
@@ -30,14 +24,11 @@
   :bower {:directory "bower_components"}
 
   ; set plugins using aliases helps decrease "$ time lein help" significantly
-  :aliases {"ring" ["update-in" ":plugins" "conj" "[lein-ring \"0.9.7\"]" "--" "ring"]
-            "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
+  :aliases {"cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
             "bower" ["update-in" ":plugins" "conj" "[lein-bower \"0.5.1\"]" "--" "bower"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.4-7\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]}
-
-  :ring {:handler warehouse.core/app}
 
   :source-paths ["src"]
 
