@@ -3,20 +3,26 @@
     [warehouse.util :as util]
     [re-frame.core :refer [reg-event-db reg-event-fx]]))
 
+(defn- handler-item->form-type [{:keys [secret type]}]
+  (cond
+    (and secret (= "string" type)) "password"
+    (= "string" type) "text"))
+
+(defn- handler-item->form-item [{:keys [name] :as handler-item}]
+  {:name name
+   :type (handler-item->form-type handler-item)
+   :label (clojure.string/capitalize name)})
+
+(defn- handler->form [provider]
+  {:action (:action provider)
+   :fields (mapv handler-item->form-item (:params provider))})
+
 (reg-event-db
   :import
-  (fn [db [_ type]]
-   (assoc db
-          :import-form
-          [{:name "username"
-            :type "text"
-            :label "Username"}
-           {:name "password"
-            :type "password"
-            :label "Password"}
-           {:name "url"
-            :type "text"
-            :label "Url"}])))
+  (fn [db [_ provider]]
+    (assoc db
+           :import-form
+           (handler->form provider))))
 
 (reg-event-db
   :import-cancel
