@@ -16,7 +16,7 @@ git config user.name "Travis CI"
 git config user.email "travis@example.com"
 
 git clean -f
-git fetch origin "${TARGET_BRANCH}"
+git fetch "${REPO}"
 git checkout -b "${TARGET_BRANCH}" FETCH_HEAD
 git merge -m "Travis-CI: Merge branch '${SOURCE_BRANCH}' into ${TARGET_BRANCH}" "${SOURCE_BRANCH}"
 
@@ -35,6 +35,5 @@ chmod 600 .travis/id_rsa
 ssh-add .travis/id_rsa
 
 git push "${REPO}" "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git fetch origin "${SUBTREE_BRANCH}"
 git subtree push --prefix resources/public "${REPO}" "${SUBTREE_BRANCH}"
 
