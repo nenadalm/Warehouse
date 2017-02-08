@@ -34,6 +34,7 @@ before_install:
         geckodriver --version
 
     - 'npm install -g bower'
+    - cd frontend/
 
 install:
     - 'lein bower install'
@@ -62,5 +63,6 @@ script:
     - "! grep --perl-regexp '(ERROR|WARNING((?!cognitect.transit/uuid).)*)$' cljsbuild.log"
 
 after_success:
+    - cd ../
     - bin/deploy
 
