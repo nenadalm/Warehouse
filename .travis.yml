@@ -63,5 +63,6 @@ script:
     - "! grep --perl-regexp '(ERROR|WARNING((?!cognitect.transit/uuid).)*)$' cljsbuild.log"
 
 after_success:
-    - ../bin/deploy
+    - cd ../
+    - bin/deploy
 
