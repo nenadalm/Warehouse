@@ -1,12 +1,13 @@
 /backend/target/
 
-/resources/public/js/compiled/**
-/resources/public/css/**
-/dependencies/
+/frontend/resources/public/js/compiled/**
+/frontend/resources/public/css/**
+/frontend/bower_components/
+/frontend/node_modules/
+/frontend/*.log
+
 .classpath
 .project
-figwheel_server.log
-pom.xml
 *jar
 /lib/
 /classes/
@@ -18,9 +19,5 @@ pom.xml
 .repl
 .nrepl-port
 .lein-git-deps/
-/bower_components/
-node_modules/
-phantomjsdriver.log
 .lein-failures
-npm-debug.log
 

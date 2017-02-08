@@ -32,12 +32,14 @@ fi
 git merge -m "Travis-CI: Merge branch '${SOURCE_BRANCH}' into ${TARGET_BRANCH}" "${SOURCE_BRANCH}"
 
 # build
+pushd frontend/
 lein clean
 lein less once
 lein cljsbuild once min
+popd
 
-git add --force resources/public && git commit -m "Travis-CI: update resources" || true
+git add --force frontend/resources/public && git commit -m "Travis-CI: update resources" || true
 
 git push premote "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git subtree push --prefix resources/public premote "${SUBTREE_BRANCH}"
+git subtree push --prefix frontend/resources/public premote "${SUBTREE_BRANCH}"
 
