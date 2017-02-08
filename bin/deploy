@@ -8,7 +8,7 @@ SUBTREE_BRANCH=gh-pages
 REPO=git@github.com:nenadalm/warehouse.git
 
 if [[ "${TRAVIS_PULL_REQUEST}" != "false" || "${TRAVIS_BRANCH}" != "${SOURCE_BRANCH}" ]]; then
-    printf "Current branch is not master. Skipping deploy...\n"
+    printf "Current branch is not ${SOURCE_BRANCH}. Skipping deploy...\n"
     exit 0
 fi
 
@@ -20,11 +20,15 @@ ssh-add .travis/id_rsa
 
 git config user.name "Travis CI"
 git config user.email "travis@example.com"
+git remote add premote "${REPO}"
+git fetch premote
 
 git clean -f
-git fetch "${REPO}" "${SUBTREE_BRANCH}"
-git fetch "${REPO}" "${TARGET_BRANCH}"
-git checkout -b "${TARGET_BRANCH}" FETCH_HEAD
+if git rev-parse --quiet --verify "premote/${TARGET_BRANCH}"; then
+    git checkout -b "${TARGET_BRANCH}" "premote/${TARGET_BRANCH}"
+else
+    git checkout -b "${TARGET_BRANCH}"
+fi
 git merge -m "Travis-CI: Merge branch '${SOURCE_BRANCH}' into ${TARGET_BRANCH}" "${SOURCE_BRANCH}"
 
 # build
@@ -32,9 +36,8 @@ lein clean
 lein less once
 lein cljsbuild once min
 
-git add --force resources/public
-git commit -m "Travis-CI: update resources"
+git add --force resources/public && git commit -m "Travis-CI: update resources" || true
 
-git push "${REPO}" "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git subtree push --prefix resources/public "${REPO}" "${TARGET_BRANCH}:${SUBTREE_BRANCH}"
+git push premote "${TARGET_BRANCH}:${TARGET_BRANCH}"
+git subtree push --prefix resources/public premote "${SUBTREE_BRANCH}"
 
