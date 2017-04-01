@@ -1,7 +1,7 @@
-(ns warehouse.events-test
+(ns warehouse.process.events-test
   (:require
     [cljs.test :refer-macros [deftest is testing]]
-    [warehouse.events :as events]))
+    [warehouse.process.events :as events]))
 
 (deftest process-create-test
   (is (=
@@ -11,7 +11,7 @@
         :process {:title "import1"
                   :id 1
                   :state :pending}}
-       (events/process-create {:db {}}
+       (events/create-process {:db {}}
                               [:process-create {:title "import1"}]))
       "Insert process into empty db")
   (is (=
@@ -23,7 +23,7 @@
         :process {:title "import3"
                   :id 3
                   :state :pending}}
-       (events/process-create {:db {:processes {2 {:title "import2"
+       (events/create-process {:db {:processes {2 {:title "import2"
                                                    :id 2}}}}
                               [:process-create {:title "import3"}]))
       "Insert process into db with existing process"))
