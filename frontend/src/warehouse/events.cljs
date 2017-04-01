@@ -4,6 +4,7 @@
     [warehouse.change-set :as change-set]
     [warehouse.storage.storage :refer [storage]]
     [warehouse.notifications.db :refer [add-notification]]
+    [warehouse.component-import.db :as component-import]
     [ajax.core :refer [POST]]
     [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
@@ -79,9 +80,10 @@
   :initialize-db
   [(inject-cofx :state) (inject-cofx :change-sets)]
   (fn [cofx _]
-    {:db (util/document->state
+    {:db (component-import/load-providers
+          (util/document->state
            (:state cofx)
-           (assoc default-state :change-sets (:change-sets cofx)))}))
+           (assoc default-state :change-sets (:change-sets cofx))))}))
 
 (reg-fx
   :change-sets

@@ -1,7 +1,8 @@
 (ns warehouse.component-import.events
   (:require
     [warehouse.util :as util]
-    [re-frame.core :refer [reg-event-db reg-event-fx]]))
+    [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
+    [ajax.core :refer [GET]]))
 
 (defn- handler-item->form-type [{:keys [secret type]}]
   (cond
@@ -16,6 +17,26 @@
 (defn- handler->form [provider]
   {:action (:action provider)
    :fields (mapv handler-item->form-item (:params provider))})
+
+(reg-event-db
+ :load-providers
+ (fn [db _]
+   (GET "http://localhost:3000/handler"
+        :format :json
+        :response-format :json
+        :keywords? true
+        :headers {"Content-Type" "application/json"}
+        :handler (fn [response]
+                   (dispatch [:success "Loading of import providers succeeded"])
+                   (dispatch [:import-providers response]))
+        :error-handler #(dispatch [:error "Loading of import providers failed"]))
+   db))
+
+(reg-event-db
+ :import-providers
+ (fn [db [_ providers]]
+   (println providers)
+   (assoc db :component-providers providers)))
 
 (reg-event-db
   :import

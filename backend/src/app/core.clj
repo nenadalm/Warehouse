@@ -7,16 +7,12 @@
         [compojure.api.sweet]
         [clj-webdriver.taxi]
         [app.provider]
-        [app.schema])
+        [app.schema]
+        [app.middleware])
   (:import [app.provider.ges Ges]))
 
 (set-driver! {:browser :phantomjs})
 (set-finder! xpath-finder)
-
-(defn options-handler [request]
-  {:status 200
-   :headers {"Access-Control-Allow-Origin" "*"
-             "Access-Control-Allow-Headers" "Content-Type"}})
 
 (def providers {:ges (Ges.)})
 
@@ -30,14 +26,12 @@
                  :responses {200 {:schema [ProviderDescription]
                                   :description "List of components providers"}}}
                 {:status 200
-                 :body [(get-description (:ges providers))]})
-           (OPTIONS "/:type"
-                    []
-                    :no-doc true
-                    options-handler)
+                 :body [(get-description (:ges providers))]
+                 :headers {"Access-Control-Allow-Origin" "*"}})
            (create-handler (:ges providers))))
 
 (def app (-> app-api
+             (options-middleware)
              (wrap-json-params)
              (wrap-params)))
 
