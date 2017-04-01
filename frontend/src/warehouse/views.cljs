@@ -5,6 +5,7 @@
     [warehouse.routes :as routes]
     [warehouse.notifications.views :refer [notifications]]
     [warehouse.search.views :refer [search]]
+    [warehouse.process.views :refer [processes]]
     [warehouse.component-import.views :refer [import-button import-form]]
     [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
@@ -180,26 +181,6 @@
         (for [[k v] @visible-components]
           ^{:key (:name v)} [:li {:class "component"}
                              [item v k]])]])))
-
-
-(defn process [p]
-  [:tr
-   [:td (:title p)]
-   [:td (:state p)]
-   [:td (:created-at p)]])
-
-(defn processes []
-  (let [data (subscribe [:processes])]
-    (fn []
-      [:table.processes
-       [:thead
-        [:tr
-         [:th "Title"]
-         [:th "State"]
-         [:th "Created at"]]]
-       [:tbody
-        (for [[_ p] @data]
-          ^{:key (:id p)} [process p])]])))
 
 (defn nav []
   [:ul.menu

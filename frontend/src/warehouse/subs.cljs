@@ -4,12 +4,6 @@
     [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
-  :processes
-  (fn
-    [db _]
-    (:processes db)))
-
-(reg-sub
   :show-nav
   (fn
     [db _]
