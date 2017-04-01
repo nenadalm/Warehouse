@@ -53,8 +53,6 @@ re_frame.core.reg_event_db.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$import
 var vec__14795 = p__14794;
 var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14795,(0),null);
 var providers = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14795,(1),null);
-cljs.core.println.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([providers], 0));
-
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(db,cljs.core.cst$kw$component_DASH_providers,providers);
 }));
 re_frame.core.reg_event_db.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$import,(function (db,p__14798){
