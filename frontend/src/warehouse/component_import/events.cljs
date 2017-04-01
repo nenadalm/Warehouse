@@ -35,7 +35,6 @@
 (reg-event-db
  :import-providers
  (fn [db [_ providers]]
-   (println providers)
    (assoc db :component-providers providers)))
 
 (reg-event-db
