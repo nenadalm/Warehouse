@@ -5,7 +5,6 @@
     [warehouse.storage.storage :refer [storage]]
     [warehouse.notifications.db :refer [add-notification]]
     [warehouse.component-import.db :as component-import]
-    [ajax.core :refer [POST]]
     [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
 
 (def default-state {:components {}
@@ -15,29 +14,6 @@
                     :processes {}
                     :show-nav false
                     :page "index"})
-
-(defn process-create [{:keys [db]} [_ process]]
-  (let [k (util/next-key (:processes db))
-        p (assoc process
-                 :id k
-                 :state :pending)]
-    {:db (dissoc (assoc-in db [:processes k] p)
-                 :import-form)
-     :process p}))
-
-(defmulti run-process #(:type %))
-
-(defmethod run-process :xhr [process]
-  (POST (:url process)
-        :params (:data process)
-        :format :json
-        :response-format :json
-        :keywords? true
-        :headers {"Content-Type" "application/json"}
-        :handler (fn [response]
-                   (dispatch [:success "Import succeeded"])
-                   (dispatch [:import-document {:components response}]))
-        :error-handler #(dispatch [:error "Import failed"])))
 
 (reg-event-db
   :error
@@ -50,15 +26,6 @@
   (fn [db [_ message]]
     (add-notification db {:type :success
                           :message message})))
-
-(reg-fx
-  :process
-  (fn [process]
-    (run-process process)))
-
-(reg-event-fx
-  :process-create
-  process-create)
 
 (reg-event-db
   :state-loaded
