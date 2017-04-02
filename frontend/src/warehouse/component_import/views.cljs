@@ -62,6 +62,7 @@
                            (dispatch [:process-create {:type :xhr
                                                        :url (:action data)
                                                        :title "Import"
+                                                       :name :import
                                                        :data process-data}])))}
     "Save"]
    [:button {:type "button"

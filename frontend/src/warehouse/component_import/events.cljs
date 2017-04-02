@@ -18,19 +18,13 @@
   {:action (:action provider)
    :fields (mapv handler-item->form-item (:params provider))})
 
-(reg-event-db
+(reg-event-fx
  :load-providers
- (fn [db _]
-   (GET "http://localhost:3000/handler"
-        :format :json
-        :response-format :json
-        :keywords? true
-        :headers {"Content-Type" "application/json"}
-        :handler (fn [response]
-                   (dispatch [:success "Loading of import providers succeeded"])
-                   (dispatch [:import-providers response]))
-        :error-handler #(dispatch [:error "Loading of import providers failed"]))
-   db))
+ (fn [_ _]
+   {:dispatch [:process-create {:type :xhr
+                                :url "http://localhost:3000/handler"
+                                :title "Getting list of import handlers"
+                                :name :import-handlers}]}))
 
 (reg-event-db
  :import-providers
