@@ -4,11 +4,16 @@
    [warehouse.process.events]
    [warehouse.process.subs]))
 
+(def process-data
+  [["Title" #(:title %)]
+   ["State" #(:state %)]
+   ["Created at" #(:created-at %)]
+   ["Finished at" #(:finished-at %)]])
+
 (defn process [p]
   [:tr
-   [:td (:title p)]
-   [:td (:state p)]
-   [:td (:created-at p)]])
+   (map-indexed (fn [i [_ f]]
+          ^{:key i} [:td (f p)]) process-data)])
 
 (defn processes []
   (let [data (subscribe [:processes])]
@@ -16,9 +21,8 @@
       [:table.processes
        [:thead
         [:tr
-         [:th "Title"]
-         [:th "State"]
-         [:th "Created at"]]]
+         (map-indexed (fn [i [title _]]
+                        ^{:key i} [:th title]) process-data)]]
        [:tbody
         (for [[_ p] @data]
           ^{:key (:id p)} [process p])]])))
