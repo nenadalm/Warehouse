@@ -61,7 +61,6 @@ script:
     # check that there are no errors or warnings in clojurescript compilation
     # also ignore redefining uuid by cognitect warning
     - "! grep --perl-regexp '(ERROR|WARNING((?!cognitect.transit/uuid).)*)$' cljsbuild.log"
-    - lein cljfmt check
 
 after_success:
     - cd ../
