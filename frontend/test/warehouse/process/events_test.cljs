@@ -13,9 +13,9 @@
                   :id 1
                   :state :pending
                   :created-at "now"}}
-       (binding [events/get-current-datetime #(identity "now")]
-         (events/create-process {:db {}}
-                                [:process-create {:title "import1"}])))
+       (events/create-process {:db {}
+                               :current-datetime "now"}
+                              [:process-create {:title "import1"}]))
       "Insert process into empty db")
   (is (=
        {:db {:processes {2 {:title "import2"
@@ -28,9 +28,9 @@
                   :id 3
                   :state :pending
                   :created-at "now"}}
-       (binding [events/get-current-datetime #(identity "now")]
-         (events/create-process {:db {:processes {2 {:title "import2"
-                                                     :id 2}}}}
-                                [:process-create {:title "import3"}])))
+       (events/create-process {:db {:processes {2 {:title "import2"
+                                                   :id 2}}}
+                               :current-datetime "now"}
+                              [:process-create {:title "import3"}]))
       "Insert process into db with existing process"))
 
