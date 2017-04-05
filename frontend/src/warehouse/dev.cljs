@@ -1,9 +1,9 @@
 (ns ^:figwheel-always warehouse.dev
   (:require
-    [warehouse.storage.storage :as storage]
-    [warehouse.storage.test :as test-storage]
-    [warehouse.events :refer [default-state]]
-    [warehouse.core]))
+   [warehouse.storage.storage :as storage]
+   [warehouse.storage.test :as test-storage]
+   [warehouse.events :refer [default-state]]
+   [warehouse.core]))
 
 (defn main []
   (enable-console-print!)
@@ -19,7 +19,7 @@
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
-  )
+)
 
 (main)
 (warehouse.core/main)

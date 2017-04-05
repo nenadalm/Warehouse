@@ -42,9 +42,9 @@
                           []
                           same-keys)
           creates (mapv (fn [data]
-                         {:metadata {:id (:id data)
-                                     :name (:name data)}
-                          :data data})
+                          {:metadata {:id (:id data)
+                                      :name (:name data)}
+                           :data data})
                         (map second (select-keys new-col created-keys)))]
       (filterv (complement #(empty? (:data %))) [{:type :create
                                                   :data creates}

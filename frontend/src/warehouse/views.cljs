@@ -1,13 +1,13 @@
 (ns warehouse.views
   (:require
-    [reagent.core :as reagent :refer [atom]]
-    [warehouse.util :as util]
-    [warehouse.routes :as routes]
-    [warehouse.notifications.views :refer [notifications]]
-    [warehouse.search.views :refer [search]]
-    [warehouse.process.views :refer [processes]]
-    [warehouse.component-import.views :refer [import-button import-form]]
-    [re-frame.core :refer [dispatch subscribe]])
+   [reagent.core :as reagent :refer [atom]]
+   [warehouse.util :as util]
+   [warehouse.routes :as routes]
+   [warehouse.notifications.views :refer [notifications]]
+   [warehouse.search.views :refer [search]]
+   [warehouse.process.views :refer [processes]]
+   [warehouse.component-import.views :refer [import-button import-form]]
+   [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
 (defn form [item]
@@ -17,21 +17,21 @@
              :type "text"
              :value (:name @item)
              :on-change (m/handler-fn
-                          (swap! item assoc :name (.-target.value e)))}]]
+                         (swap! item assoc :name (.-target.value e)))}]]
    [:div
     [:label "Tags: "
      [:input {:name "tags"
               :type "text"
               :value (:tags @item)
               :on-change (m/handler-fn
-                           (swap! item assoc :tags (.-target.value e)))}]]]
+                          (swap! item assoc :tags (.-target.value e)))}]]]
    [:div
     [:label "Amount: "
      [:input {:name "amount"
               :type "number"
               :value (:amount @item)
               :on-change (m/handler-fn
-                           (swap! item assoc :amount (.-target.value e)))}]]]])
+                          (swap! item assoc :amount (.-target.value e)))}]]]])
 
 (defn key->label [key]
   (get {:name "Name"
@@ -62,8 +62,8 @@
      [form edited-item]
      [:button {:type "button"
                :on-click (m/handler-fn
-                           (dispatch [:item-save k @edited-item])
-                           (reset! editing false))} "Save"]
+                          (dispatch [:item-save k @edited-item])
+                          (reset! editing false))} "Save"]
      [:button {:type "button" :on-click (m/handler-fn (reset! editing false))} "Cancel"]]))
 
 (defn item [data k]
@@ -108,8 +108,7 @@
                                              ^{:key k} (raw-property-view v k)))
                                          data)]]
                                   [:button {:on-click (m/handler-fn
-                                                        (dispatch [:revert-change :create metadata]))} "Revert"]])]
-                    )
+                                                       (dispatch [:revert-change :create metadata]))} "Revert"]])])
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
@@ -128,7 +127,7 @@
                                              (raw-property-changeset-view v k)))
                                          data)]]
                                   [:button {:on-click (m/handler-fn
-                                                        (dispatch [:revert-change :update metadata data]))} "Revert"]])])
+                                                       (dispatch [:revert-change :update metadata data]))} "Revert"]])])
                   change-set-data
                   (range (count change-set-data) 0 -1))])
 
@@ -153,9 +152,9 @@
        [import-button]
        (if (false? @adding)
          [:button {:on-click (m/handler-fn
-                               (reset! adding true))} "Add new"])
+                              (reset! adding true))} "Add new"])
        [:button {:on-click (m/handler-fn
-                             (reset! showing-changeset (if (true? @showing-changeset) false true)))}
+                            (reset! showing-changeset (if (true? @showing-changeset) false true)))}
         (if (true? @showing-changeset) "Hide changes" "Show changes")]
        (if (not-empty @import-form-data) [import-form @import-form-data])
        (if (true? @adding)
@@ -163,9 +162,9 @@
           [form new-item]
           [:button {:type "button"
                     :on-click (m/handler-fn
-                                (dispatch [:item-create @new-item])
-                                (reset! new-item {:name "" :tags "" :amount 1})
-                                (reset! adding false))} "Save"]
+                               (dispatch [:item-create @new-item])
+                               (reset! new-item {:name "" :tags "" :amount 1})
+                               (reset! adding false))} "Save"]
           [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
          (let [cs @change-sets
@@ -186,7 +185,6 @@
   [:ul.menu
    [:li [:a {:href (routes/homepage)} "List"]]
    [:li [:a {:href (routes/processes)} "Processes"]]])
-
 
 (defn page []
   (let [active-tab (subscribe [:active-tab])

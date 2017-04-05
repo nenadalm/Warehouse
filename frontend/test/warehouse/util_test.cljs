@@ -1,7 +1,7 @@
 (ns warehouse.util-test
   (:require
-    [cljs.test :refer-macros [deftest is testing]]
-    [warehouse.util :as util]))
+   [cljs.test :refer-macros [deftest is testing]]
+   [warehouse.util :as util]))
 
 (deftest map-diff-test
   (testing "same maps"
@@ -64,7 +64,7 @@
                                          :k "c"}}))))
   (is (= [{:type :update
            :data [{:metadata {:id 0
-                             :name "first"}
+                              :name "first"}
                    :data {:k ["v" "v-updated"]}}]}]
          (util/get-change-set {0 {:id 0
                                   :name "first"
@@ -185,7 +185,7 @@
          (util/document->state {:components []}
                                {:components []
                                 :notifications []}))
-         "empty components")
+      "empty components")
   (is (= {:components {2 {:id 2
                           :name "second-component"
                           :tags #{"component"}
@@ -232,10 +232,10 @@
                         :tags "component"
                         :amount 3}]}
          (util/state->document {:components {2 {:id 2
-                                           :name "second-component"
-                                           :tags "component"
-                                           :amount 3}}
-                           :notifications []}))))
+                                                :name "second-component"
+                                                :tags "component"
+                                                :amount 3}}
+                                :notifications []}))))
 
 (deftest merge-documents-test
   (is (= {:components []}
@@ -254,26 +254,26 @@
                                               :amount 2}]}))
       "components with the same name")
   (is (= {:components [{:id 1
-                       :name "component"
-                       :tags []
-                       :amount 2}]}
+                        :name "component"
+                        :tags []
+                        :amount 2}]}
          (util/merge-documents {:components []}
                                {:components [{:name "component"
                                               :amount 2}]}))
       "new component without tags")
   (is (= {:components [{:id 1
-                       :name "component"
-                       :tags ["tag"]
-                       :amount 2}]}
+                        :name "component"
+                        :tags ["tag"]
+                        :amount 2}]}
          (util/merge-documents {:components []}
                                {:components [{:name "component"
                                               :tags ["tag"]
                                               :amount 2}]}))
       "new component with tags")
   (is (= {:components [{:id 1
-                       :name "component"
-                       :tags []
-                       :amount 2}
+                        :name "component"
+                        :tags []
+                        :amount 2}
                        {:id 2
                         :name "imported-component"
                         :tags []

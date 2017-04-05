@@ -5,35 +5,35 @@
 
 (def fixtures {:components
                [{:id 1
-                :name "EPR212A408000Z"
-                :tags ["optocoupler"]
-                :tags-string "optocoupler"
-                :expected-tags-string "optocoupler"
-                :amount 7}
-               {:id 2
-                :name "2N3904"
-                :tags ["transistor"]
-                :tags-string "transistor"
-                :expected-tags-string "transistor"
-                :amount 8}
-               {:id 3
-                :name "LF33CV"
-                :tags ["linear regulator"]
-                :tags-string "linear regulator"
-                :expected-tags-string "linear regulator"
-                :amount 10}
-               {:id 4
-                :name "BD241C"
-                :tags ["transistor"]
-                :tags-string "transistor"
-                :expected-tags-string "transistor"
-                :amount 4}
-               {:id 5
-                :name "HC49/US QM 16.000MHZ"
-                :tags ["crystal" "oscillator"]
-                :tags-string "crystal, oscillator"
-                :expected-tags-string "crystal, oscillator"
-                :amount 1}
+                 :name "EPR212A408000Z"
+                 :tags ["optocoupler"]
+                 :tags-string "optocoupler"
+                 :expected-tags-string "optocoupler"
+                 :amount 7}
+                {:id 2
+                 :name "2N3904"
+                 :tags ["transistor"]
+                 :tags-string "transistor"
+                 :expected-tags-string "transistor"
+                 :amount 8}
+                {:id 3
+                 :name "LF33CV"
+                 :tags ["linear regulator"]
+                 :tags-string "linear regulator"
+                 :expected-tags-string "linear regulator"
+                 :amount 10}
+                {:id 4
+                 :name "BD241C"
+                 :tags ["transistor"]
+                 :tags-string "transistor"
+                 :expected-tags-string "transistor"
+                 :amount 4}
+                {:id 5
+                 :name "HC49/US QM 16.000MHZ"
+                 :tags ["crystal" "oscillator"]
+                 :tags-string "crystal, oscillator"
+                 :expected-tags-string "crystal, oscillator"
+                 :amount 1}
                 {:id 6
                  :name "AVRProg USB v3"
                  :tags ["rs232", "serial", "usb"]

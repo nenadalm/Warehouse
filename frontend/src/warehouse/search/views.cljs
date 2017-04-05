@@ -1,9 +1,9 @@
 (ns warehouse.search.views
   (:require
-    [warehouse.search.events]
-    [re-frame.core :refer [dispatch]])
+   [warehouse.search.events]
+   [re-frame.core :refer [dispatch]])
   (:require-macros
-    [warehouse.macro :as m]))
+   [warehouse.macro :as m]))
 
 (defn search []
   [:label "Search: "
