@@ -1,6 +1,6 @@
 (ns warehouse.storage.local
   (:require
-    [alandipert.storage-atom :refer [local-storage]]))
+   [alandipert.storage-atom :refer [local-storage]]))
 
 (defonce app-state (local-storage (atom {:components []}) :app-state))
 

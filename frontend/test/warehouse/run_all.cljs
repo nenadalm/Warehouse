@@ -1,9 +1,9 @@
 (ns warehouse.run-all
   (:require
-    [jx.reporter.karma :refer-macros [run-tests run-all-tests]]
-    [warehouse.util-test]
-    [warehouse.process.events-test]
-    [warehouse.notifications.db-test]))
+   [jx.reporter.karma :refer-macros [run-tests run-all-tests]]
+   [warehouse.util-test]
+   [warehouse.process.events-test]
+   [warehouse.notifications.db-test]))
 
 (enable-console-print!)
 

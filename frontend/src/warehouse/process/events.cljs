@@ -22,14 +22,14 @@
      :process p}))
 
 (reg-fx
-  :process
-  (fn [process]
-    (db/run-process process)))
+ :process
+ (fn [process]
+   (db/run-process process)))
 
 (reg-event-fx
  :process-create
  [(inject-cofx :current-datetime)]
-  create-process)
+ create-process)
 
 (reg-event-fx
  :process-finished

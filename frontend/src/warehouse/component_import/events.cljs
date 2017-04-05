@@ -1,8 +1,8 @@
 (ns warehouse.component-import.events
   (:require
-    [warehouse.util :as util]
-    [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
-    [ajax.core :refer [GET]]))
+   [warehouse.util :as util]
+   [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
+   [ajax.core :refer [GET]]))
 
 (defn- handler-item->form-type [{:keys [secret type]}]
   (cond
@@ -32,25 +32,25 @@
    (assoc db :component-providers providers)))
 
 (reg-event-db
-  :import
-  (fn [db [_ provider]]
-    (assoc db
-           :import-form
-           (handler->form provider))))
+ :import
+ (fn [db [_ provider]]
+   (assoc db
+          :import-form
+          (handler->form provider))))
 
 (reg-event-db
-  :import-cancel
-  (fn [db _]
-    (dissoc db :import-form)))
+ :import-cancel
+ (fn [db _]
+   (dissoc db :import-form)))
 
 (reg-event-fx
-  :import-document
-  (fn
-    [cofx [_ document]]
-    (let [db (:db cofx)
-          new-db (util/document->state (util/merge-documents (util/state->document db) document) db)
-          old-components (:components db)
-          new-components (:components new-db)]
-      {:db new-db
-       :dispatch [:components-change old-components new-components]})))
+ :import-document
+ (fn
+   [cofx [_ document]]
+   (let [db (:db cofx)
+         new-db (util/document->state (util/merge-documents (util/state->document db) document) db)
+         old-components (:components db)
+         new-components (:components new-db)]
+     {:db new-db
+      :dispatch [:components-change old-components new-components]})))
 

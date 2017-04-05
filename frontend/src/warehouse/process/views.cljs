@@ -13,7 +13,7 @@
 (defn process [p]
   [:tr
    (map-indexed (fn [i [_ f]]
-          ^{:key i} [:td (f p)]) process-data)])
+                  ^{:key i} [:td (f p)]) process-data)])
 
 (defn processes []
   (let [data (subscribe [:processes])]

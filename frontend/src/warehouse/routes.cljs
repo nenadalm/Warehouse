@@ -1,7 +1,7 @@
 (ns warehouse.routes
   (:require
-    [re-frame.core :refer [dispatch]]
-    [secretary.core :as secretary :refer-macros [defroute]]))
+   [re-frame.core :refer [dispatch]]
+   [secretary.core :as secretary :refer-macros [defroute]]))
 
 (secretary/set-config! :prefix "#")
 

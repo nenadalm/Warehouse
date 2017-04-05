@@ -3,7 +3,7 @@
    [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
-  :processes
-  (fn
-    [db _]
-    (:processes db)))
+ :processes
+ (fn
+   [db _]
+   (:processes db)))

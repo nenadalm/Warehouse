@@ -1,10 +1,10 @@
 (ns warehouse.notifications.views
   (:require
-    [warehouse.notifications.subs]
-    [warehouse.notifications.events]
-    [re-frame.core :refer [dispatch subscribe]])
+   [warehouse.notifications.subs]
+   [warehouse.notifications.events]
+   [re-frame.core :refer [dispatch subscribe]])
   (:require-macros
-    [warehouse.macro :as m]))
+   [warehouse.macro :as m]))
 
 (defn notification [n k]
   (let [type (:type n)
@@ -14,7 +14,7 @@
      [:button {:type "button"
                :class "close"
                :on-click (m/handler-fn
-                           (dispatch [:notification-close k]))} "X"]]))
+                          (dispatch [:notification-close k]))} "X"]]))
 
 (defn notifications []
   (let [notifications (subscribe [:notifications])]

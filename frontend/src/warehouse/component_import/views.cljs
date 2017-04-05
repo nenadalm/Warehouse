@@ -1,9 +1,9 @@
 (ns warehouse.component-import.views
   (:require
-    [warehouse.component-import.subs]
-    [warehouse.component-import.events]
-    [warehouse.util :as util]
-    [re-frame.core :refer [dispatch subscribe]])
+   [warehouse.component-import.subs]
+   [warehouse.component-import.events]
+   [warehouse.util :as util]
+   [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
 (defn- file-input [name f]
@@ -16,7 +16,7 @@
 (defn- component-provider [provider]
   [:li
    [:button {:on-click (m/handler-fn
-                         (dispatch [:import provider]))}
+                        (dispatch [:import provider]))}
     "From " (:type provider)]])
 
 (defn import-button []
@@ -24,27 +24,26 @@
     (fn []
       [:div.dropdown
        {:on-click (m/handler-fn
-                    (when (not= (.-tagName (.-target e)) "INPUT")
-                      (.toggle (.-classList (.-currentTarget e)) "open")))}
+                   (when (not= (.-tagName (.-target e)) "INPUT")
+                     (.toggle (.-classList (.-currentTarget e)) "open")))}
        [:button "Import"]
        [:ul
         [:li
          [file-input "From file" (m/handler-fn
-                                   (let [reader (js/FileReader.)
-                                         this (aget e "currentTarget")]
-                                     (aset reader
-                                           "onload"
-                                           (fn [reader-event]
-                                             (dispatch
-                                               [:import-document
-                                                (->> (.-target.result reader-event)
-                                                     (.parse js/JSON)
-                                                     (#(js->clj % :keywordize-keys true)))])
-                                             (aset this "value" "")))
-                                     (.readAsText reader (aget e "target" "files" "0"))))]]
+                                  (let [reader (js/FileReader.)
+                                        this (aget e "currentTarget")]
+                                    (aset reader
+                                          "onload"
+                                          (fn [reader-event]
+                                            (dispatch
+                                             [:import-document
+                                              (->> (.-target.result reader-event)
+                                                   (.parse js/JSON)
+                                                   (#(js->clj % :keywordize-keys true)))])
+                                            (aset this "value" "")))
+                                    (.readAsText reader (aget e "target" "files" "0"))))]]
         (for [provider @component-providers]
-          ^{:key (:type provider)} [component-provider provider])
-        ]])))
+          ^{:key (:type provider)} [component-provider provider])]])))
 
 (defn import-form [data]
   [:form.import
@@ -55,15 +54,15 @@
                                      :name (:name item)}]]])
    [:button {:type "button"
              :on-click (m/handler-fn
-                         (let [process-data (->> "form.import"
-                                                 (.querySelector js/document)
-                                                 (new js/FormData)
-                                                 (util/iterator->map))]
-                           (dispatch [:process-create {:type :xhr
-                                                       :url (:action data)
-                                                       :title "Import"
-                                                       :name :import
-                                                       :data process-data}])))}
+                        (let [process-data (->> "form.import"
+                                                (.querySelector js/document)
+                                                (new js/FormData)
+                                                (util/iterator->map))]
+                          (dispatch [:process-create {:type :xhr
+                                                      :url (:action data)
+                                                      :title "Import"
+                                                      :name :import
+                                                      :data process-data}])))}
     "Save"]
    [:button {:type "button"
              :on-click (m/handler-fn (dispatch [:import-cancel]))}
