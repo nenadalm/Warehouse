@@ -4,8 +4,9 @@
 /frontend/resources/public/css/**
 /frontend/bower_components/
 /frontend/node_modules/
-/frontend/*.log
 
+*.log
+*.svg
 .classpath
 .project
 *jar
