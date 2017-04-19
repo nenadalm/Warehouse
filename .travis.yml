@@ -54,7 +54,7 @@ script:
     - alias firefox-bin='firefox'
     - lein cljsbuild test
     - 'SELENIUM_BROWSER=phantomjs lein test'
-    - 'SELENIUM_BROWSER=firefox lein test'
+    #- 'SELENIUM_BROWSER=firefox lein test'
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon
     - "! grep --perl-regexp '^((?!favicon.ico).)*Error' http-server.log"
