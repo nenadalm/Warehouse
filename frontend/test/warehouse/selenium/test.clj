@@ -63,7 +63,7 @@
   (refresh)
 
   ; guard: there is zero components
-  (is (empty? (elements "//li[@class='ccomponent']")))
+  (is (empty? (elements "//li[@class='component']")))
 
   (upload-file (fixture-path "export.json"))
 
