@@ -1,7 +1,8 @@
 (ns app.core
   (:require [clojure.data.json :as json]
             [schema.core :as s]
-            [app.provider.ges])
+            [app.provider.ges]
+            [app.config :refer [conf]])
   (:use [ring.middleware.params :refer [wrap-params]]
         [ring.middleware.json :refer [wrap-json-params]]
         [compojure.api.sweet]
@@ -28,7 +29,9 @@
                 {:status 200
                  :body [(get-description (:ges providers))]
                  :headers {"Access-Control-Allow-Origin" "*"}})
-           (create-handler (:ges providers))))
+           ((if (:mock-providers conf)
+              create-handler-mocked
+              create-handler) (:ges providers))))
 
 (def app (-> app-api
              (options-middleware)
