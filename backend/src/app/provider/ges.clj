@@ -10,11 +10,10 @@
                       :password s/Str
                       :url s/Str})
 
-;; testing handler
-;(defn- ges-handler- [request]
-  ;(let [params (:params request)]
-    ;[{:name (:username params)
-      ;:amount 1}]))
+(defn- testing-ges-handler- [request]
+  (let [params (:params request)]
+    [{:name (:username params)
+      :amount 1}]))
 
 (defn- ges-handler- [request]
   (try
@@ -32,15 +31,16 @@
            (elements "//table[@class='final-cart']//tr[not(@class='line')]")))
     (catch Exception e [])))
 
-(def ges-handler (POST "/ges"
-                       []
-                       {:summary "Retrieves components from http://www.ges.cz"
-                        :description "Retrieves components from http://www.ges.cz"
-                        :body [params (s/maybe Request)]
-                        :responses {200 {:schema [Component]
-                                         :description "Components to be returned"}
-                                    404 {:description "No components found"}}}
-                       (wrap-component-handler ges-handler-)))
+(defn- create-handler- [handler]
+  (POST "/ges"
+        []
+        {:summary "Retrieves components from http://www.ges.cz"
+         :description "Retrieves components from http://www.ges.cz"
+         :body [params (s/maybe Request)]
+         :responses {200 {:schema [Component]
+                          :description "Components to be returned"}
+                     404 {:description "No components found"}}}
+        (wrap-component-handler handler)))
 
 (def ges-description {:type "ges"
                       :homepage "http://www.ges.cz"
@@ -59,5 +59,6 @@
 (defrecord Ges []
   Provider
   (get-description [_] ges-description)
-  (create-handler [_] ges-handler))
+  (create-handler [_] (create-handler- ges-handler-))
+  (create-handler-mocked [_] (create-handler- testing-ges-handler-)))
 

@@ -4,7 +4,12 @@
 
 Project which helps you to know which electrical components you have.
 
-# License
+## Components
+
+* [Backend](backend/README.md)
+* [Frontend](frontend/README.md)
+
+## License
 
 MIT
 
