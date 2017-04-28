@@ -26,10 +26,10 @@ before_install:
     # geckodriver
     - |
         export PATH=$PWD/geckodriver:$PATH
-        if ! type geckodriver > /dev/null 2>&1; then
+        if ! type geckodriver > /dev/null 2>&1 || ! geckodriver --version | grep '0.16.1'; then
             rm -rf geckodriver
             mkdir geckodriver
-            wget https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz -O geckodriver/geckodriver.tar.gz
+            wget https://github.com/mozilla/geckodriver/releases/download/v0.16.1/geckodriver-v0.16.1-linux64.tar.gz -O geckodriver/geckodriver.tar.gz
             tar -xvf geckodriver/geckodriver.tar.gz -C geckodriver
             rm geckodriver/geckodriver.tar.gz
         fi
@@ -57,13 +57,13 @@ script:
     - alias firefox-bin='firefox'
     - lein cljsbuild test
     - 'SELENIUM_BROWSER=phantomjs lein test'
-    #- 'SELENIUM_BROWSER=firefox lein test'
+    - 'SELENIUM_BROWSER=firefox lein test'
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon
     - "! grep --perl-regexp '^((?!favicon.ico).)*Error' http-server.log"
     # check that there are no errors or warnings in clojurescript compilation
-    # also ignore redefining uuid by cognitect warning
-    - "! grep --perl-regexp '(ERROR|WARNING((?!cognitect.transit/uuid).)*)$' cljsbuild.log"
+    # also ignore redefining uuid by cognitect and dependency version warnings
+    - "! grep --perl-regexp '(ERROR|WARNING((?!(cognitect.transit/uuid|version ranges found for)).)*)$' cljsbuild.log"
 
 after_success:
     - cd ../
