@@ -1,5 +1,7 @@
 (ns warehouse.util
-  (:require [clojure.set :as clojure.set]))
+  (:require
+   [clojure.set :as clojure.set]
+   [clojure.string :as string]))
 
 (defn map-diff [m1 m2]
   (reduce (fn [res k]
@@ -52,10 +54,10 @@
                                                   :data updates}]))))
 
 (defn array->string [array]
-  (clojure.string/join ", " array))
+  (string/join ", " array))
 
 (defn string->array [string]
-  (set (map clojure.string/trim (clojure.string/split string #","))))
+  (set (map string/trim (string/split string #","))))
 
 (defn document->state [document current-state]
   (assoc current-state

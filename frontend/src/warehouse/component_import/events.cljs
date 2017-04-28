@@ -2,7 +2,8 @@
   (:require
    [warehouse.util :as util]
    [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
-   [ajax.core :refer [GET]]))
+   [ajax.core :refer [GET]]
+   [clojure.string :as string]))
 
 (defn- handler-item->form-type [{:keys [secret type]}]
   (cond
@@ -12,7 +13,7 @@
 (defn- handler-item->form-item [{:keys [name] :as handler-item}]
   {:name name
    :type (handler-item->form-type handler-item)
-   :label (clojure.string/capitalize name)})
+   :label (string/capitalize name)})
 
 (defn- handler->form [provider]
   {:action (:action provider)
