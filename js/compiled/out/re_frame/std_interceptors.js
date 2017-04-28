@@ -1,11 +1,14 @@
-// Compiled by ClojureScript 1.9.293 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.9.521 {:static-fns true, :optimize-constants true}
 goog.provide('re_frame.std_interceptors');
 goog.require('cljs.core');
+goog.require('cljs.core.constants');
 goog.require('re_frame.interceptor');
 goog.require('re_frame.loggers');
 goog.require('re_frame.registrar');
 goog.require('re_frame.db');
 goog.require('clojure.data');
+goog.require('re_frame.cofx');
+goog.require('re_frame.utils');
 /**
  * An interceptor which logs data about the handling of an event.
  * 
@@ -21,7 +24,7 @@ goog.require('clojure.data');
  *   production code.
  */
 re_frame.std_interceptors.debug = re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$debug,cljs.core.cst$kw$before,(function re_frame$std_interceptors$debug_before(context){
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["Handling re-frame event: ",re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event)], 0));
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["Handling re-frame event:",re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event)], 0));
 
 return context;
 }),cljs.core.cst$kw$after,(function re_frame$std_interceptors$debug_after(context){
@@ -29,22 +32,22 @@ var event = re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(cont
 var orig_db = re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
 var new_db = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$3(context,cljs.core.cst$kw$db,cljs.core.cst$kw$re_DASH_frame$std_DASH_interceptors_SLASH_not_DASH_found);
 if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(new_db,cljs.core.cst$kw$re_DASH_frame$std_DASH_interceptors_SLASH_not_DASH_found)){
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["No :db changes caused by: ",event], 0));
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["No :db changes caused by:",event], 0));
 } else {
-var vec__14425_14428 = clojure.data.diff(orig_db,new_db);
-var only_before_14429 = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14425_14428,(0),null);
-var only_after_14430 = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14425_14428,(1),null);
-var db_changed_QMARK__14431 = (cljs.core.some_QMARK_(only_before_14429)) || (cljs.core.some_QMARK_(only_after_14430));
-if(db_changed_QMARK__14431){
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$group,cljs.core.array_seq(["db clojure.data/diff for: ",event], 0));
+var vec__14735_14738 = clojure.data.diff(orig_db,new_db);
+var only_before_14739 = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14735_14738,(0),null);
+var only_after_14740 = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__14735_14738,(1),null);
+var db_changed_QMARK__14741 = (!((only_before_14739 == null))) || (!((only_after_14740 == null)));
+if(db_changed_QMARK__14741){
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$group,cljs.core.array_seq(["db clojure.data/diff for:",event], 0));
 
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["only before: ",only_before_14429], 0));
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["only before:",only_before_14739], 0));
 
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["only after : ",only_after_14430], 0));
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["only after :",only_after_14740], 0));
 
 re_frame.loggers.console(cljs.core.cst$kw$groupEnd);
 } else {
-re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["no app-db changes caused by: ",event], 0));
+re_frame.loggers.console.cljs$core$IFn$_invoke$arity$variadic(cljs.core.cst$kw$log,cljs.core.array_seq(["no app-db changes caused by:",event], 0));
 }
 }
 
@@ -61,7 +64,9 @@ return context;
  *      ....)
  */
 re_frame.std_interceptors.trim_v = re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$trim_DASH_v,cljs.core.cst$kw$before,(function re_frame$std_interceptors$trimv_before(context){
-return re_frame.interceptor.assoc_coeffect(context,cljs.core.cst$kw$event,cljs.core.vec(cljs.core.rest(re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event))));
+return cljs.core.assoc_in(cljs.core.update_in.cljs$core$IFn$_invoke$arity$4(context,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$coeffects,cljs.core.cst$kw$event], null),cljs.core.subvec,(1)),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$coeffects,cljs.core.cst$kw$re_DASH_frame$std_DASH_interceptors_SLASH_untrimmed_DASH_event], null),re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event));
+}),cljs.core.cst$kw$after,(function re_frame$std_interceptors$trimv_after(context){
+return cljs.core.assoc_in(re_frame.utils.dissoc_in(context,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$coeffects,cljs.core.cst$kw$re_DASH_frame$std_DASH_interceptors_SLASH_untrimmed_DASH_event], null)),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$coeffects,cljs.core.cst$kw$event], null),re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$re_DASH_frame$std_DASH_interceptors_SLASH_untrimmed_DASH_event));
 })], 0));
 /**
  * Returns an interceptor which wraps the kind of event handler given to `reg-event-db`.
@@ -78,10 +83,10 @@ return re_frame.interceptor.assoc_coeffect(context,cljs.core.cst$kw$event,cljs.c
  */
 re_frame.std_interceptors.db_handler__GT_interceptor = (function re_frame$std_interceptors$db_handler__GT_interceptor(handler_fn){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$db_DASH_handler,cljs.core.cst$kw$before,(function re_frame$std_interceptors$db_handler__GT_interceptor_$_db_handler_before(context){
-var map__14438 = cljs.core.cst$kw$coeffects.cljs$core$IFn$_invoke$arity$1(context);
-var map__14438__$1 = ((((!((map__14438 == null)))?((((map__14438.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__14438.cljs$core$ISeq$)))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__14438):map__14438);
-var db = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14438__$1,cljs.core.cst$kw$db);
-var event = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14438__$1,cljs.core.cst$kw$event);
+var map__14748 = cljs.core.cst$kw$coeffects.cljs$core$IFn$_invoke$arity$1(context);
+var map__14748__$1 = ((((!((map__14748 == null)))?((((map__14748.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__14748.cljs$core$ISeq$)))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__14748):map__14748);
+var db = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14748__$1,cljs.core.cst$kw$db);
+var event = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14748__$1,cljs.core.cst$kw$event);
 return re_frame.interceptor.assoc_effect(context,cljs.core.cst$kw$db,(handler_fn.cljs$core$IFn$_invoke$arity$2 ? handler_fn.cljs$core$IFn$_invoke$arity$2(db,event) : handler_fn.call(null,db,event)));
 })], 0));
 });
@@ -101,10 +106,10 @@ return re_frame.interceptor.assoc_effect(context,cljs.core.cst$kw$db,(handler_fn
  */
 re_frame.std_interceptors.fx_handler__GT_interceptor = (function re_frame$std_interceptors$fx_handler__GT_interceptor(handler_fn){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$fx_DASH_handler,cljs.core.cst$kw$before,(function re_frame$std_interceptors$fx_handler__GT_interceptor_$_fx_handler_before(context){
-var map__14446 = cljs.core.cst$kw$coeffects.cljs$core$IFn$_invoke$arity$1(context);
-var map__14446__$1 = ((((!((map__14446 == null)))?((((map__14446.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__14446.cljs$core$ISeq$)))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__14446):map__14446);
-var coeffects = map__14446__$1;
-var event = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14446__$1,cljs.core.cst$kw$event);
+var map__14756 = cljs.core.cst$kw$coeffects.cljs$core$IFn$_invoke$arity$1(context);
+var map__14756__$1 = ((((!((map__14756 == null)))?((((map__14756.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__14756.cljs$core$ISeq$)))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__14756):map__14756);
+var coeffects = map__14756__$1;
+var event = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__14756__$1,cljs.core.cst$kw$event);
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(context,cljs.core.cst$kw$effects,(handler_fn.cljs$core$IFn$_invoke$arity$2 ? handler_fn.cljs$core$IFn$_invoke$arity$2(coeffects,event) : handler_fn.call(null,coeffects,event)));
 })], 0));
 });
@@ -120,7 +125,7 @@ return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadi
 });
 /**
  * An interceptor factory which supplies a sub-path of `:db` to the handler.
- *   It's action is somewhat annologous to `update-in`. It grafts the return
+ *   It's action is somewhat analogous to `update-in`. It grafts the return
  *   value from the handler back into db.
  * 
  *   Usage:
@@ -131,28 +136,28 @@ return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadi
  * 
  *   Notes:
  *  1. cater for `path` appearing more than once in an interceptor chain.
- *  2. `:effect` may not contain `:db` effect. Which means no change to
+ *  2. `:effects` may not contain `:db` effect. Which means no change to
  *     `:db` should be made.
  *   
  */
 re_frame.std_interceptors.path = (function re_frame$std_interceptors$path(var_args){
-var args__7792__auto__ = [];
-var len__7785__auto___14449 = arguments.length;
-var i__7786__auto___14450 = (0);
+var args__8146__auto__ = [];
+var len__8139__auto___14759 = arguments.length;
+var i__8140__auto___14760 = (0);
 while(true){
-if((i__7786__auto___14450 < len__7785__auto___14449)){
-args__7792__auto__.push((arguments[i__7786__auto___14450]));
+if((i__8140__auto___14760 < len__8139__auto___14759)){
+args__8146__auto__.push((arguments[i__8140__auto___14760]));
 
-var G__14451 = (i__7786__auto___14450 + (1));
-i__7786__auto___14450 = G__14451;
+var G__14761 = (i__8140__auto___14760 + (1));
+i__8140__auto___14760 = G__14761;
 continue;
 } else {
 }
 break;
 }
 
-var argseq__7793__auto__ = ((((0) < args__7792__auto__.length))?(new cljs.core.IndexedSeq(args__7792__auto__.slice((0)),(0),null)):null);
-return re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic(argseq__7793__auto__);
+var argseq__8147__auto__ = ((((0) < args__8146__auto__.length))?(new cljs.core.IndexedSeq(args__8146__auto__.slice((0)),(0),null)):null);
+return re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic(argseq__8147__auto__);
 });
 
 re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic = (function (args){
@@ -186,8 +191,8 @@ return re_frame.interceptor.assoc_effect(context_SINGLEQUOTE_,cljs.core.cst$kw$d
 
 re_frame.std_interceptors.path.cljs$lang$maxFixedArity = (0);
 
-re_frame.std_interceptors.path.cljs$lang$applyTo = (function (seq14448){
-return re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq(seq14448));
+re_frame.std_interceptors.path.cljs$lang$applyTo = (function (seq14758){
+return re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq(seq14758));
 });
 
 /**
@@ -196,32 +201,53 @@ return re_frame.std_interceptors.path.cljs$core$IFn$_invoke$arity$variadic(cljs.
  *   return a modified `db`.
  * 
  *   Unlike the `after` inteceptor which is only about side effects, `enrich`
- *   expects f to process and alter the given `db` coeffect in some useful way,
+ *   expects `f` to process and alter the given `db` coeffect in some useful way,
  *   contributing to the derived data, flowing vibe.
  * 
  *   Example Use:
+ *   ------------
  * 
  *   Imagine that todomvc needed to do duplicate detection - if any two todos had
  *   the same text, then highlight their background, and report them in a warning
  *   down the bottom of the panel.
  * 
- *   Almost any action (edit text, add new todo, remove a todo) requires a
+ *   Almost any user action (edit text, add new todo, remove a todo) requires a
  *   complete reassesment of duplication errors and warnings. Eg: that edit
- *   update might have introduced a new duplicate or removed one. Same with a
- *   todo removal.
+ *   just made might have introduced a new duplicate, or removed one. Same with
+ *   any todo removal. So we need to re-calculate warnings after any CRUD events
+ *   associated with the todos list.
  * 
- *   And to perform this enrichment, a function has to inspect all the todos,
- *   possibly set flags on each, and set some overall list of duplicates.
- *   And this duplication check might just be one check among many.
+ *   Unless we are careful, we might end up coding subtly different checks
+ *   for each kind of CRUD operation.  The duplicates check made after
+ *   'delete todo' event might be subtly different to that done after an
+ *   eddting operation. Nice and efficient, but fiddly. A bug generator
+ *   approach.
  * 
- *   `f` would need to be both adding and removing the duplicate warnings.
- *   By applying `f` in middleware, we keep the handlers simple and yet we
- *   ensure this important step is not missed.
+ *   So, instead, we create an `f` which recalcualtes warnings from scratch
+ *   every time there is ANY change. It will inspect all the todos, and
+ *   reset ALL FLAGS every time (overwriting what was there previously)
+ *   and fully recalculate the list of duplicates (displayed at the bottom?).
+ * 
+ *   By applying `f` in an `:enrich` interceptor, after every CRUD event,
+ *   we keep the handlers simple and yet we ensure this important step
+ *   (of getting warnings right) is not missed on any change.
+ * 
+ *   We can test `f` easily - it is a pure fucntions - independently of
+ *   any CRUD operation.
+ * 
+ *   This brings huge simplicity at the expense of some re-computation
+ *   each time. This may be a very satisfactory tradeoff in many cases.
  */
 re_frame.std_interceptors.enrich = (function re_frame$std_interceptors$enrich(f){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$enrich,cljs.core.cst$kw$after,(function re_frame$std_interceptors$enrich_$_enrich_after(context){
 var event = re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event);
-var db = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+var db = (function (){var or__7026__auto__ = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+if(cljs.core.truth_(or__7026__auto__)){
+return or__7026__auto__;
+} else {
+return re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+}
+})();
 return re_frame.interceptor.assoc_effect(context,cljs.core.cst$kw$db,(f.cljs$core$IFn$_invoke$arity$2 ? f.cljs$core$IFn$_invoke$arity$2(db,event) : f.call(null,db,event)));
 })], 0));
 });
@@ -229,8 +255,9 @@ return re_frame.interceptor.assoc_effect(context,cljs.core.cst$kw$db,(f.cljs$cor
  * Interceptor factory which runs a given function `f` in the "after"
  *   position, presumably for side effects.
  * 
- *   `f` is called with two arguments: the `effects` value of `:db` and the event. It's return
- *   value is ignored so `f` can only side-effect.
+ *   `f` is called with two arguments: the `effects` value of `:db`
+ *   (or the `coeffect` value of db if no db effect is returned) and the event.
+ * Its return value is ignored so `f` can only side-effect.
  * 
  *   Example use:
  *   - `f` runs schema validation (reporting any errors found)
@@ -238,7 +265,13 @@ return re_frame.interceptor.assoc_effect(context,cljs.core.cst$kw$db,(f.cljs$cor
  */
 re_frame.std_interceptors.after = (function re_frame$std_interceptors$after(f){
 return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$after,cljs.core.cst$kw$after,(function re_frame$std_interceptors$after_$_after_after(context){
-var db = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+var db = (function (){var or__7026__auto__ = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+if(cljs.core.truth_(or__7026__auto__)){
+return or__7026__auto__;
+} else {
+return re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
+}
+})();
 var event = re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$event);
 (f.cljs$core$IFn$_invoke$arity$2 ? f.cljs$core$IFn$_invoke$arity$2(db,event) : f.call(null,db,event));
 
@@ -267,37 +300,37 @@ return context;
  *   
  */
 re_frame.std_interceptors.on_changes = (function re_frame$std_interceptors$on_changes(var_args){
-var args__7792__auto__ = [];
-var len__7785__auto___14457 = arguments.length;
-var i__7786__auto___14458 = (0);
+var args__8146__auto__ = [];
+var len__8139__auto___14767 = arguments.length;
+var i__8140__auto___14768 = (0);
 while(true){
-if((i__7786__auto___14458 < len__7785__auto___14457)){
-args__7792__auto__.push((arguments[i__7786__auto___14458]));
+if((i__8140__auto___14768 < len__8139__auto___14767)){
+args__8146__auto__.push((arguments[i__8140__auto___14768]));
 
-var G__14459 = (i__7786__auto___14458 + (1));
-i__7786__auto___14458 = G__14459;
+var G__14769 = (i__8140__auto___14768 + (1));
+i__8140__auto___14768 = G__14769;
 continue;
 } else {
 }
 break;
 }
 
-var argseq__7793__auto__ = ((((2) < args__7792__auto__.length))?(new cljs.core.IndexedSeq(args__7792__auto__.slice((2)),(0),null)):null);
-return re_frame.std_interceptors.on_changes.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),(arguments[(1)]),argseq__7793__auto__);
+var argseq__8147__auto__ = ((((2) < args__8146__auto__.length))?(new cljs.core.IndexedSeq(args__8146__auto__.slice((2)),(0),null)):null);
+return re_frame.std_interceptors.on_changes.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),(arguments[(1)]),argseq__8147__auto__);
 });
 
 re_frame.std_interceptors.on_changes.cljs$core$IFn$_invoke$arity$variadic = (function (f,out_path,in_paths){
-return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$enrich,cljs.core.cst$kw$after,(function re_frame$std_interceptors$on_change_after(context){
+return re_frame.interceptor.__GT_interceptor.cljs$core$IFn$_invoke$arity$variadic(cljs.core.array_seq([cljs.core.cst$kw$id,cljs.core.cst$kw$on_DASH_changes,cljs.core.cst$kw$after,(function re_frame$std_interceptors$on_change_after(context){
 var new_db = re_frame.interceptor.get_effect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
 var old_db = re_frame.interceptor.get_coeffect.cljs$core$IFn$_invoke$arity$2(context,cljs.core.cst$kw$db);
 var new_ins = cljs.core.map.cljs$core$IFn$_invoke$arity$2(((function (new_db,old_db){
-return (function (p1__14452_SHARP_){
-return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(new_db,p1__14452_SHARP_);
+return (function (p1__14762_SHARP_){
+return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(new_db,p1__14762_SHARP_);
 });})(new_db,old_db))
 ,in_paths);
 var old_ins = cljs.core.map.cljs$core$IFn$_invoke$arity$2(((function (new_db,old_db,new_ins){
-return (function (p1__14453_SHARP_){
-return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(old_db,p1__14453_SHARP_);
+return (function (p1__14763_SHARP_){
+return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(old_db,p1__14763_SHARP_);
 });})(new_db,old_db,new_ins))
 ,in_paths);
 var changed_ins_QMARK_ = cljs.core.some(cljs.core.false_QMARK_,cljs.core.map.cljs$core$IFn$_invoke$arity$3(cljs.core.identical_QMARK_,new_ins,old_ins));
@@ -311,11 +344,11 @@ return context;
 
 re_frame.std_interceptors.on_changes.cljs$lang$maxFixedArity = (2);
 
-re_frame.std_interceptors.on_changes.cljs$lang$applyTo = (function (seq14454){
-var G__14455 = cljs.core.first(seq14454);
-var seq14454__$1 = cljs.core.next(seq14454);
-var G__14456 = cljs.core.first(seq14454__$1);
-var seq14454__$2 = cljs.core.next(seq14454__$1);
-return re_frame.std_interceptors.on_changes.cljs$core$IFn$_invoke$arity$variadic(G__14455,G__14456,seq14454__$2);
+re_frame.std_interceptors.on_changes.cljs$lang$applyTo = (function (seq14764){
+var G__14765 = cljs.core.first(seq14764);
+var seq14764__$1 = cljs.core.next(seq14764);
+var G__14766 = cljs.core.first(seq14764__$1);
+var seq14764__$2 = cljs.core.next(seq14764__$1);
+return re_frame.std_interceptors.on_changes.cljs$core$IFn$_invoke$arity$variadic(G__14765,G__14766,seq14764__$2);
 });
 

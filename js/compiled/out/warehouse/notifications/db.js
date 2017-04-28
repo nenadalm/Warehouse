@@ -1,6 +1,7 @@
-// Compiled by ClojureScript 1.9.293 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.9.521 {:static-fns true, :optimize-constants true}
 goog.provide('warehouse.notifications.db');
 goog.require('cljs.core');
+goog.require('cljs.core.constants');
 goog.require('warehouse.util');
 warehouse.notifications.db.add_notification = (function warehouse$notifications$db$add_notification(db,notification){
 var k = warehouse.util.next_key(cljs.core.cst$kw$notifications.cljs$core$IFn$_invoke$arity$1(db));

@@ -1,14 +1,15 @@
 (ns re-frame.router
-  (:require [re-frame.events :refer [handle]]
+  (:require [re-frame.events  :refer [handle]]
             [re-frame.interop :refer [after-render empty-queue next-tick]]
-            [re-frame.loggers :refer [console]]))
+            [re-frame.loggers :refer [console]]
+            [re-frame.trace   :as trace :include-macros true]))
 
 
 ;; -- Router Loop ------------------------------------------------------------
 ;;
 ;; A call to "re-frame.core/dispatch" places an event on a queue for processing.
 ;; A short time later, the handler registered to handle this event will be run.
-;; What follows is the implemtation of this process.
+;; What follows is the implementation of this process.
 ;;
 ;; The task is to process queued events in a perpetual loop, one after
 ;; the other, FIFO, calling the registered event-handler for each, being idle when
@@ -32,14 +33,14 @@
 ;;   - maintain a FIFO queue of `dispatched` events.
 ;;   - when a new event arrives, "schedule" processing of this queue using
 ;;     goog.async.nextTick, which means it will happen "very soon".
-;;   - when processing events, one after the other, do ALL the those currently
-;;     queued. Don't stop. Don't yield to the browser. Hog that CPU.
+;;   - when processing events, one after the other, do ALL the currently
+;;     queued events. Don't stop. Don't yield to the browser. Hog that CPU.
 ;;   - but if any new events are dispatched during this cycle of processing,
 ;;     don't do them immediately. Leave them queued. Yield first to the browser,
 ;;     and do these new events in the next processing cycle. That way we drain
 ;;     the queue up to a point, but we never hog the CPU forever. In
 ;;     particular, we handle the case where handling one event will beget
-;;     another event. The freshly begatted event will be handled next cycle,
+;;     another event. The freshly begotten event will be handled next cycle,
 ;;     with yielding in-between.
 ;;   - In some cases, an event should not be handled until after the GUI has been
 ;;     updated, i.e., after the next Reagent animation frame. In such a case,
@@ -85,7 +86,7 @@
   (-exception [this ex])
   (-pause [this later-fn])
   (-resume [this])
-  (-call-post-event-callbacks[this event]))
+  (-call-post-event-callbacks [this event]))
 
 
 ;; Concrete implementation of IEventQueue
@@ -102,13 +103,13 @@
   ;; register a callback function which will be called after each event is processed
   (add-post-event-callback [_ id callback-fn]
     (if (contains? post-event-callback-fns id)
-      (console :warn "re-frame: overwriting existing post event call back with id: " id))
+      (console :warn "re-frame: overwriting existing post event call back with id:" id))
     (->> (assoc post-event-callback-fns id callback-fn)
          (set! post-event-callback-fns)))
 
   (remove-post-event-callback [_ id]
     (if-not (contains? post-event-callback-fns id)
-      (console :warn "re-frame: could not remove post event call back with id: " id)
+      (console :warn "re-frame: could not remove post event call back with id:" id)
       (->> (dissoc post-event-callback-fns id)
            (set! post-event-callback-fns))))
 
@@ -118,45 +119,50 @@
   (-fsm-trigger
     [this trigger arg]
 
-    ;; The following "case" impliments the Finite State Machine.
+    ;; The following "case" implements the Finite State Machine.
     ;; Given a "trigger", and the existing FSM state, it computes the
-    ;; new FSM state and the tranistion action (function).
+    ;; new FSM state and the transition action (function).
 
-    (let [[new-fsm-state action-fn]
-          (case [fsm-state trigger]
+    (trace/with-trace {:op-type ::fsm-trigger}
+      (let [[new-fsm-state action-fn]
+            (case [fsm-state trigger]
 
-            ;; You should read the following "case" as:
-            ;; [current-FSM-state trigger] -> [new-FSM-state action-fn]
-            ;;
-            ;; So, for example, the next line should be interpreted as:
-            ;; if you are in state ":idle" and a trigger ":add-event"
-            ;; happens, then move the FSM to state ":scheduled" and execute
-            ;; that two-part "do" fucntion.
-            [:idle :add-event] [:scheduled #(do (-add-event this arg)
-                                                (-run-next-tick this))]
+              ;; You should read the following "case" as:
+              ;; [current-FSM-state trigger] -> [new-FSM-state action-fn]
+              ;;
+              ;; So, for example, the next line should be interpreted as:
+              ;; if you are in state ":idle" and a trigger ":add-event"
+              ;; happens, then move the FSM to state ":scheduled" and execute
+              ;; that two-part "do" function.
+              [:idle :add-event] [:scheduled #(do (-add-event this arg)
+                                                  (-run-next-tick this))]
 
-            ;; State: :scheduled  (the queue is scheduled to run, soon)
-            [:scheduled :add-event] [:scheduled #(-add-event this arg)]
-            [:scheduled :run-queue] [:running   #(-run-queue this)]
+              ;; State: :scheduled  (the queue is scheduled to run, soon)
+              [:scheduled :add-event] [:scheduled #(-add-event this arg)]
+              [:scheduled :run-queue] [:running #(-run-queue this)]
 
-            ;; State: :running (the queue is being processed one event after another)
-            [:running :add-event ] [:running  #(-add-event this arg)]
-            [:running :pause     ] [:paused   #(-pause this arg)]
-            [:running :exception ] [:idle     #(-exception this arg)]
-            [:running :finish-run] (if (empty? queue)       ;; FSM guard
-                                     [:idle]
-                                     [:scheduled #(-run-next-tick this)])
+              ;; State: :running (the queue is being processed one event after another)
+              [:running :add-event] [:running #(-add-event this arg)]
+              [:running :pause] [:paused #(-pause this arg)]
+              [:running :exception] [:idle #(-exception this arg)]
+              [:running :finish-run] (if (empty? queue)     ;; FSM guard
+                                       [:idle]
+                                       [:scheduled #(-run-next-tick this)])
 
-            ;; State: :paused (:flush-dom metadata on an event has caused a temporary pause in processing)
-            [:paused :add-event] [:paused  #(-add-event this arg)]
-            [:paused :resume   ] [:running #(-resume this)]
+              ;; State: :paused (:flush-dom metadata on an event has caused a temporary pause in processing)
+              [:paused :add-event] [:paused #(-add-event this arg)]
+              [:paused :resume] [:running #(-resume this)]
 
-            (throw (ex-info (str "re-frame: router state transition not found. " fsm-state " " trigger)
-                            {:fsm-state fsm-state, :trigger trigger})))]
+              (throw (ex-info (str "re-frame: router state transition not found. " fsm-state " " trigger)
+                              {:fsm-state fsm-state, :trigger trigger})))]
 
-      ;; The "case" above computed both the new FSM state, and the action. Now, make it happen.
-      (set! fsm-state new-fsm-state)
-      (when action-fn (action-fn))))
+        ;; The "case" above computed both the new FSM state, and the action. Now, make it happen.
+
+        (trace/merge-trace! {:operation [fsm-state trigger]
+                             :tags      {:current-state fsm-state
+                                         :new-state     new-fsm-state}})
+        (set! fsm-state new-fsm-state)
+        (when action-fn (action-fn)))))
 
   (-add-event
     [_ event]
@@ -237,7 +243,7 @@
 
 
 (defn dispatch-sync
-  "Sychronously (immediaetly!) process the given event using the registered handler.
+  "Sychronously (immediately!) process the given event using the registered handler.
 
   Generally, you shouldn't use this - you should use `dispatch` instead.  It
   is an error to use `dispatch-sync` within an event handler.

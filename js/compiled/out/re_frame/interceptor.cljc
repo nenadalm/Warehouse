@@ -5,10 +5,7 @@
     [re-frame.interop :refer [empty-queue debug-enabled?]]))
 
 
-;; XXX use defrecord ??
-
 (def mandatory-interceptor-keys #{:id :after :before})
-
 
 (defn interceptor?
   [m]
@@ -17,16 +14,14 @@
 
 
 (defn ->interceptor
-  "Create an interceptor from named arguements"
-  [& {:as m :keys [name id before after]}]      ;; XXX remove `name` in due course - only in there as a backwards compat thing
+  "Create an interceptor from named arguments"
+  [& {:as m :keys [id before after]}]
   (when debug-enabled?
-    (if name                                    ;; XXX remove in due course
-      (console :warn  "re-frame.core/->interceptor no longer takes `:name` - has been renamed to `:id`. Please change for " name))
     (if-let [unknown-keys  (seq (clojure.set/difference
-                             (-> (dissoc m :name) keys set)         ;; XXX take out name in due course
-                             mandatory-interceptor-keys))]
-      (console :error "re-frame: ->interceptor " m " has unknown keys: " unknown-keys)))
-  {:id     (or id name :unnamed)     ;; XXX remove `name` in due course
+                                  (-> m keys set)
+                                  mandatory-interceptor-keys))]
+      (console :error "re-frame: ->interceptor " m " has unknown keys:" unknown-keys)))
+  {:id     (or id :unnamed)
    :before before
    :after  after })
 
@@ -52,12 +47,16 @@
    (:coeffects context))
   ([context key]
    (get-in context [:coeffects key]))
-  ([context key not-fount]
-   (get-in context [:coeffects key] not-fount)))
+  ([context key not-found]
+   (get-in context [:coeffects key] not-found)))
 
 (defn assoc-coeffect
   [context key value]
   (assoc-in context [:coeffects key] value))
+
+(defn update-coeffect
+  [context key f & args]
+  (apply update context key f args))
 
 ;; -- Execute Interceptor Chain  ------------------------------------------------------------------
 
@@ -85,9 +84,9 @@
   Returns updated `context`. Ie. the `context` which has been threaded
   through all interceptor functions.
 
-  Generally speaking, an interceptor's `:before` fucntion will (if present)
-  add to a `context's` `:coeffect`, while it's `:after` function
-  will modify the `context`'s `:effect`.  Very approximately.
+  Generally speaking, an interceptor's `:before` function will (if present)
+  add to a `context's` `:coeffects`, while it's `:after` function
+  will modify the `context`'s `:effects`.  Very approximately.
 
   But because all interceptor functions are given `context`, and can
   return a modified version of it, the way is clear for an interceptor
@@ -101,8 +100,8 @@
          (let [interceptor (peek queue)   ;; next interceptor to call
                stack (:stack context)]    ;; already completed interceptors
            (recur (-> context
-                      (assoc :queue (pop queue))
-                      (assoc :stack (conj stack interceptor))
+                      (assoc :queue (pop queue)
+                             :stack (conj stack interceptor))
                       (invoke-interceptor-fn interceptor direction)))))))))
 
 
@@ -110,7 +109,7 @@
   "Add a collection of `interceptors` to the end of `context's` execution `:queue`.
   Returns the updated `context`.
 
-  In an advanced case, this function would allow an interceptor could add new
+  In an advanced case, this function could allow an interceptor to add new
   interceptors to the `:queue` of a context."
   [context interceptors]
   (update context :queue
@@ -180,7 +179,7 @@
    The first few interceptors in a chain will likely have `:before`
    functions which \"prime\" the `context` by adding the event, and
    the current state of app-db into `:coeffects`. But interceptors can
-   add whatever they want to `:coeffect` - perhaps the event handler needs
+   add whatever they want to `:coeffects` - perhaps the event handler needs
    some information from localstore, or a random number, or access to
    a DataScript connection.
 
