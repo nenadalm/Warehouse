@@ -1,6 +1,7 @@
-// Compiled by ClojureScript 1.9.293 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.9.521 {:static-fns true, :optimize-constants true}
 goog.provide('warehouse.prod');
 goog.require('cljs.core');
+goog.require('cljs.core.constants');
 goog.require('warehouse.core');
 goog.require('warehouse.component_import.events');
 goog.require('re_frame.core');

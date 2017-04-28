@@ -1,6 +1,7 @@
-// Compiled by ClojureScript 1.9.293 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.9.521 {:static-fns true, :optimize-constants true}
 goog.provide('re_frame.cofx');
 goog.require('cljs.core');
+goog.require('cljs.core.constants');
 goog.require('re_frame.db');
 goog.require('re_frame.interceptor');
 goog.require('re_frame.registrar');
@@ -29,28 +30,28 @@ re_frame.cofx.register = cljs.core.partial.cljs$core$IFn$_invoke$arity$2(re_fram
  * 
  * Given an `id`, and an optional value, lookup the registered coeffect
  * handler (previously registered via `reg-cofx`) and it with two arguments:
- * the current value of `:coeffect` and, optionally, the value. The registered handler
+ * the current value of `:coeffects` and, optionally, the value. The registered handler
  * is expected to return a modified coeffect.
  * 
  */
 re_frame.cofx.inject_cofx = (function re_frame$cofx$inject_cofx(var_args){
-var args14544 = [];
-var len__7785__auto___14547 = arguments.length;
-var i__7786__auto___14548 = (0);
+var args14691 = [];
+var len__8139__auto___14694 = arguments.length;
+var i__8140__auto___14695 = (0);
 while(true){
-if((i__7786__auto___14548 < len__7785__auto___14547)){
-args14544.push((arguments[i__7786__auto___14548]));
+if((i__8140__auto___14695 < len__8139__auto___14694)){
+args14691.push((arguments[i__8140__auto___14695]));
 
-var G__14549 = (i__7786__auto___14548 + (1));
-i__7786__auto___14548 = G__14549;
+var G__14696 = (i__8140__auto___14695 + (1));
+i__8140__auto___14695 = G__14696;
 continue;
 } else {
 }
 break;
 }
 
-var G__14546 = args14544.length;
-switch (G__14546) {
+var G__14693 = args14691.length;
+switch (G__14693) {
 case 1:
 return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -60,7 +61,7 @@ return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args14544.length)].join('')));
+throw (new Error([cljs.core.str.cljs$core$IFn$_invoke$arity$1("Invalid arity: "),cljs.core.str.cljs$core$IFn$_invoke$arity$1(args14691.length)].join('')));
 
 }
 });
@@ -79,11 +80,11 @@ return cljs.core.update.cljs$core$IFn$_invoke$arity$4(context,cljs.core.cst$kw$c
 
 re_frame.cofx.inject_cofx.cljs$lang$maxFixedArity = 2;
 
-var G__14551_14553 = cljs.core.cst$kw$db;
-var G__14552_14554 = ((function (G__14551_14553){
+var G__14698_14700 = cljs.core.cst$kw$db;
+var G__14699_14701 = ((function (G__14698_14700){
 return (function re_frame$cofx$db_coeffects_handler(coeffects){
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(coeffects,cljs.core.cst$kw$db,(cljs.core.deref.cljs$core$IFn$_invoke$arity$1 ? cljs.core.deref.cljs$core$IFn$_invoke$arity$1(re_frame.db.app_db) : cljs.core.deref.call(null,re_frame.db.app_db)));
-});})(G__14551_14553))
+});})(G__14698_14700))
 ;
-(re_frame.cofx.register.cljs$core$IFn$_invoke$arity$2 ? re_frame.cofx.register.cljs$core$IFn$_invoke$arity$2(G__14551_14553,G__14552_14554) : re_frame.cofx.register.call(null,G__14551_14553,G__14552_14554));
+(re_frame.cofx.register.cljs$core$IFn$_invoke$arity$2 ? re_frame.cofx.register.cljs$core$IFn$_invoke$arity$2(G__14698_14700,G__14699_14701) : re_frame.cofx.register.call(null,G__14698_14700,G__14699_14701));
 re_frame.cofx.inject_db = re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1(cljs.core.cst$kw$db);

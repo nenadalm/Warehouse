@@ -1,18 +1,19 @@
 (ns re-frame.core
   (:require
-    [re-frame.events      :as events]
-		[re-frame.subs        :as subs]
-		[re-frame.interop     :as interop]
-    [re-frame.db          :as db]
-    [re-frame.fx          :as fx]
-    [re-frame.cofx        :as cofx]
-    [re-frame.router      :as router]
-    [re-frame.loggers     :as loggers]
-    [re-frame.registrar   :as registrar]
-    [re-frame.interceptor :as interceptor]
+    [re-frame.events           :as events]
+    [re-frame.subs             :as subs]
+    [re-frame.interop          :as interop]
+    [re-frame.db               :as db]
+    [re-frame.fx               :as fx]
+    [re-frame.cofx             :as cofx]
+    [re-frame.router           :as router]
+    [re-frame.loggers          :as loggers]
+    [re-frame.registrar        :as registrar]
+    [re-frame.interceptor      :as interceptor]
     [re-frame.std-interceptors :as std-interceptors :refer [db-handler->interceptor
                                                              fx-handler->interceptor
-                                                             ctx-handler->interceptor]]))
+                                                             ctx-handler->interceptor]]
+    [clojure.set               :as set]))
 
 
 ;; --  dispatch
@@ -44,11 +45,21 @@
 
 
 ;; --  subscriptions
-(def reg-sub-raw         subs/register-raw)
+(defn reg-sub-raw
+  "Associate a given `query id` with a given subscription handler function `handler-fn`
+   which is expected to take two arguments: app-db and query vector, and return
+   a `reaction`.
+
+  This is a low level, advanced function.  You should probably be using reg-sub
+  instead."
+  [query-id handler-fn]
+  (registrar/register-handler subs/kind query-id handler-fn))
+
 (def reg-sub             subs/reg-sub)
 (def subscribe           subs/subscribe)
 
 (def clear-sub    (partial registrar/clear-handlers subs/kind))
+(def clear-subscription-cache! subs/clear-subscription-cache!)
 
 ;; -- effects
 (def reg-fx      fx/register)
@@ -67,7 +78,7 @@
   "Register the given `id`, typically a keyword, with the combination of
   `db-handler` and an interceptor chain.
   `db-handler` is a function: (db event) -> db
-  `interceptors` is a collection of interceptors, possibly nested (needs flattenting).
+  `interceptors` is a collection of interceptors, possibly nested (needs flattening).
   `db-handler` is wrapped in an interceptor and added to the end of the chain, so in the end
    there is only a chain.
    The necessary effects and coeffects handler are added to the front of the
@@ -102,7 +113,7 @@
 (def set-loggers! loggers/set-loggers!)
 
 ;; If you are writing an extension to re-frame, like perhaps
-;; an effeects handler, you may want to use re-frame logging.
+;; an effects handler, you may want to use re-frame logging.
 ;;
 ;; usage:  (console :error "this is bad: " a-variable " and " anotherv)
 ;;         (console :warn "possible breach of containment wall at: " dt)
@@ -124,23 +135,23 @@
     (fn []
 			;; call `dispose!` on all current subscriptions which
 			;; didn't originally exist.
-			#_(->> subs/query->reaction
-					 vals
-					 (remove (set (vals subs-cache)))   ;;
-					 (map interop/dispose!)
-					 (doall))
+      (let [original-subs (set (vals subs-cache))
+            current-subs  (set (vals @subs/query->reaction))]
+        (doseq [sub (set/difference current-subs original-subs)]
+          (interop/dispose! sub)))
 
-			;; reset the atoms
-      (reset! subs/query->reaction subs-cache)
+      ;; Reset the atoms
+      ;; We don't need to reset subs/query->reaction, as
+      ;; disposing of the subs removes them from the cache anyway
       (reset! registrar/kind->id->handler handlers)
       (reset! db/app-db app-db)
       nil)))
 
 
-;; -- Event Procssing Callbacks
+;; -- Event Processing Callbacks
 
 (defn add-post-event-callback
-  "Registers a function `f` to be called after each event is procecessed
+  "Registers a function `f` to be called after each event is processed
    `f` will be called with two arguments:
     - `event`: a vector. The event just processed.
     - `queue`: a PersistentQueue, possibly empty, of events yet to be processed.
@@ -166,7 +177,7 @@
 
 
 ;; --  Deprecation Messages
-;; Assisting the v0.0.7 ->  v0.0.8 tranistion.
+;; Assisting the v0.0.7 ->  v0.0.8 transition.
 (defn register-handler
   [& args]
   (console :warn  "re-frame:  \"register-handler\" has been renamed \"reg-event-db\" (look for registration of " (str (first args)) ")")

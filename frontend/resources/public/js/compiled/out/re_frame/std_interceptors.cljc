@@ -2,10 +2,12 @@
   "contains re-frame supplied, standard interceptors"
   (:require
     [re-frame.interceptor :refer [->interceptor get-effect get-coeffect assoc-coeffect assoc-effect]]
-    [re-frame.loggers   :refer [console]]
-    [re-frame.registrar :as  registrar]
-    [re-frame.db        :refer [app-db]]
-    [clojure.data       :as data]))
+    [re-frame.loggers :refer [console]]
+    [re-frame.registrar :as registrar]
+    [re-frame.db :refer [app-db]]
+    [clojure.data :as data]
+    [re-frame.cofx :as cofx]
+    [re-frame.utils :as utils]))
 
 
 ;; XXX provide a way to set what handler should be called when there is no registered handler.
@@ -29,23 +31,23 @@
     :id     :debug
     :before (fn debug-before
               [context]
-              (console :log "Handling re-frame event: " (get-coeffect context :event))
+              (console :log "Handling re-frame event:" (get-coeffect context :event))
               context)
     :after  (fn debug-after
               [context]
-              (let [event          (get-coeffect context :event)
-                    orig-db        (get-coeffect context :db)
-                    new-db         (get-effect   context :db  ::not-found)]
+              (let [event   (get-coeffect context :event)
+                    orig-db (get-coeffect context :db)
+                    new-db  (get-effect   context :db ::not-found)]
                 (if (= new-db ::not-found)
-                  (console :log "No :db changes caused by: " event)
+                  (console :log "No :db changes caused by:" event)
                   (let [[only-before only-after] (data/diff orig-db new-db)
                         db-changed?    (or (some? only-before) (some? only-after))]
                     (if db-changed?
-                      (do (console :group "db clojure.data/diff for: " event)
-                          (console :log "only before: " only-before)
-                          (console :log "only after : " only-after)
+                      (do (console :group "db clojure.data/diff for:" event)
+                          (console :log "only before:" only-before)
+                          (console :log "only after :" only-after)
                           (console :groupEnd))
-                      (console :log "no app-db changes caused by: " event))))
+                      (console :log "no app-db changes caused by:" event))))
                 context))))
 
 
@@ -62,10 +64,14 @@
     :id      :trim-v
     :before  (fn trimv-before
                [context]
-               (->>  (get-coeffect context :event)
-                     rest
-                     vec
-                     (assoc-coeffect context :event)))))
+               (-> context
+                   (update-in [:coeffects :event] subvec 1)
+                   (assoc-in [:coeffects ::untrimmed-event] (get-coeffect context :event))))
+    :after   (fn trimv-after
+               [context]
+               (-> context
+                   (utils/dissoc-in [:coeffects ::untrimmed-event])
+                   (assoc-in [:coeffects :event] (get-coeffect context ::untrimmed-event))))))
 
 
 ;; -- Interceptor Factories - PART 1 ---------------------------------------------------------------
@@ -91,8 +97,8 @@
     :before (fn db-handler-before
               [context]
               (let [{:keys [db event]} (:coeffects context)]
-                (->>  (handler-fn db event)
-                      (assoc-effect context :db))))))
+                (->> (handler-fn db event)
+                     (assoc-effect context :db))))))
 
 
 (defn fx-handler->interceptor
@@ -135,7 +141,7 @@
 
 (defn path
   "An interceptor factory which supplies a sub-path of `:db` to the handler.
-  It's action is somewhat annologous to `update-in`. It grafts the return
+  It's action is somewhat analogous to `update-in`. It grafts the return
   value from the handler back into db.
 
   Usage:
@@ -146,14 +152,14 @@
 
   Notes:
     1. cater for `path` appearing more than once in an interceptor chain.
-    2. `:effect` may not contain `:db` effect. Which means no change to
+    2. `:effects` may not contain `:db` effect. Which means no change to
        `:db` should be made.
   "
   [& args]
   (let [path (flatten args)
         db-store-key :re-frame-path/db-store]    ;; this is where, within `context`, we store the original dbs
     (when (empty? path)
-      (console :error "re-frame: \"path\" interceptor given no params" ))
+      (console :error "re-frame: \"path\" interceptor given no params"))
     (->interceptor
       :id      :path
       :before  (fn
@@ -183,34 +189,51 @@
   return a modified `db`.
 
   Unlike the `after` inteceptor which is only about side effects, `enrich`
-  expects f to process and alter the given `db` coeffect in some useful way,
+  expects `f` to process and alter the given `db` coeffect in some useful way,
   contributing to the derived data, flowing vibe.
 
   Example Use:
+  ------------
 
   Imagine that todomvc needed to do duplicate detection - if any two todos had
   the same text, then highlight their background, and report them in a warning
   down the bottom of the panel.
 
-  Almost any action (edit text, add new todo, remove a todo) requires a
+  Almost any user action (edit text, add new todo, remove a todo) requires a
   complete reassesment of duplication errors and warnings. Eg: that edit
-  update might have introduced a new duplicate or removed one. Same with a
-  todo removal.
+  just made might have introduced a new duplicate, or removed one. Same with
+  any todo removal. So we need to re-calculate warnings after any CRUD events
+  associated with the todos list.
 
-  And to perform this enrichment, a function has to inspect all the todos,
-  possibly set flags on each, and set some overall list of duplicates.
-  And this duplication check might just be one check among many.
+  Unless we are careful, we might end up coding subtly different checks
+  for each kind of CRUD operation.  The duplicates check made after
+  'delete todo' event might be subtly different to that done after an
+  eddting operation. Nice and efficient, but fiddly. A bug generator
+  approach.
 
-  `f` would need to be both adding and removing the duplicate warnings.
-  By applying `f` in middleware, we keep the handlers simple and yet we
-  ensure this important step is not missed."
+  So, instead, we create an `f` which recalcualtes warnings from scratch
+  every time there is ANY change. It will inspect all the todos, and
+  reset ALL FLAGS every time (overwriting what was there previously)
+  and fully recalculate the list of duplicates (displayed at the bottom?).
+
+  By applying `f` in an `:enrich` interceptor, after every CRUD event,
+  we keep the handlers simple and yet we ensure this important step
+  (of getting warnings right) is not missed on any change.
+
+  We can test `f` easily - it is a pure fucntions - independently of
+  any CRUD operation.
+
+  This brings huge simplicity at the expense of some re-computation
+  each time. This may be a very satisfactory tradeoff in many cases."
   [f]
   (->interceptor
     :id    :enrich
     :after (fn enrich-after
              [context]
              (let [event (get-coeffect context :event)
-                   db    (get-effect context :db)]
+                   db    (or (get-effect context :db)
+                             ;; If no db effect is returned, we provide the original coeffect.
+                             (get-coeffect context :db))]
                (->> (f db event)
                     (assoc-effect context :db))))))
 
@@ -220,8 +243,9 @@
   "Interceptor factory which runs a given function `f` in the \"after\"
   position, presumably for side effects.
 
-  `f` is called with two arguments: the `effects` value of `:db` and the event. It's return
-  value is ignored so `f` can only side-effect.
+  `f` is called with two arguments: the `effects` value of `:db`
+  (or the `coeffect` value of db if no db effect is returned) and the event.
+   Its return value is ignored so `f` can only side-effect.
 
   Example use:
      - `f` runs schema validation (reporting any errors found)
@@ -231,7 +255,9 @@
     :id    :after
     :after (fn after-after
              [context]
-             (let [db    (get-effect context :db)
+             (let [db    (or (get-effect context :db)
+                             ;; If no db effect is returned, we provide the original coeffect.
+                             (get-coeffect context :db))
                    event (get-coeffect context :event)]
                (f db event)    ;; call f for side effects
                context))))     ;; context is unchanged
@@ -259,7 +285,7 @@
   "
   [f out-path & in-paths]
   (->interceptor
-    :id    :enrich
+    :id    :on-changes
     :after (fn on-change-after
              [context]
              (let [new-db   (get-effect context :db)
@@ -272,9 +298,7 @@
 
                ;; if one of the inputs has changed, then run 'f'
                (if changed-ins?
-                 (->>  (apply f new-ins)
-                       (assoc-in new-db out-path)
-                       (assoc-effect context :db))
+                 (->> (apply f new-ins)
+                      (assoc-in new-db out-path)
+                      (assoc-effect context :db))
                  context)))))
-
-
