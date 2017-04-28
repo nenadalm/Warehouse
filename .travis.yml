@@ -1,5 +1,7 @@
 language: clojure
 
+lein: 2.7.1
+
 cache:
     directories:
         - travis_phantomjs
@@ -51,6 +53,7 @@ before_script:
     - 'lein less once'
 
 script:
+    - lein cljfmt check
     - alias firefox-bin='firefox'
     - lein cljsbuild test
     - 'SELENIUM_BROWSER=phantomjs lein test'
