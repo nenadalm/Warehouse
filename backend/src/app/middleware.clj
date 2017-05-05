@@ -17,3 +17,13 @@
                      {:status 200
                       :body components})]
       response)))
+
+(defn wrap-host-url [handler]
+  (fn [request]
+    (handler (assoc request
+                    :host
+                    (str (name (:scheme request))
+                         "//"
+                         (:server-name request)
+                         ":"
+                         (:server-port request))))))

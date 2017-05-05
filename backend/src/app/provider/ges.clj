@@ -42,23 +42,24 @@
                      404 {:description "No components found"}}}
         (wrap-component-handler handler)))
 
-(def ges-description {:type "ges"
-                      :homepage "http://www.ges.cz"
-                      :icon "http://www.ges.cz/favicon.ico"
-                      :action "http://localhost:3000/handler/ges"
-                      :params [{:name "username"
-                                :type "string"
-                                :secret false}
-                               {:name "password"
-                                :type "string"
-                                :secret true}
-                               {:name "url"
-                                :type "string"
-                                :secret false}]})
+(defn ges-description [host]
+  {:type "ges"
+   :homepage "http://www.ges.cz"
+   :icon "http://www.ges.cz/favicon.ico"
+   :action (str host "/handler/ges")
+   :params [{:name "username"
+             :type "string"
+             :secret false}
+            {:name "password"
+             :type "string"
+             :secret true}
+            {:name "url"
+             :type "string"
+             :secret false}]})
 
 (defrecord Ges []
   Provider
-  (get-description [_] ges-description)
+  (get-description [_ host] (ges-description host))
   (create-handler [_] (create-handler- ges-handler-))
   (create-handler-mocked [_] (create-handler- testing-ges-handler-)))
 
