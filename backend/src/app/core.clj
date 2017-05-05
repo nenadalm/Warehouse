@@ -21,19 +21,21 @@
   (swagger-routes)
   (context "/handler" []
            (GET "/"
-                []
+                request
                 {:summary "Retrieves list of components providers"
                  :description "Retrieves list of components providers"
                  :responses {200 {:schema [ProviderDescription]
                                   :description "List of components providers"}}}
                 {:status 200
-                 :body [(get-description (:ges providers))]
+                 :body [(get-description (:ges providers) (:host request))]
                  :headers {"Access-Control-Allow-Origin" "*"}})
            ((if (:mock-providers conf)
               create-handler-mocked
-              create-handler) (:ges providers))))
+              create-handler)
+            (:ges providers))))
 
 (def app (-> app-api
+             (wrap-host-url)
              (options-middleware)
              (wrap-json-params)
              (wrap-params)))
