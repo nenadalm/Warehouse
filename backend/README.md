@@ -33,3 +33,11 @@ import newer version of image from docker registry
 ```shell
 $ oc import-image nenadalm/warehouse
 ```
+edit deployment config
+```shell
+$ oc config dc/warehouse-backend
+```
+```
+spec.strategy.type = Recreate
+spec.template.spec.resources.containers[0].limits.memory = 1Gi
+```
