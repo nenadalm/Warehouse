@@ -8,10 +8,10 @@ Allows frontend component to import electrical components from various providers
 $ lein ring server-headless
 ```
 
-## Run in dev mode with mocked providers
+## Run in dev mode with mocked providers and with getting scheme from request
 
 ```shell
-$ MOCK_PROVIDERS=true lein ring server-headless
+$ MOCK_PROVIDERS=true ASSUME_SCHEME= lein ring server-headless
 ```
 
 ## Deploy
@@ -35,9 +35,24 @@ $ oc import-image nenadalm/warehouse
 ```
 edit deployment config
 ```shell
-$ oc config dc/warehouse-backend
+$ oc edit dc/warehouse-backend
 ```
-```
-spec.strategy.type = Recreate
-spec.template.spec.resources.containers[0].limits.memory = 1Gi
+```yaml
+spec:
+    strategy:
+        # we use this strategy because there is not enough memory for Rolling strategy on free version of OpenShift
+        type: Recreate
+spec:
+    template:
+        spec:
+            resources:
+                containers[0]:
+                    limits:
+                        # otherwise requests using selenium won't pass
+                        memory: 1Gi
+                    # test if our app is ready to serve requests
+                    readinessProbe:
+                        httpGet:
+                            path: '/'
+                            port: 3000
 ```
