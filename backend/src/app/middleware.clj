@@ -1,4 +1,5 @@
-(ns app.middleware)
+(ns app.middleware
+  (:require [app.config :refer [conf]]))
 
 (defn options-middleware [handler]
   (fn [request]
@@ -22,7 +23,7 @@
   (fn [request]
     (handler (assoc request
                     :host
-                    (str (name (:scheme request))
+                    (str (name (or (:assume-scheme conf) (:scheme request)))
                          "://"
                          (:server-name request)
                          ":"

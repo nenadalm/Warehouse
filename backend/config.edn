@@ -1,1 +1,3 @@
-{:mock-providers false}
+{:mock-providers false
+ ; used for generating actions
+ :assume-scheme :https}
