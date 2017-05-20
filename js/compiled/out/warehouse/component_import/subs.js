@@ -6,13 +6,9 @@ goog.require('re_frame.core');
 var G__16303_16305 = cljs.core.cst$kw$component_DASH_providers;
 var G__16304_16306 = ((function (G__16303_16305){
 return (function (db,_){
-if(cljs.core.truth_(cljs.core.cst$kw$show_DASH_nav.cljs$core$IFn$_invoke$arity$1(db))){
 var or__7026__auto__ = cljs.core.cst$kw$component_DASH_providers.cljs$core$IFn$_invoke$arity$1(db);
 if(cljs.core.truth_(or__7026__auto__)){
 return or__7026__auto__;
-} else {
-return cljs.core.PersistentVector.EMPTY;
-}
 } else {
 return cljs.core.PersistentVector.EMPTY;
 }
