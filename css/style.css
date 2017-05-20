@@ -7,12 +7,12 @@
 }
 .component,
 form {
-  margin: 10px 0;
-  background: #7F9FF5;
-  color: #000;
+  margin: 0.6em 0;
+  background: #7f9ff5;
+  color: #000000;
 }
 body {
-  background: #fff;
+  background: #ffffff;
 }
 input[type=file] {
   display: none;
@@ -31,14 +31,14 @@ table.processes,
 table.processes th,
 table.processes tr,
 table.processes td {
-  border: 1px solid;
-  padding: 5px;
+  border: 0.1em solid;
+  padding: 0.4em;
 }
 .menu li {
   display: inline-block;
-  background: #7F9FF5;
-  padding: 5px;
-  margin: 2px;
+  background: #7f9ff5;
+  padding: 0.4em;
+  margin: 0.1em;
 }
 .dropdown {
   display: inline-block;
@@ -60,8 +60,8 @@ table.processes td {
 }
 .notifications .notification {
   display: flex;
-  margin: 5px;
-  padding: 2px;
+  margin: 0.4em;
+  padding: 0.1em;
 }
 .notifications .notification .message {
   width: 100%;
@@ -76,9 +76,9 @@ table.processes td {
   background: #1ce829;
 }
 .change-set {
-  padding-left: 20px;
-  border: 1px solid #7F9FF5;
-  margin: 5px;
+  padding-left: 1em;
+  border: 0.1em solid #7f9ff5;
+  margin: 0.4em;
 }
 .change-set .component > ul > li > * {
   display: inline-block;
@@ -93,7 +93,7 @@ table.processes td {
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: #fff;
+  background-color: #ffffff;
   opacity: 0.6;
 }
 .loader {
