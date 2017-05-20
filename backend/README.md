@@ -8,10 +8,10 @@ Allows frontend component to import electrical components from various providers
 $ lein ring server-headless
 ```
 
-## Run in dev mode with mocked providers and with getting scheme from request
+## Run in dev mode with mocked providers and with getting scheme and port from request
 
 ```shell
-$ MOCK_PROVIDERS=true ASSUME_SCHEME= lein ring server-headless
+$ MOCK_PROVIDERS=true ASSUME_SCHEME= ASSUME_PORT= lein ring server-headless
 ```
 
 ## Deploy
@@ -55,4 +55,8 @@ spec:
                         httpGet:
                             path: '/'
                             port: 3000
+```
+setup github webhook to autimatically trigger build on push using following url
+```shell
+$ oc describe bc warehouse-backend
 ```
