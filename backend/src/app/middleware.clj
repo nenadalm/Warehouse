@@ -27,4 +27,4 @@
                          "://"
                          (:server-name request)
                          ":"
-                         (:server-port request))))))
+                         (or (:assume-port conf) (:server-port request)))))))
