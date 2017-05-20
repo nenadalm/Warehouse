@@ -4,12 +4,6 @@
    [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
- :show-nav
- (fn
-   [db _]
-   (:show-nav db)))
-
-(reg-sub
  :visible-components
  (fn
    [db _]

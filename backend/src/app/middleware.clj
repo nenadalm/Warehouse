@@ -23,7 +23,7 @@
     (handler (assoc request
                     :host
                     (str (name (:scheme request))
-                         "//"
+                         "://"
                          (:server-name request)
                          ":"
                          (:server-port request))))))
