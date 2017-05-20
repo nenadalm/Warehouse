@@ -21,9 +21,9 @@
 
 (reg-event-fx
  :load-providers
- (fn [_ _]
+ (fn [{:keys [db]} _]
    {:dispatch [:process-create {:type :xhr
-                                :url "http://localhost:3000/handler"
+                                :url (str (:backend-url db) "/handler")
                                 :title "Getting list of import handlers"
                                 :name :import-handlers}]}))
 

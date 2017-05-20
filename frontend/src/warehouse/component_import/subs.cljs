@@ -6,9 +6,7 @@
  :component-providers
  (fn
    [db _]
-   (if (:show-nav db)
-     (or (:component-providers db) [])
-     [])))
+   (or (:component-providers db) [])))
 
 (reg-sub
  :import-form

@@ -9,10 +9,10 @@
 
 (def default-state {:components {}
                     :change-sets []
+                    :backend-url "https://warehouse-backend-warehouse-backend.1d35.starter-us-east-1.openshiftapps.com"
                     :filter {:val ""
                              :search []}
                     :processes {}
-                    :show-nav false
                     :page "index"})
 
 (reg-event-db

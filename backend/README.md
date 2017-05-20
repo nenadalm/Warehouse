@@ -11,7 +11,7 @@ $ lein ring server-headless
 ## Run in dev mode with mocked providers
 
 ```shell
-$ MOCKED_PROVIDERS=true lein ring server-headless
+$ MOCK_PROVIDERS=true lein ring server-headless
 ```
 
 ## Deploy

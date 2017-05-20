@@ -25,7 +25,7 @@
 (defmethod run-process
   [:xhr :import-handlers]
   [process]
-  (GET "http://localhost:3000/handler"
+  (GET (:url process)
     :format :json
     :response-format :json
     :keywords? true

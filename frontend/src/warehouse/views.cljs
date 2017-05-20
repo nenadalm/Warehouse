@@ -187,12 +187,11 @@
    [:li [:a {:href (routes/processes)} "Processes"]]])
 
 (defn page []
-  (let [active-tab (subscribe [:active-tab])
-        show-nav (subscribe [:show-nav])]
+  (let [active-tab (subscribe [:active-tab])]
     (fn []
       [:div
        [notifications]
-       (when @show-nav [nav])
+       [nav]
        (case @active-tab
          "index" [component-list]
          "processes" [processes])])))
