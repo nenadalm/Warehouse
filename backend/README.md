@@ -25,7 +25,17 @@ $ oc login <url>
 $ oc new-project warehouse-backend
 $ oc new-app nenadalm/warehouse~https://github.com/nenadalm/Warehouse.git --name warehouse-backend
 ```
-wait until build succeeds and then create url so you can access the backend
+edit build config so that build doesn't fail randomly on not enough memory
+```shell
+$ oc edit buildconfig
+```
+```yaml
+spec:
+    resources:
+        limits:
+            memory: 1Gi
+```
+create url so you can access the backend
 ```shell
 $ oc create route edge --service warehouse-backend
 ```
@@ -56,7 +66,7 @@ spec:
                             path: '/'
                             port: 3000
 ```
-setup github webhook to autimatically trigger build on push using following url
+setup github webhook to automatically trigger build on push using following url
 ```shell
 $ oc describe bc warehouse-backend
 ```
