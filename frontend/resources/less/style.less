@@ -1,3 +1,9 @@
+@textColor: #000;
+@componentBackgroundColor: #7f9ff5;
+@backgroundColor: #fff;
+@errorColor: #ed2f2f;
+@successColor: #1ce829;
+
 * {
     margin: 0;
     padding: 0;
@@ -8,13 +14,13 @@
 }
 
 .component, form {
-    margin: 10px 0;
-    background: #7F9FF5;
-    color: #000;
+    margin: 0.6em 0;
+    background: @componentBackgroundColor;
+    color: @textColor;
 }
 
 body {
-    background: #fff;
+    background: @backgroundColor;
 }
 
 input[type=file] {
@@ -33,17 +39,17 @@ table.processes {
     border-collapse: collapse;
 
     &, th, tr, td {
-        border: 1px solid;
-        padding: 5px;
+        border: 0.1em solid;
+        padding: 0.4em;
     }
 }
 
 .menu {
     li {
         display: inline-block;
-        background: #7F9FF5;
-        padding: 5px;
-        margin: 2px;
+        background: @componentBackgroundColor;
+        padding: 0.4em;
+        margin: 0.1em;
     }
 }
 
@@ -70,8 +76,8 @@ table.processes {
 
     .notification {
         display: flex;
-        margin: 5px;
-        padding: 2px;
+        margin: 0.4em;
+        padding: 0.1em;
 
         .message {
             width: 100%;
@@ -83,18 +89,18 @@ table.processes {
     }
 
     .notification-error {
-        background: #ed2f2f;
+        background: @errorColor;
     }
 
     .notification-success {
-        background: #1ce829;
+        background: @successColor;
     }
 }
 
 .change-set {
-    padding-left: 20px;
-    border: 1px solid #7F9FF5;
-    margin: 5px;
+    padding-left: 1em;
+    border: 0.1em solid @componentBackgroundColor;
+    margin: 0.4em;
 
     .component > ul > li > * {
         display: inline-block;
@@ -112,7 +118,7 @@ table.processes {
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: #fff;
+    background-color: @backgroundColor;
     opacity: 0.6;
 }
 
