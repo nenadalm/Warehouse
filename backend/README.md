@@ -50,21 +50,26 @@ $ oc edit dc/warehouse-backend
 ```yaml
 spec:
     strategy:
-        # we use this strategy because there is not enough memory for Rolling strategy on free version of OpenShift
-        type: Recreate
+        rollingParams:
+            # decrease timeout for deployment
+            timeoutSeconds: 180
 spec:
     template:
         spec:
             resources:
                 containers[0]:
                     limits:
-                        # otherwise requests using selenium won't pass
-                        memory: 1Gi
+                        # container memory
+                        memory: 512Mi
                     # test if our app is ready to serve requests
                     readinessProbe:
                         httpGet:
                             path: '/'
                             port: 3000
+                    # setting some jvm options
+                    env:
+                        - name: 'JAVA_TOOL_OPTIONS'
+                          value: '-Xms250m -Xmx250m'
 ```
 setup github webhook to automatically trigger build on push using following url
 ```shell
