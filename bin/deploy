@@ -82,6 +82,6 @@ if ! frontend_diff; then
     printf "There are changes in the fronted app since last deploy. Deploying...\n"
     deploy_frontend
 else
-    printf "There are no new changes in the fronted ap since last deploy."
+    printf "There are no new changes in the fronted app since last deploy."
 fi
 
