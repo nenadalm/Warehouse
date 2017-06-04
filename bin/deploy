@@ -45,8 +45,8 @@ function deploy_frontend {
     git subtree push --prefix frontend/resources/public premote "${SUBTREE_BRANCH}"
 }
 
-target_commits=( $(git log "origin/${TARGET_BRANCH}" --format='%H' --max-count=50) )
-deployed_commit=$( git log "origin/${SUBTREE_BRANCH}" --format='%H' --max-count=1)
+target_commits=( $(git log "premote/${TARGET_BRANCH}" --format='%H' --max-count=50) )
+deployed_commit=$( git log "premote/${SUBTREE_BRANCH}" --format='%H' --max-count=1)
 
 function find_target_commit {
     for target_commit in "${target_commits[@]}"; do
