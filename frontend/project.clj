@@ -66,6 +66,7 @@
                          :output-dir "resources/public/js/compiled/out"
                          :optimizations :advanced
                          :pretty-print false
+                         :source-map "resources/public/js/compiled/warehouse.js.map"
                          :libs ["bower_components/lunr.js/lunr.js"]}}]}
 
   :less {:source-paths ["resources/less"]
