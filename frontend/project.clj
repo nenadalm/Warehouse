@@ -16,17 +16,14 @@
                  [cljs-ajax "0.5.9"]
                  [secretary "1.2.3"]
                  [re-frame "0.9.2"]
-                 [pjstadig/humane-test-output "0.8.1"]]
+                 [pjstadig/humane-test-output "0.8.1"]
+                 [cljsjs/lunrjs "0.6.0-1"]]
 
   :git-dependencies [["https://github.com/nenadalm/karma-reporter.git" "master"]]
-
-  :bower-dependencies [[lunr.js "https://github.com/nenadalm/lunr.js.git#master"]]
-  :bower {:directory "bower_components"}
 
   ; set plugins using aliases helps decrease "$ time lein help" significantly
   :aliases {"cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
-            "bower" ["update-in" ":plugins" "conj" "[lein-bower \"0.5.1\"]" "--" "bower"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.4-7\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]}
@@ -46,8 +43,6 @@
                          :asset-path "js/compiled/dev/out"
                          :output-to "resources/public/js/compiled/warehouse.js"
                          :output-dir "resources/public/js/compiled/dev/out"
-                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
-                                         :provides ["lunr"]}]
                          :source-map-timestamp true }}
              {:id "test"
               :source-paths ["src" "test" ".lein-git-deps/karma-reporter/src"]
@@ -55,8 +50,6 @@
                          :asset-path "../public/js/compiled/test/out"
                          :output-to "resources/public/js/compiled/warehouse-test.js"
                          :output-dir "resources/public/js/compiled/test/out"
-                         :foreign-libs [{:file "bower_components/lunr.js/lunr.js"
-                                         :provides ["lunr"]}]
                          :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
@@ -66,8 +59,7 @@
                          :output-dir "resources/public/js/compiled/out"
                          :optimizations :advanced
                          :pretty-print false
-                         :source-map "resources/public/js/compiled/warehouse.js.map"
-                         :libs ["bower_components/lunr.js/lunr.js"]}}]}
+                         :source-map "resources/public/js/compiled/warehouse.js.map"}}]}
 
   :less {:source-paths ["resources/less"]
          :target-path "resources/public/css"}

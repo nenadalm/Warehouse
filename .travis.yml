@@ -35,11 +35,7 @@ before_install:
         fi
         geckodriver --version
 
-    - 'npm install -g bower'
     - cd frontend/
-
-install:
-    - 'lein bower install'
 
 before_script:
     - 'export DISPLAY=:99.0'
