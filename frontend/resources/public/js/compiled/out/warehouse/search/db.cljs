@@ -1,6 +1,5 @@
 (ns warehouse.search.db
-  (:require
-   lunr))
+  (:require cljsjs.lunrjs))
 
 (def index (.lunr js/window (fn [])))
 

@@ -1,6 +1,5 @@
 (ns warehouse.index
   (:require
-   lunr
    [warehouse.search.db :as search-db]
    [re-frame.db :as db]
    [re-frame.core :refer [dispatch]]))

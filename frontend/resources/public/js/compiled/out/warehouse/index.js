@@ -2,7 +2,6 @@
 goog.provide('warehouse.index');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
-goog.require('lunr');
 goog.require('warehouse.search.db');
 goog.require('re_frame.db');
 goog.require('re_frame.core');

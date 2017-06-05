@@ -2,7 +2,6 @@
 goog.provide('warehouse.search.db');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
-goog.require('lunr');
 warehouse.search.db.index = window.lunr((function (){
 return null;
 }));
