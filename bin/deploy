@@ -23,23 +23,65 @@ git config user.email "travis@example.com"
 git remote add premote "${REPO}"
 git fetch premote
 
-git clean -f
-if git rev-parse --quiet --verify "premote/${TARGET_BRANCH}"; then
-    git checkout -b "${TARGET_BRANCH}" "premote/${TARGET_BRANCH}"
+function deploy_frontend {
+    git clean -f
+    if git rev-parse --quiet --verify "premote/${TARGET_BRANCH}"; then
+        git checkout -b "${TARGET_BRANCH}" "premote/${TARGET_BRANCH}"
+    else
+        git checkout -b "${TARGET_BRANCH}"
+    fi
+    git merge --no-ff -m "Travis-CI: Merge branch '${SOURCE_BRANCH}' into ${TARGET_BRANCH}" "${SOURCE_BRANCH}"
+
+    # build
+    pushd frontend/
+    lein clean
+    lein less once
+    lein cljsbuild once min
+    popd
+
+    git add --force frontend/resources/public && git commit -m "Travis-CI: update resources" || true
+
+    git push premote "${TARGET_BRANCH}:${TARGET_BRANCH}"
+    git subtree push --prefix frontend/resources/public premote "${SUBTREE_BRANCH}"
+}
+
+target_commits=( $(git log "premote/${TARGET_BRANCH}" --format='%H' --max-count=50) )
+deployed_commit=$( git log "premote/${SUBTREE_BRANCH}" --format='%H' --max-count=1)
+
+function find_target_commit {
+    for target_commit in "${target_commits[@]}"; do
+        local related_commit=$(git subtree split --prefix frontend/resources/public/ "${target_commit}")
+        if [[ "${deployed_commit}" == "${related_commit}" ]]; then
+            echo "${target_commit}"
+            break
+        fi
+    done
+}
+
+function find_source_commit {
+    local matched_target_commit=$(find_target_commit)
+    if [[ -n "${matched_target_commit}" ]]; then
+        echo $(git log "${matched_target_commit}" --merges --max-count=1 --format='%P' | cut -d ' ' -f 2)
+    fi
+}
+
+
+##
+# Return codes:
+# - 0 => frontend has no diff
+# - 1 => frontend has diff
+##
+function frontend_diff {
+    local source_commit=$(find_source_commit)
+    if [[ -n "${source_commit}" ]]; then
+        git diff --quiet "${source_commit}" -- frontend/
+    fi
+}
+
+if ! frontend_diff; then
+    printf "There are changes in the fronted app since last deploy. Deploying...\n"
+    deploy_frontend
 else
-    git checkout -b "${TARGET_BRANCH}"
+    printf "There are no new changes in the fronted app since last deploy."
 fi
-git merge -m "Travis-CI: Merge branch '${SOURCE_BRANCH}' into ${TARGET_BRANCH}" "${SOURCE_BRANCH}"
-
-# build
-pushd frontend/
-lein clean
-lein less once
-lein cljsbuild once min
-popd
-
-git add --force frontend/resources/public && git commit -m "Travis-CI: update resources" || true
-
-git push premote "${TARGET_BRANCH}:${TARGET_BRANCH}"
-git subtree push --prefix frontend/resources/public premote "${SUBTREE_BRANCH}"
 
