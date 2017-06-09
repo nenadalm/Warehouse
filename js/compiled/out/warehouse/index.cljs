@@ -16,5 +16,6 @@
   (update-index @db/app-db)
   (add-watch db/app-db :indexer (fn [k r os ns]
                                   (when-not (identical? (:components os) (:components ns))
-                                    (update-index ns)))))
+                                    (update-index ns)
+                                    (dispatch [:filter-update (get-in ns [:filter :val])])))))
 

@@ -22,7 +22,10 @@ return cljs.core.add_watch(re_frame.db.app_db,cljs.core.cst$kw$indexer,(function
 if((cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(os) === cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(ns))){
 return null;
 } else {
-return warehouse.index.update_index(ns);
+warehouse.index.update_index(ns);
+
+var G__16235 = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter_DASH_update,cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(ns,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter,cljs.core.cst$kw$val], null))], null);
+return (re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1(G__16235) : re_frame.core.dispatch.call(null,G__16235));
 }
 }));
 });
