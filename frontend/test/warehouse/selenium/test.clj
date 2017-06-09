@@ -202,5 +202,17 @@
   (input-text "//input[@name='name']" "new-component")
   (click "//button[contains(text(), 'Save')]")
   (input-text "//input[@name='search']" "new-component")
-  (wait-until #(= 1 (count (elements "//li[@class='component']")))))
+  (wait-until #(= 1 (count (elements "//li[@class='component']"))))
 
+  ;;;;;;;;;;;;;; Create new component with name in search ;;;;;;;;;;;;;
+
+  ; guard
+  (clear "//input[@name='search']")
+  (input-text "//input[@name='search']" "nc2")
+  (wait-until #(= 0 (count (elements "//li[@class='component']"))))
+
+  (click "//button[contains(text(), 'Add new')]")
+  (wait-until #(present? "//input[@name='name']"))
+  (input-text "//input[@name='name']" "nc2")
+  (click "//button[contains(text(), 'Save')]")
+  (wait-until #(= 1 (count (elements "//li[@class='component']")))))
