@@ -17,3 +17,8 @@
    {:db (assoc (:db cofx) :filter {:val val
                                    :search (:search-result cofx)})}))
 
+(reg-event-fx
+ :filter-refresh
+ (fn
+   [{:keys [db]} _]
+   {:dispatch [:filter-update (get-in db [:filter :val])]}))
