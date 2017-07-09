@@ -14,8 +14,11 @@
 (defn initialize []
   (search-db/initialize ["name" "tags"])
   (update-index @db/app-db)
+  (dispatch [:reset-infinite-scroll])
   (add-watch db/app-db :indexer (fn [k r os ns]
                                   (when-not (identical? (:components os) (:components ns))
                                     (update-index ns)
-                                    (dispatch [:filter-update (get-in ns [:filter :val])])))))
+                                    (dispatch [:filter-update (get-in ns [:filter :val])]))
+                                  (when-not (identical? (:visible-components os) (:visible-components ns))
+                                    (dispatch [:reset-infinite-scroll])))))
 

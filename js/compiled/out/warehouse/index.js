@@ -18,14 +18,23 @@ warehouse.search.db.initialize(new cljs.core.PersistentVector(null, 2, 5, cljs.c
 
 warehouse.index.update_index((cljs.core.deref.cljs$core$IFn$_invoke$arity$1 ? cljs.core.deref.cljs$core$IFn$_invoke$arity$1(re_frame.db.app_db) : cljs.core.deref.call(null,re_frame.db.app_db)));
 
+var G__16237_16240 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$reset_DASH_infinite_DASH_scroll], null);
+(re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1(G__16237_16240) : re_frame.core.dispatch.call(null,G__16237_16240));
+
 return cljs.core.add_watch(re_frame.db.app_db,cljs.core.cst$kw$indexer,(function (k,r,os,ns){
 if((cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(os) === cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(ns))){
-return null;
 } else {
 warehouse.index.update_index(ns);
 
-var G__16235 = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter_DASH_update,cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(ns,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter,cljs.core.cst$kw$val], null))], null);
-return (re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1(G__16235) : re_frame.core.dispatch.call(null,G__16235));
+var G__16238_16241 = new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter_DASH_update,cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(ns,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$filter,cljs.core.cst$kw$val], null))], null);
+(re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1(G__16238_16241) : re_frame.core.dispatch.call(null,G__16238_16241));
+}
+
+if((cljs.core.cst$kw$visible_DASH_components.cljs$core$IFn$_invoke$arity$1(os) === cljs.core.cst$kw$visible_DASH_components.cljs$core$IFn$_invoke$arity$1(ns))){
+return null;
+} else {
+var G__16239 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$reset_DASH_infinite_DASH_scroll], null);
+return (re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch.cljs$core$IFn$_invoke$arity$1(G__16239) : re_frame.core.dispatch.call(null,G__16239));
 }
 }));
 });
