@@ -11,3 +11,8 @@
   (doseq [document documents]
     (.update index (clj->js document))))
 
+(defn filter-active? [db]
+  (not (clojure.string/blank? (get-in db [:filter :val]))))
+
+(defn filter-search [db]
+  (get-in db [:filter :search]))
