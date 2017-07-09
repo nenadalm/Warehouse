@@ -4,8 +4,10 @@
    [warehouse.change-set :as change-set]
    [warehouse.storage.storage :refer [storage]]
    [warehouse.notifications.db :refer [add-notification]]
+   [warehouse.search.db :as search]
    [warehouse.component-import.db :as component-import]
-   [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]))
+   [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]
+   [warehouse.infinite-scroll.db :as scroll]))
 
 (def default-state {:components {}
                     :change-sets []
@@ -13,7 +15,39 @@
                     :filter {:val ""
                              :search []}
                     :processes {}
-                    :page "index"})
+                    :page "index"
+                    :infinite-scroll {:page 1
+                                      :pages-count 0}})
+
+(defn debounce [timeout f]
+  (let [t (atom nil)]
+    (fn [& args]
+      (when @t (js/clearTimeout @t))
+      (reset! t (js/setTimeout #(do (reset! t nil)
+                                    (apply f args))
+                               200)))))
+(def dispatch-infinite-scroll-bottom (debounce 100 #(dispatch [:infinite-scroll-bottom])))
+(.addEventListener js/document "scroll" #(dispatch-infinite-scroll-bottom))
+
+(reg-event-db
+ :reset-infinite-scroll
+ (fn [db _]
+   (assoc db :infinite-scroll {:page 1
+                               :pages-count (->> (/ (count (if (search/filter-active? db)
+                                                             (search/filter-search db)
+                                                             (:components db)))
+                                                    100)
+                                                 (Math/ceil))})))
+
+(reg-event-db
+ :infinite-scroll-bottom
+ (fn
+   [db _]
+   (let [sd (:infinite-scroll db)]
+     (if (and (< (:page sd) (:pages-count sd))
+              (scroll/should-load-next-page))
+       (assoc db :infinite-scroll (update sd :page inc))
+       db))))
 
 (reg-event-db
  :error

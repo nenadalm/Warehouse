@@ -7,6 +7,7 @@
    [warehouse.search.views :refer [search]]
    [warehouse.process.views :refer [processes]]
    [warehouse.component-import.views :refer [import-button import-form]]
+   [warehouse.infinite-scroll.db :as infinite-scroll]
    [re-frame.core :refer [dispatch subscribe]])
   (:require-macros [warehouse.macro :as m]))
 
@@ -138,11 +139,17 @@
            :download "warehouse_components.json"}
        [:button "Export"]])))
 
+(defn selected-components [components]
+  [:ul {:class "components-list"}
+   (for [[k v] components]
+     ^{:key (:name v)} [:li {:class "component"}
+                        [item v k]])])
+
 (defn component-list []
   (let [adding (atom false)
         showing-changeset (atom false)
         new-item (atom {:name "" :tags "" :amount 1})
-        visible-components (subscribe [:visible-components])
+        visible-components (subscribe [:scroll-visible-components])
         change-sets (subscribe [:change-sets])
         import-form-data (subscribe [:import-form])]
     (fn []
@@ -176,10 +183,7 @@
                        (map #(str k2 "." %) (range (count change-set-col) 0 -1))))
                 cs
                 k1)))
-       [:ul {:class "components-list"}
-        (for [[k v] @visible-components]
-          ^{:key (:name v)} [:li {:class "component"}
-                             [item v k]])]])))
+       [selected-components @visible-components]])))
 
 (defn nav []
   [:ul.menu

@@ -1,15 +1,42 @@
 (ns warehouse.subs
   (:require
    [warehouse.util :as util]
-   [re-frame.core :refer [reg-sub]]))
+   [warehouse.infinite-scroll.db :as scroll]
+   [warehouse.search.db :as search]
+   [re-frame.core :refer [reg-sub subscribe]]
+   [warehouse.search.db :as search]))
 
 (reg-sub
  :visible-components
  (fn
    [db _]
-   (if (clojure.string/blank? (get-in db [:filter :val]))
-     (:components db)
-     (select-keys (:components db) (map #(get % "ref") (get-in db [:filter :search]))))))
+   (if (search/filter-active? db)
+     (select-keys (:components db) (map #(get % "ref") (search/filter-search db)))
+     (:components db))))
+
+(reg-sub
+ :infinite-scroll-state
+ (fn
+   [db _]
+   (:infinite-scroll db)))
+
+(reg-sub
+ :scroll-data-visible-components
+ (fn [_ _]
+   [(subscribe [:visible-components])
+    (subscribe [:infinite-scroll-state])])
+ (fn [[vc s] _]
+   {:page (:page s)
+    :pages-count (:pages-count s)
+    :records-per-page 100}))
+
+(reg-sub
+ :scroll-visible-components
+ (fn [_ _]
+   [(subscribe [:scroll-data-visible-components])
+    (subscribe [:visible-components])])
+ (fn [[sd vc] _]
+   (scroll/filter-by-data vc sd)))
 
 (reg-sub
  :active-tab
