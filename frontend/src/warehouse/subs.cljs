@@ -10,8 +10,8 @@
  :visible-components
  (fn
    [db _]
-   (if (search/filter-active?)
-     (select-keys (:components db) (map #(get % "ref") (search/filter-search)))
+   (if (search/filter-active? db)
+     (select-keys (:components db) (map #(get % "ref") (search/filter-search db)))
      (:components db))))
 
 (reg-sub
