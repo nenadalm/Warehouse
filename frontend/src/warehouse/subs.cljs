@@ -2,7 +2,7 @@
   (:require
    [warehouse.util :as util]
    [warehouse.infinite-scroll.db :as scroll]
-   [warehouse.search.db : as search]
+   [warehouse.search.db :as search]
    [re-frame.core :refer [reg-sub subscribe]]
    [warehouse.search.db :as search]))
 
