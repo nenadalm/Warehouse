@@ -1,24 +1,27 @@
 (ns warehouse.index
   (:require
    [warehouse.search.db :as search-db]
+   [reagent.core :as r]
    [re-frame.db :as db]
-   [re-frame.core :refer [dispatch]]))
+   [re-frame.core :refer [dispatch subscribe]]))
 
-(defn update-index [ns]
+(defn update-index [components]
   (search-db/update-index (map (fn [[_ component]]
                                  {:id (:id component)
                                   :name (:name component)
                                   :tags (:tags component)})
-                               (:components ns))))
+                               components)))
+
+(defn reset-infinite-scroll []
+  (let [visible-components @(subscribe [:visible-components])]
+    (dispatch [:reset-infinite-scroll])))
+
+(defn update-search []
+  (let [components @(subscribe [:components])]
+    (update-index components)
+    (dispatch [:filter-refresh])))
 
 (defn initialize []
   (search-db/initialize ["name" "tags"])
-  (update-index @db/app-db)
-  (dispatch [:reset-infinite-scroll])
-  (add-watch db/app-db :indexer (fn [k r os ns]
-                                  (when-not (identical? (:components os) (:components ns))
-                                    (update-index ns)
-                                    (dispatch [:filter-update (get-in ns [:filter :val])]))
-                                  (when-not (identical? (:visible-components os) (:visible-components ns))
-                                    (dispatch [:reset-infinite-scroll])))))
-
+  (r/track! reset-infinite-scroll)
+  (r/track! update-search))
