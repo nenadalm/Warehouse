@@ -7,6 +7,12 @@
    [warehouse.search.db :as search]))
 
 (reg-sub
+ :components
+ (fn
+   [db _]
+   (:components db)))
+
+(reg-sub
  :visible-components
  (fn
    [db _]
