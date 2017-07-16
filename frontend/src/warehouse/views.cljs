@@ -133,11 +133,10 @@
                   (range (count change-set-data) 0 -1))])
 
 (defn export []
-  (let [state-data-uri (subscribe [:state-data-uri])]
-    (fn []
-      [:a {:href @state-data-uri
-           :download "warehouse_components.json"}
-       [:button "Export"]])))
+  [:a {:download "warehouse_components.json"
+       :on-click (m/handler-fn
+                  (set! (.-currentTarget.href e) @(subscribe [:state-data-uri])))}
+   [:button "Export"]])
 
 (defn selected-components [components]
   [:ul {:class "components-list"}
