@@ -85,12 +85,9 @@ return cljs.core.set(cljs.core.map.cljs$core$IFn$_invoke$arity$2(clojure.string.
 });
 warehouse.util.document__GT_state = (function warehouse$util$document__GT_state(document,current_state){
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(current_state,cljs.core.cst$kw$components,((cljs.core.empty_QMARK_(cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document)))?cljs.core.PersistentArrayMap.EMPTY:cljs.core.apply.cljs$core$IFn$_invoke$arity$3(cljs.core.assoc,cljs.core.PersistentArrayMap.EMPTY,cljs.core.interleave.cljs$core$IFn$_invoke$arity$2(cljs.core.map.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$id,cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document)),cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (component){
-return cljs.core.into.cljs$core$IFn$_invoke$arity$2(cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__13331){
-var vec__13332 = p__13331;
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13332,(0),null);
-var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__13332,(1),null);
-return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [k,((cljs.core.vector_QMARK_(v))?cljs.core.set(v):v)], null);
-}),component));
+return cljs.core.reduce_kv((function (m,k,v){
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(m,k,((cljs.core.vector_QMARK_(v))?cljs.core.set(v):v));
+}),cljs.core.PersistentArrayMap.EMPTY,component);
 }),cljs.core.cst$kw$components.cljs$core$IFn$_invoke$arity$1(document))))));
 });
 warehouse.util.state__GT_document = (function warehouse$util$state__GT_document(current_state){
@@ -117,21 +114,21 @@ return components;
 } else {
 var item = cljs.core.first(new_items__$1);
 var old_item = cljs.core.first(cljs.core.filter.cljs$core$IFn$_invoke$arity$2(((function (new_items__$1,components,item,c){
-return (function (p1__13335_SHARP_){
-return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(cljs.core.second(p1__13335_SHARP_)));
+return (function (p1__13327_SHARP_){
+return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(cljs.core.second(p1__13327_SHARP_)));
 });})(new_items__$1,components,item,c))
 ,c));
 if(cljs.core.empty_QMARK_(old_item)){
-var G__13336 = cljs.core.rest(new_items__$1);
-var G__13337 = cljs.core.conj.cljs$core$IFn$_invoke$arity$2(components,new cljs.core.PersistentArrayMap(null, 4, [cljs.core.cst$kw$id,warehouse.util.generate_component_id(components),cljs.core.cst$kw$name,cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$tags,cljs.core.vec(cljs.core.cst$kw$tags.cljs$core$IFn$_invoke$arity$1(item)),cljs.core.cst$kw$amount,cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item)], null));
-new_items__$1 = G__13336;
-components = G__13337;
+var G__13328 = cljs.core.rest(new_items__$1);
+var G__13329 = cljs.core.conj.cljs$core$IFn$_invoke$arity$2(components,new cljs.core.PersistentArrayMap(null, 4, [cljs.core.cst$kw$id,warehouse.util.generate_component_id(components),cljs.core.cst$kw$name,cljs.core.cst$kw$name.cljs$core$IFn$_invoke$arity$1(item),cljs.core.cst$kw$tags,cljs.core.vec(cljs.core.cst$kw$tags.cljs$core$IFn$_invoke$arity$1(item)),cljs.core.cst$kw$amount,cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item)], null));
+new_items__$1 = G__13328;
+components = G__13329;
 continue;
 } else {
-var G__13338 = cljs.core.rest(new_items__$1);
-var G__13339 = cljs.core.assoc_in(components,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.first(old_item),cljs.core.cst$kw$amount], null),(cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item) + cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(cljs.core.second(old_item))));
-new_items__$1 = G__13338;
-components = G__13339;
+var G__13330 = cljs.core.rest(new_items__$1);
+var G__13331 = cljs.core.assoc_in(components,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.first(old_item),cljs.core.cst$kw$amount], null),(cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(item) + cljs.core.cst$kw$amount.cljs$core$IFn$_invoke$arity$1(cljs.core.second(old_item))));
+new_items__$1 = G__13330;
+components = G__13331;
 continue;
 }
 }
