@@ -17,7 +17,8 @@
                  [secretary "1.2.3"]
                  [re-frame "0.9.2"]
                  [pjstadig/humane-test-output "0.8.1"]
-                 [cljsjs/lunrjs "0.6.0-1"]]
+                 [cljsjs/lunrjs "0.6.0-1"]
+                 [org.clojure/core.async "0.3.443"]]
 
   :git-dependencies [["https://github.com/nenadalm/karma-reporter.git" "master"]]
 

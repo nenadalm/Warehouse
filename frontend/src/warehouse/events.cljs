@@ -7,7 +7,11 @@
    [warehouse.search.db :as search]
    [warehouse.component-import.db :as component-import]
    [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]
-   [warehouse.infinite-scroll.db :as scroll]))
+   [warehouse.infinite-scroll.db :as scroll]
+   [cljs.core.async :as a :refer [<!]]
+   [warehouse.storage.indexeddb :as indexeddb])
+  (:require-macros
+   [cljs.core.async.macros :refer [go]]))
 
 (def default-state {:components {}
                     :change-sets []
@@ -17,6 +21,8 @@
                     :processes {}
                     :page "index"
                     :infinite-scroll {:page 1
+                                      :records-per-page 100
+                                      :records-count 0
                                       :pages-count 0}})
 
 (defn debounce [timeout f]
@@ -35,7 +41,7 @@
    (assoc db :infinite-scroll {:page 1
                                :pages-count (->> (/ (count (if (search/filter-active? db)
                                                              (search/filter-search db)
-                                                             (:components db)))
+                                                             (get-in db [:infinite-scroll :recods-count])))
                                                     100)
                                                  (Math/ceil))})))
 
@@ -81,10 +87,11 @@
  :initialize-db
  [(inject-cofx :state) (inject-cofx :change-sets)]
  (fn [cofx _]
-   {:db (component-import/load-providers
-         (util/document->state
-          (:state cofx)
-          (assoc default-state :change-sets (:change-sets cofx))))}))
+   (let [db (component-import/load-providers
+             (assoc default-state :change-sets (:change-sets cofx)))]
+     {:db db
+      :load-components {:offset 0
+                        :limit (get-in db [:infinite-scroll :records-per-page])}})))
 
 (reg-fx
  :change-sets
@@ -97,6 +104,30 @@
  :state
  (fn [value]
    ((:store-state storage) value)))
+
+(reg-fx
+ :load-components
+ (fn [{:keys [limit offset]}]
+      (let [ch (indexeddb/load-components limit offset)]
+        (go (dispatch [:components-loaded (<! ch)])))))
+
+(reg-fx
+ :load-components-by-ids
+ (fn [ids]
+   (let [ch (indexeddb/load-components-by-ids ids)]
+     (go (let [components (<! ch)]
+           (println (count ids))
+           (println (count components))
+           (dispatch [:components-loaded {:components components
+                                          :count (count ids)}]))))))
+
+(reg-event-fx
+ :components-loaded
+ (fn [{:keys [db]} [_ components-data]]
+   {:db (-> db
+            (#(util/document->state components-data %))
+            (assoc-in [:infinite-scroll :records-count] (:count components-data)))
+    :dispatch [:reset-infinite-scroll]}))
 
 (defn normalize-item [item]
   (assoc item

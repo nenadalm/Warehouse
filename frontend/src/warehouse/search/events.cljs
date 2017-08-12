@@ -2,20 +2,30 @@
   (:require
    [warehouse.index :as index]
    [warehouse.search.db :as search-db]
-   [re-frame.core :refer [reg-cofx reg-event-fx inject-cofx]]))
-
-(reg-cofx
- :search-result
- (fn [cofx _]
-   (assoc cofx :search-result (js->clj (.search search-db/index (second (:event cofx)))))))
+   [re-frame.core :refer [reg-cofx reg-event-fx inject-cofx reg-fx dispatch reg-event-db]]
+   [warehouse.storage.indexeddb :as indexeddb]
+   [cljs.core.async :refer [<!]])
+  (:require-macros
+   [cljs.core.async.macros :refer [go]]))
 
 (reg-event-fx
  :filter-update
- [(inject-cofx :search-result)]
  (fn
    [cofx [_ val]]
-   {:db (assoc (:db cofx) :filter {:val val
-                                   :search (:search-result cofx)})}))
+   {:update-filter val}))
+
+(reg-fx
+ :update-filter
+ (fn [q]
+   (go (dispatch [:filter-updated (<! (indexeddb/filter-ids q))]))))
+
+(reg-event-fx
+ :filter-updated
+ (fn
+   [{:keys [db]} [_ ids]]
+   (println ids)
+   {:db (assoc-in db [:filter :search] ids)
+    :load-components-by-ids ids}))
 
 (reg-event-fx
  :filter-refresh

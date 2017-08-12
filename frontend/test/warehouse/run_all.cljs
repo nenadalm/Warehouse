@@ -3,7 +3,8 @@
    [jx.reporter.karma :refer-macros [run-tests run-all-tests]]
    [warehouse.util-test]
    [warehouse.process.events-test]
-   [warehouse.notifications.db-test]))
+   [warehouse.notifications.db-test]
+   [warehouse.storage.indexeddb-test]))
 
 (enable-console-print!)
 
