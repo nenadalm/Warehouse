@@ -11,8 +11,9 @@
 (reg-event-fx
  :filter-update
  (fn
-   [cofx [_ val]]
-   {:update-filter val}))
+   [{:keys [db]} [_ val]]
+   {:db (assoc-in db [:filter :val] val)
+    :update-filter val}))
 
 (reg-fx
  :update-filter
@@ -23,9 +24,11 @@
  :filter-updated
  (fn
    [{:keys [db]} [_ ids]]
-   (println ids)
-   {:db (assoc-in db [:filter :search] ids)
-    :load-components-by-ids ids}))
+   (let [eff {:db (assoc-in db [:filter :search] ids)}]
+     (if (empty? (get-in db [:filter :val]))
+       (assoc eff :load-components {:limit (get-in db [:infinite-scroll :records-per-page])
+                                    :offset 0})
+       (assoc eff :load-components-by-ids ids)))))
 
 (reg-event-fx
  :filter-refresh

@@ -123,7 +123,7 @@
         tx (.transaction db "components" "readonly")
         store (.objectStore tx "components")
         components (atom [])
-        n (atom 1)
+        prev-idx (atom 0)
         sorted-ids (sort ids)
         keyRange (.bound js/IDBKeyRange (first sorted-ids) (last sorted-ids))
         request (.openCursor store keyRange)]
@@ -131,13 +131,13 @@
           (fn [e]
             (if-let [cursor (.-target.result e)]
               (let [component (.-value cursor)]
-                (if cursor
-                  (do
-                    (swap! components conj (obj->component (.-value cursor)))
-                    (.continue cursor (get sorted-ids @n)))
-                  (f @components)))
-              (f @components))
-            (swap! n inc)))))
+                (do
+                  (swap! components conj (obj->component (.-value cursor)))
+                  (let [current-idx (swap! prev-idx inc)]
+                    (if-let [next-id (nth sorted-ids current-idx nil)]
+                      (.continue cursor next-id) ;; this needs to be fixed in case of spaces between existing keys
+                      (f @components)))))
+              (f @components))))))
 
 (defn load-initial-data
   "Returns channel receiving first `n` components"
@@ -216,20 +216,33 @@ matching the `q`"
         ;page-chan1 (load-page 3 2)
         ;ids-chan1 (filter-ids "component1024 firtof1024 component1025")
         ;ids-chan2 (filter-ids "component1024 firstof1024")
-        ;c-chan1 (load-by-ids [1 2])
+                                        ;c-chan1 (load-by-ids [1 2])
+        c-chan1 (load-by-ids [12 3 33 4 22 5])
         ]
     (go #_(println (<! initial-data-chan1))
         #_(println (<! page-chan1))
         #_(println (<! ids-chan1))
         #_(println (<! ids-chan2))
-        #_(println (<! c-chan1)))))
+        (println (count (<! c-chan1))))))
 
 (defn load-components [limit offset]
   (load-page offset limit))
 
 (def load-components-by-ids load-by-ids)
 
-;; todos:
-;; - update components on update
-;; - update filter on update
+(defn store-component
+  "Returns channel receiving `true` once update completed."
+  [component]
+  (let [ch (a/chan 1)
+        request (.indexedDB.open js/window db-name 1)]
+    (set! (.-onupgradeneeded request) on-upgrade)
+    (set! (.-onsuccess request)
+          (fn [e]
+            (let [db (.-result request)
+                  tx (.transaction db "components" "readwrite")
+                  store (.objectStore tx "components")]
+              (.put store (component->obj component))
+              (set! (.-oncomplete tx)
+                    #(go (>! ch true))))))
+    ch))
 

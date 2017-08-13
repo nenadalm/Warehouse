@@ -38,12 +38,16 @@
 (reg-event-db
  :reset-infinite-scroll
  (fn [db _]
-   (assoc db :infinite-scroll {:page 1
-                               :pages-count (->> (/ (count (if (search/filter-active? db)
-                                                             (search/filter-search db)
-                                                             (get-in db [:infinite-scroll :recods-count])))
-                                                    100)
-                                                 (Math/ceil))})))
+   (update-in db
+              [:infinite-scroll]
+              (fn [is]
+                (assoc is
+                       :page 1
+                       :pages-count (->> (/ (count (if (search/filter-active? db)
+                                                     (search/filter-search db)
+                                                     (get-in db [:infinite-scroll :recods-count])))
+                                            100)
+                                         (Math/ceil)))))))
 
 (reg-event-db
  :infinite-scroll-bottom
@@ -105,19 +109,28 @@
  (fn [value]
    ((:store-state storage) value)))
 
+(def loading-components-ch
+  "Atom holding reference to last channel used for loading of components.
+Channel is automatically closed when new value is set via `:cholse-previous-ch` watch."
+  (atom nil))
+
+(add-watch loading-components-ch :close-previous-ch (fn [_ _ os _]
+                                                      (if-not (nil? os) (a/close! os))))
+
 (reg-fx
  :load-components
  (fn [{:keys [limit offset]}]
-      (let [ch (indexeddb/load-components limit offset)]
-        (go (dispatch [:components-loaded (<! ch)])))))
+   (let [ch (indexeddb/load-components limit offset)]
+     (reset! loading-components-ch ch)
+     (go (if-let [c (<! ch)]
+           (dispatch [:components-loaded c]))))))
 
 (reg-fx
  :load-components-by-ids
  (fn [ids]
    (let [ch (indexeddb/load-components-by-ids ids)]
-     (go (let [components (<! ch)]
-           (println (count ids))
-           (println (count components))
+     (reset! loading-components-ch ch)
+     (go (if-let [components (<! ch)]
            (dispatch [:components-loaded {:components components
                                           :count (count ids)}]))))))
 
@@ -150,29 +163,24 @@
 (reg-event-fx
  :item-save
  (fn
-   [cofx [_ k item]]
-   (let [old-components (get-in cofx [:db :components])
-         new-components (assoc old-components
-                               k (normalize-item item))
-         new-db (-> (:db cofx)
-                    (assoc :components new-components))]
-     {:db new-db
-      :dispatch [:components-change old-components new-components]})))
+   [{:keys [db]} [_ k item]]
+   {:store-component (normalize-item item)}))
 
 (reg-event-fx
  :item-create
  (fn
-   [cofx [_ item]]
-   (let [old-components (get-in cofx [:db :components])
-         k (util/next-key old-components)
-         new-components (assoc old-components
-                               k (-> item
-                                     (normalize-item)
-                                     (assoc :id k)))
-         new-db (-> (:db cofx)
-                    (assoc :components new-components))]
-     {:db new-db
-      :dispatch [:components-change old-components new-components]})))
+   [{:keys [db]} [_ item]]
+   {:store-component (-> item
+                         (normalize-item)
+                         (assoc :id (inc (get-in db [:infinite-scroll :records-count]))))}))
+
+;; todo: dispatch normalized component
+(reg-fx
+ :store-component
+ (fn [component]
+   (let [ch (indexeddb/store-component component)]
+     (go (<! ch)
+         (dispatch [:filter-refresh])))))
 
 (reg-event-fx
  :revert-change
