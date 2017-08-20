@@ -132,7 +132,7 @@ Channel is automatically closed when new value is set via `:cholse-previous-ch` 
      (reset! loading-components-ch ch)
      (go (if-let [components (<! ch)]
            (dispatch [:components-loaded {:components components
-                                          :count (count ids)}]))))))
+                                          :count (count components)}]))))))
 
 (reg-event-fx
  :components-loaded
@@ -144,7 +144,8 @@ Channel is automatically closed when new value is set via `:cholse-previous-ch` 
 
 (defn normalize-item [item]
   (assoc item
-         :tags (util/string->array (:tags item))))
+         :tags (util/string->array (:tags item))
+         :amount (.Number js/window (:amount item))))
 
 (defn add-change-set [col change-set]
   (take 10 (conj col change-set)))
@@ -164,17 +165,23 @@ Channel is automatically closed when new value is set via `:cholse-previous-ch` 
  :item-save
  (fn
    [{:keys [db]} [_ k item]]
-   {:store-component (normalize-item item)}))
+   (let [old-components {k (get-in db [:components k])}
+         new-components {k (normalize-item item)}]
+     {:store-component (normalize-item item)
+      :dispatch [:components-change old-components new-components]})))
 
 (reg-event-fx
  :item-create
  (fn
    [{:keys [db]} [_ item]]
-   {:store-component (-> item
-                         (normalize-item)
-                         (assoc :id (inc (get-in db [:infinite-scroll :records-count]))))}))
+   (let [component (-> item
+                           (normalize-item)
+                           (assoc :id (inc (get-in db [:infinite-scroll :records-count]))))
+         old-components {}
+         new-components {(:id component) component}]
+     {:store-component component
+      :dispatch [:components-change old-components new-components]})))
 
-;; todo: dispatch normalized component
 (reg-fx
  :store-component
  (fn [component]

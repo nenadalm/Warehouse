@@ -230,6 +230,23 @@ matching the `q`"
 
 (def load-components-by-ids load-by-ids)
 
+(defn store-components
+  "Returns channel receiving `true` once update completed."
+  [components]
+  (let [ch (a/chan 1)
+        request (.indexedDB.open js/window db-name 1)]
+    (set! (.-onupgradeneeded request) on-upgrade)
+    (set! (.-onsuccess request)
+          (fn [e]
+            (let [db (.-result request)
+                  tx (.transaction db "components" "readwrite")
+                  store (.objectStore tx "components")]
+              (doseq [component components]
+                (.put store (component->obj component)))
+              (set! (.-oncomplete tx)
+                    #(go (>! ch true))))))
+    ch))
+
 (defn store-component
   "Returns channel receiving `true` once update completed."
   [component]

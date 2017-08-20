@@ -1,9 +1,13 @@
 (ns warehouse.component-import.events
   (:require
    [warehouse.util :as util]
-   [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
+   [warehouse.storage.indexeddb :as indexeddb]
+   [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch]]
    [ajax.core :refer [GET]]
-   [clojure.string :as string]))
+   [cljs.core.async :as a :refer [<!]]
+   [clojure.string :as string])
+  (:require-macros
+   [cljs.core.async.macros :refer [go]]))
 
 (defn- handler-item->form-type [{:keys [secret type]}]
   (cond
@@ -47,11 +51,28 @@
 (reg-event-fx
  :import-document
  (fn
-   [cofx [_ document]]
-   (let [db (:db cofx)
-         new-db (util/document->state (util/merge-documents (util/state->document db) document) db)
-         old-components (:components db)
-         new-components (:components new-db)]
-     {:db new-db
+   [{:keys [db]} [_ document]]
+   {:load-components-by-ids2 [(map :id (:components document)) document]}))
+
+(reg-fx
+ :load-components-by-ids2
+ (fn [[ids document]]
+   (let [ch (indexeddb/load-components-by-ids ids)]
+     (go (if-let [components (<! ch)]
+           (dispatch [:components-loaded2 components document]))))))
+
+(reg-event-fx
+ :components-loaded2
+ (fn [_ [_ existing-components document]]
+   (let [merged (util/merge-documents {:components existing-components} document)
+         old-components (:components (util/document->state {:components existing-components} {}))
+         new-components (:components (util/document->state merged {}))]
+     {:store-components (:components merged)
       :dispatch [:components-change old-components new-components]})))
 
+(reg-fx
+ :store-components
+ (fn [components]
+   (let [ch (indexeddb/store-components components)]
+     (go (<! ch)
+         (dispatch [:filter-refresh])))))
