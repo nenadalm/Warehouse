@@ -170,7 +170,7 @@
   (clear "//input[@name='search']")
   (input-text "//input[@name='search']" "rs232")
   (wait-until #(= 1 (count (elements "//li[@class='component']"))))
-  (is (present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'AVRProg USB v3')]"))
+  (wait-until #(present? "//li[@class='component'][1]//span[@class='value' and contains(text(), 'AVRProg USB v3')]"))
 
   ;;;;;;;;;;;;; Search edited component ;;;;;;;;;;;;;
 

@@ -4,7 +4,7 @@
    [warehouse.search.db :as search-db]
    [re-frame.core :refer [reg-cofx reg-event-fx inject-cofx reg-fx dispatch reg-event-db]]
    [warehouse.storage.indexeddb :as indexeddb]
-   [cljs.core.async :refer [<!]])
+   [cljs.core.async :as a :refer [<!]])
   (:require-macros
    [cljs.core.async.macros :refer [go]]))
 
@@ -15,10 +15,21 @@
    {:db (assoc-in db [:filter :val] val)
     :update-filter val}))
 
+(def update-filter-ch
+  "Atom holding reference to last channel used for updating filter.
+Channel is automatically closed when new value is set via `:close-previous-ch` watch."
+  (atom nil))
+
+(add-watch update-filter-ch :close-previous-ch (fn [_ _ os _]
+                                                 (if-not (nil? os) (a/close! os))))
+
 (reg-fx
  :update-filter
  (fn [q]
-   (go (dispatch [:filter-updated (<! (indexeddb/filter-ids q))]))))
+   (let [ch (indexeddb/filter-ids q)]
+     (reset! update-filter-ch ch)
+     (go (when-let [c (<! ch)]
+           (dispatch [:filter-updated c]))))))
 
 (reg-event-fx
  :filter-updated

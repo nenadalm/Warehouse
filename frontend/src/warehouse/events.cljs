@@ -111,7 +111,7 @@
 
 (def loading-components-ch
   "Atom holding reference to last channel used for loading of components.
-Channel is automatically closed when new value is set via `:cholse-previous-ch` watch."
+Channel is automatically closed when new value is set via `:close-previous-ch` watch."
   (atom nil))
 
 (add-watch loading-components-ch :close-previous-ch (fn [_ _ os _]
