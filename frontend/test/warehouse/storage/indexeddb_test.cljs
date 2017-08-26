@@ -49,9 +49,9 @@
                          :tags ["linear regulator"]
                          :amount 10}
                         {:id 5
-                        :name "HC49/US QM 16.000MHZ"
-                        :tags ["crystal" "oscillator"]
-                        :amount 1}]}))
+                         :name "HC49/US QM 16.000MHZ"
+                         :tags ["crystal" "oscillator"]
+                         :amount 1}]}))
                (done)))))
 
 (deftest load-components--first-test
@@ -73,9 +73,9 @@
                       {:count 4
                        :components
                        [{:id 5
-                        :name "HC49/US QM 16.000MHZ"
-                        :tags ["crystal" "oscillator"]
-                        :amount 1}]}))
+                         :name "HC49/US QM 16.000MHZ"
+                         :tags ["crystal" "oscillator"]
+                         :amount 1}]}))
                (done)))))
 
 (deftest load-components--last-plus-test
@@ -85,9 +85,9 @@
                       {:count 4
                        :components
                        [{:id 5
-                        :name "HC49/US QM 16.000MHZ"
-                        :tags ["crystal" "oscillator"]
-                        :amount 1}]}))
+                         :name "HC49/US QM 16.000MHZ"
+                         :tags ["crystal" "oscillator"]
+                         :amount 1}]}))
                (done)))))
 
 (deftest load-components--after-last-test

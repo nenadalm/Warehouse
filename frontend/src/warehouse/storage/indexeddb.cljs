@@ -14,7 +14,6 @@
 (defn obj->component [o]
   (dissoc (js->clj o :keywordize-keys true) :keywords))
 
-
 (defn on-upgrade [e]
   (let [db (.-target.result e)]
 
@@ -97,8 +96,6 @@
                          (f {:count cnt
                              :components @components}))))))))))
 
-
-
 (defn filter-keys [f q e]
   (let [db (.-target.result e)
         tx (.transaction db "components" "readonly")
@@ -173,10 +170,10 @@
     (if (empty? ids)
       (go (>! ch []))
       (let [request (.indexedDB.open js/window db-name 1)]
-           (set! (.-onupgradeneeded request) on-upgrade)
-           (set! (.-onsuccess request) (partial filter-components ids (fn [res]
-                                                                        (go (>! ch res)
-                                                                            (a/close! ch)))))))
+        (set! (.-onupgradeneeded request) on-upgrade)
+        (set! (.-onsuccess request) (partial filter-components ids (fn [res]
+                                                                     (go (>! ch res)
+                                                                         (a/close! ch)))))))
     ch))
 
 (defn filter-ids-by-keyword
@@ -211,14 +208,12 @@ matching the `q`"
 
 ;; testing method
 (defn run []
-  (let [
-        ;initial-data-chan1 (load-initial-data 3)
+  (let [;initial-data-chan1 (load-initial-data 3)
         ;page-chan1 (load-page 3 2)
         ;ids-chan1 (filter-ids "component1024 firtof1024 component1025")
         ;ids-chan2 (filter-ids "component1024 firstof1024")
                                         ;c-chan1 (load-by-ids [1 2])
-        c-chan1 (load-by-ids [12 3 33 4 22 5])
-        ]
+        c-chan1 (load-by-ids [12 3 33 4 22 5])]
     (go #_(println (<! initial-data-chan1))
         #_(println (<! page-chan1))
         #_(println (<! ids-chan1))

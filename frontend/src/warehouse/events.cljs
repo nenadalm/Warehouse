@@ -175,8 +175,8 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
  (fn
    [{:keys [db]} [_ item]]
    (let [component (-> item
-                           (normalize-item)
-                           (assoc :id (inc (get-in db [:infinite-scroll :records-count]))))
+                       (normalize-item)
+                       (assoc :id (inc (get-in db [:infinite-scroll :records-count]))))
          old-components {}
          new-components {(:id component) component}]
      {:store-component component
