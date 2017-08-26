@@ -4,7 +4,6 @@ lein: 2.7.1
 
 cache:
     directories:
-        - travis_phantomjs
         - geckodriver
 
 jdk:
@@ -14,15 +13,6 @@ addons:
     firefox: latest
 
 before_install:
-    # phantomjs
-    - 'phantomjs --version'
-    - 'export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH'
-    - 'phantomjs --version'
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
-    - 'phantomjs --version'
-
     # geckodriver
     - |
         export PATH=$PWD/geckodriver:$PATH
@@ -52,7 +42,6 @@ script:
     - lein cljfmt check
     - alias firefox-bin='firefox'
     - lein cljsbuild test
-    - 'SELENIUM_BROWSER=phantomjs lein test'
     - 'SELENIUM_BROWSER=firefox lein test'
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon

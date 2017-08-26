@@ -14,7 +14,13 @@ module.exports = function(config) {
     frameworks: ['cljs-test'],
 
     client: {
-        args: ['warehouse.run_all.run']
+      args: ['warehouse.run_all.run']
+    },
+
+    browserConsoleLogOptions: {
+      level: 'log',
+      format: '%b %T: %m',
+      terminal: true
     },
 
     // list of files / patterns to load in the browser
@@ -63,7 +69,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox', 'PhantomJS'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode
