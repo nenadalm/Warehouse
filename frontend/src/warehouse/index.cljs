@@ -10,4 +10,4 @@
     (dispatch [:reset-infinite-scroll])))
 
 (defn initialize []
-  (r/track! reset-infinite-scroll))
+  #_(r/track! reset-infinite-scroll))

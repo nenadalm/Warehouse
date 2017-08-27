@@ -1,5 +1,6 @@
 (ns ^:figwheel-always warehouse.dev
   (:require
+   [re-frisk.core :refer [enable-re-frisk!]]
    [warehouse.storage.storage :as storage]
    [warehouse.storage.test :as test-storage]
    [warehouse.events :refer [default-state]]
@@ -7,7 +8,7 @@
 
 (defn main []
   (enable-console-print!)
-  (storage/set-storage! test-storage/storage)
+  (enable-re-frisk!)
   (set! default-state (assoc default-state
                              :backend-url "http://localhost:3000"
                              :notifications {1 {:type :error

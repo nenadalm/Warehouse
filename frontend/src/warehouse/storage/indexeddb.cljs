@@ -6,7 +6,7 @@
   (:require-macros
    [cljs.core.async.macros :refer [go]]))
 
-(def db-name "app-state7")
+(def db-name "app-state")
 
 (defn normalize-keyword [keyword]
   (clojure.string/lower-case keyword))

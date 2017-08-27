@@ -23,7 +23,8 @@
                     :infinite-scroll {:page 1
                                       :records-per-page 100
                                       :records-count 0
-                                      :pages-count 0}})
+                                      :pages-count 0
+                                      :loading-next false}})
 
 (defn debounce [timeout f]
   (let [t (atom nil)]
@@ -43,21 +44,26 @@
               (fn [is]
                 (assoc is
                        :page 1
-                       :pages-count (->> (/ (count (if (search/filter-active? db)
-                                                     (search/filter-search db)
-                                                     (get-in db [:infinite-scroll :recods-count])))
-                                            100)
+                       :pages-count (->> (/ (if (search/filter-active? db)
+                                              (count (search/filter-search db))
+                                              (get-in db [:infinite-scroll :records-count]))
+                                            (get-in db [:infinite-scroll :records-per-page]))
                                          (Math/ceil)))))))
 
-(reg-event-db
+(reg-event-fx
  :infinite-scroll-bottom
  (fn
-   [db _]
-   (let [sd (:infinite-scroll db)]
+   [{:keys [db]} _]
+   (let [sd (:infinite-scroll db)
+         q (get-in db [:filter :val])
+         page (:page sd)]
      (if (and (< (:page sd) (:pages-count sd))
-              (scroll/should-load-next-page))
-       (assoc db :infinite-scroll (update sd :page inc))
-       db))))
+              (scroll/should-load-next-page)
+              (not (get-in db [:infinite-scroll :loading-next])))
+       (when (empty? q)
+         {:db (assoc-in db [:infinite-scroll :loading-next] true)
+          :load-components {:limit (get sd :records-per-page)
+                            :offset (* page (get-in db [:infinite-scroll :records-per-page]))}})))))
 
 (reg-event-db
  :error
@@ -123,7 +129,7 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
    (let [ch (indexeddb/load-components limit offset)]
      (reset! loading-components-ch ch)
      (go (if-let [c (<! ch)]
-           (dispatch [:components-loaded c]))))))
+           (dispatch [:components-loaded c offset]))))))
 
 (reg-fx
  :load-components-by-ids
@@ -132,15 +138,28 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
      (reset! loading-components-ch ch)
      (go (if-let [components (<! ch)]
            (dispatch [:components-loaded {:components components
-                                          :count (count components)}]))))))
+                                          :count (count components)}
+                      0]))))))
 
 (reg-event-fx
  :components-loaded
- (fn [{:keys [db]} [_ components-data]]
-   {:db (-> db
-            (#(util/document->state components-data %))
-            (assoc-in [:infinite-scroll :records-count] (:count components-data)))
-    :dispatch [:reset-infinite-scroll]}))
+ (fn [{:keys [db]} [_ components-data offset]]
+   (if (> offset 0)
+     (do
+       {:db (-> db
+                (assoc :components
+                       (into
+                        (:components db)
+                        (:components (util/document->state components-data db))))
+                (assoc-in [:infinite-scroll :records-count]
+                          (:count components-data))
+                (update-in [:infinite-scroll :page]
+                           inc)
+                (assoc-in [:infinite-scroll :loading-next] false))})
+     {:db (-> db
+              (#(util/document->state components-data %))
+              (assoc-in [:infinite-scroll :records-count] (:count components-data)))
+      :dispatch [:reset-infinite-scroll]})))
 
 (defn normalize-item [item]
   (assoc item
