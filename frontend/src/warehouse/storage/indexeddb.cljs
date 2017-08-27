@@ -8,8 +8,14 @@
 
 (def db-name "app-state7")
 
+(defn normalize-keyword [keyword]
+  (clojure.string/lower-case keyword))
+
 (defn component->obj [c]
-  (clj->js (assoc c :keywords (set (conj (:tags c) (:name c))))))
+  (let [keywords (->> (conj (:tags c) (:name c))
+                      (map normalize-keyword)
+                      (set))]
+    (clj->js (assoc c :keywords keywords))))
 
 (defn obj->component [o]
   (dissoc (js->clj o :keywordize-keys true) :keywords))
@@ -182,9 +188,11 @@
   (let [ch (a/chan 1)
         request (.indexedDB.open js/window db-name 1)]
     (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request) (partial filter-keys (fn [res]
-                                                       (go (>! ch res)
-                                                           (a/close! ch))) keyword))
+    (set! (.-onsuccess request) (partial filter-keys
+                                         (fn [res]
+                                           (go (>! ch res)
+                                               (a/close! ch)))
+                                         (normalize-keyword keyword)))
     ch))
 
 (defn filter-ids
