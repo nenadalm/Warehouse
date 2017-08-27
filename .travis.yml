@@ -46,9 +46,6 @@ script:
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon
     - "! grep --perl-regexp '^((?!favicon.ico).)*Error' http-server.log"
-    # check that there are no errors or warnings in clojurescript compilation
-    # also ignore redefining uuid by cognitect and dependency version warnings
-    - "! grep --perl-regexp '(ERROR|WARNING((?!(cognitect.transit/uuid|version ranges found for)).)*)$' cljsbuild.log"
 
 after_success:
     - cd ../
