@@ -59,19 +59,19 @@
 ;; https://github.com/mozilla/geckodriver/issues/858
 #_(deftest import-export []
   ; reset env
-  (to base-url)
-  (execute-script "localStorage.clear();")
+    (to base-url)
+    (execute-script "localStorage.clear();")
 
-  (refresh)
+    (refresh)
 
   ; guard: there is zero components
-  (is (empty? (elements "//li[@class='component']")))
+    (is (empty? (elements "//li[@class='component']")))
 
-  (upload-file (fixture-path "export.json"))
+    (upload-file (fixture-path "export.json"))
 
-  (wait-until #(not-empty? (elements "//li[@class='component']")))
-  (refresh)
-  (wait-until #(not-empty? (elements "//li[@class='component']"))))
+    (wait-until #(not-empty? (elements "//li[@class='component']")))
+    (refresh)
+    (wait-until #(not-empty? (elements "//li[@class='component']"))))
 
 (defn create-component [component]
   (click "//button[contains(text(), 'Add new')]")
