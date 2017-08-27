@@ -35,7 +35,7 @@ before_script:
     - 'npm install -g http-server'
     - 'http-server resources/public/ -p 3449 2>&1 | tee http-server.log &'
 
-    - 'lein cljsbuild once min 2>&1 | tee cljsbuild.log'
+    - 'lein with-profile prod cljsbuild once min 2>&1 | tee cljsbuild.log'
     - 'lein less once'
 
 script:
