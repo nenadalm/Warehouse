@@ -55,7 +55,9 @@
         (.executePhantomJS driver script (make-array Object 0)))
       (send-keys "//input[@type='file']" path))))
 
-(deftest import-export []
+;; todo: uncomment when firefox 56 is released
+;; https://github.com/mozilla/geckodriver/issues/858
+#_(deftest import-export []
   ; reset env
   (to base-url)
   (execute-script "localStorage.clear();")
