@@ -23,7 +23,7 @@ module.exports = function(config) {
       terminal: true
     },
 
-    browserNoActivityTimeout: 30000,
+    browserNoActivityTimeout: 120000,
 
     // list of files / patterns to load in the browser
     files: [
