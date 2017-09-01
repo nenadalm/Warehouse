@@ -17,7 +17,6 @@
                  [secretary "1.2.3"]
                  [re-frame "0.9.2"]
                  [pjstadig/humane-test-output "0.8.1"]
-                 [cljsjs/lunrjs "0.6.0-1"]
                  [org.clojure/core.async "0.3.443"]]
 
   :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.0"]

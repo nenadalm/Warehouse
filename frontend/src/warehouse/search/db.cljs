@@ -1,5 +1,4 @@
-(ns warehouse.search.db
-  (:require cljsjs.lunrjs))
+(ns warehouse.search.db)
 
 (defn filter-active? [db]
   (not (clojure.string/blank? (get-in db [:filter :val]))))
