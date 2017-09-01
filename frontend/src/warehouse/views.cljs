@@ -136,7 +136,7 @@
   [:a {:download "warehouse_components.json"
        :on-click (m/handler-fn
                   (set! (.-currentTarget.href e) @(subscribe [:state-data-uri])))}
-   [:button "Export"]])
+   [:button "Export visible"]])
 
 (defn selected-components [components]
   [:ul {:class "components-list"}

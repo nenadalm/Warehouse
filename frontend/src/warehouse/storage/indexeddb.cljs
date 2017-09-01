@@ -214,20 +214,6 @@ matching the `q`"
           (a/close! out)))
     out))
 
-;; testing method
-(defn run []
-  (let [;initial-data-chan1 (load-initial-data 3)
-        ;page-chan1 (load-page 3 2)
-        ;ids-chan1 (filter-ids "component1024 firtof1024 component1025")
-        ;ids-chan2 (filter-ids "component1024 firstof1024")
-                                        ;c-chan1 (load-by-ids [1 2])
-        c-chan1 (load-by-ids [12 3 33 4 22 5])]
-    (go #_(println (<! initial-data-chan1))
-        #_(println (<! page-chan1))
-        #_(println (<! ids-chan1))
-        #_(println (<! ids-chan2))
-        (println (count (<! c-chan1))))))
-
 (defn load-components [limit offset]
   (load-page offset limit))
 
