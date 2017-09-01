@@ -23,6 +23,8 @@ module.exports = function(config) {
       terminal: true
     },
 
+    browserNoActivityTimeout: 30000,
+
     // list of files / patterns to load in the browser
     files: [
       root + '/goog/base.js',
