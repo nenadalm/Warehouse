@@ -52,17 +52,17 @@
  :import-document
  (fn
    [{:keys [db]} [_ document]]
-   {:load-components-by-ids2 [(map :id (:components document)) document]}))
+   {:component-import/load-components-by-ids [(map :id (:components document)) document]}))
 
 (reg-fx
- :load-components-by-ids2
+ :component-import/load-components-by-ids
  (fn [[ids document]]
    (let [ch (indexeddb/load-components-by-ids ids)]
      (go (if-let [components (<! ch)]
-           (dispatch [:components-loaded2 components document]))))))
+           (dispatch [:component-import/components-loaded components document]))))))
 
 (reg-event-fx
- :components-loaded2
+ :component-import/components-loaded
  (fn [_ [_ existing-components document]]
    (let [merged (util/merge-documents {:components existing-components} document)
          old-components (:components (util/document->state {:components existing-components} {}))
