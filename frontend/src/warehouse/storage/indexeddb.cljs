@@ -7,6 +7,7 @@
    [cljs.core.async.macros :refer [go]]))
 
 (def db-name "app-state")
+(def db-version 1)
 
 (defn normalize-keyword [keyword]
   (clojure.string/lower-case keyword))
@@ -31,10 +32,10 @@
         (.createIndex store "by_keyword" "keywords" #js {:multiEntry true})))))
 
 (defn on-success
-  ([f n e]
-   (on-success f n e 0))
-  ([f n e offset]
-   (let [db (.-target.result e)
+  ([f n request]
+   (on-success f n request 0))
+  ([f n request offset]
+   (let [db (.-result request)
          tx (.transaction db "components" "readonly")
          store (.objectStore tx "components")
          request (.count store)]
@@ -102,8 +103,8 @@
                          (f {:count cnt
                              :components @components}))))))))))
 
-(defn filter-keys [f q e]
-  (let [db (.-target.result e)
+(defn filter-keys [f q request]
+  (let [db (.-result request)
         tx (.transaction db "components" "readonly")
         store (.objectStore tx "components")
         index (.index store "by_keyword")
@@ -121,8 +122,8 @@
                   (f @keys)))
               (f @keys))))))
 
-(defn filter-components [ids f e]
-  (let [db (.-target.result e)
+(defn filter-components [ids f request]
+  (let [db (.-result request)
         tx (.transaction db "components" "readonly")
         store (.objectStore tx "components")
         components (atom [])
@@ -142,58 +143,60 @@
                       (f @components)))))
               (f @components))))))
 
+(defn open-request [f]
+  "Calls `f` with channel and indexeddb successful request"
+  (let [ch (a/chan 1)
+        request (.indexedDB.open js/window db-name db-version)]
+    (set! (.-onupgradeneeded request) on-upgrade)
+    (set! (.-onsuccess request) #(f request ch))
+    ch))
+
 (defn load-initial-data
   "Returns channel receiving first `n` components"
   [n]
-  (let [ch (a/chan 1)
-        request (.indexedDB.open js/window db-name 1)]
-    (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request) (partial on-success
-                                         (fn [res]
-                                           (go (>! ch res)
-                                               (a/close! ch)))
-                                         n))
-    ch))
+  (open-request (fn [request ch]
+                  (on-success
+                   (fn [res]
+                     (go (>! ch res)
+                         (a/close! ch)))
+                   n
+                   request))))
 
-(defn load-page
+(defn load-components
   "Returns channel receiving components for the page"
-  [offset limit]
-  (let [ch (a/chan 1)
-        request (.indexedDB.open js/window db-name 1)]
-    (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request) #(on-success (fn [res]
-                                               (go (>! ch res)
-                                                   (a/close! ch)))
-                                             limit
-                                             %
-                                             offset))
-    ch))
+  [limit offset]
+  (open-request (fn [request ch]
+                  (on-success (fn [res]
+                                (go (>! ch res)
+                                    (a/close! ch)))
+                              limit
+                              request
+                              offset))))
 
-(defn load-by-ids
+(defn load-components-by-ids
   "Returns channel receiving components by `ids`"
   [ids]
-  (let [ch (a/chan 1)]
-    (if (empty? ids)
+  (if (empty? ids)
+    (let [ch (a/chan 1)]
       (go (>! ch []))
-      (let [request (.indexedDB.open js/window db-name 1)]
-        (set! (.-onupgradeneeded request) on-upgrade)
-        (set! (.-onsuccess request) (partial filter-components ids (fn [res]
-                                                                     (go (>! ch res)
-                                                                         (a/close! ch)))))))
-    ch))
+      ch)
+    (open-request (fn [request ch]
+                    (filter-components ids
+                                       (fn [res]
+                                         (go (>! ch res)
+                                             (a/close! ch)))
+                                       request)))))
 
 (defn filter-ids-by-keyword
   "Returns channel receiving ids of components filtered by `keyword`"
   [keyword]
-  (let [ch (a/chan 1)
-        request (.indexedDB.open js/window db-name 1)]
-    (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request) (partial filter-keys
-                                         (fn [res]
-                                           (go (>! ch res)
-                                               (a/close! ch)))
-                                         (normalize-keyword keyword)))
-    ch))
+  (open-request (fn [request ch]
+                  (filter-keys
+                   (fn [res]
+                     (go (>! ch res)
+                         (a/close! ch)))
+                   (normalize-keyword keyword)
+                   request))))
 
 (defn filter-ids
   "Takes query `q` and returns channel receiving ids of components
@@ -214,41 +217,26 @@ matching the `q`"
           (a/close! out)))
     out))
 
-(defn load-components [limit offset]
-  (load-page offset limit))
-
-(def load-components-by-ids load-by-ids)
-
 (defn store-components
   "Returns channel receiving `true` once update completed."
   [components]
-  (let [ch (a/chan 1)
-        request (.indexedDB.open js/window db-name 1)]
-    (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request)
-          (fn [e]
-            (let [db (.-result request)
-                  tx (.transaction db "components" "readwrite")
-                  store (.objectStore tx "components")]
-              (doseq [component components]
-                (.put store (component->obj component)))
-              (set! (.-oncomplete tx)
-                    #(go (>! ch true))))))
-    ch))
+  (open-request (fn [request ch]
+                  (let [db (.-result request)
+                        tx (.transaction db "components" "readwrite")
+                        store (.objectStore tx "components")]
+                    (doseq [component components]
+                      (.put store (component->obj component)))
+                    (set! (.-oncomplete tx)
+                          #(go (>! ch true)))))))
 
 (defn store-component
   "Returns channel receiving `true` once update completed."
   [component]
-  (let [ch (a/chan 1)
-        request (.indexedDB.open js/window db-name 1)]
-    (set! (.-onupgradeneeded request) on-upgrade)
-    (set! (.-onsuccess request)
-          (fn [e]
-            (let [db (.-result request)
-                  tx (.transaction db "components" "readwrite")
-                  store (.objectStore tx "components")]
-              (.put store (component->obj component))
-              (set! (.-oncomplete tx)
-                    #(go (>! ch true))))))
-    ch))
+  (open-request (fn [request ch]
+                  (let [db (.-result request)
+                        tx (.transaction db "components" "readwrite")
+                        store (.objectStore tx "components")]
+                    (.put store (component->obj component))
+                    (set! (.-oncomplete tx)
+                          #(go (>! ch true)))))))
 
