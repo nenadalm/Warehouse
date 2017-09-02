@@ -145,8 +145,6 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
                                           :count (count components)}
                       offset]))))))
 
-
-
 (reg-event-fx
  :components-loaded
  (fn [{:keys [db]} [_ components-data offset]]
