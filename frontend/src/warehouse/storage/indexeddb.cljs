@@ -208,8 +208,8 @@ matching the `q`"
                             (#(swap! key-sets conj (set %)))))
         (a/close! ch)
         (let [res (if (empty? @key-sets)
-                    #{}
-                    (apply clojure.set/intersection @key-sets))]
+                    []
+                    (into [] (apply clojure.set/intersection @key-sets)))]
           (>! out res)
           (a/close! out)))
     out))

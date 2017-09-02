@@ -60,10 +60,14 @@
      (if (and (< (:page sd) (:pages-count sd))
               (scroll/should-load-next-page)
               (not (get-in db [:infinite-scroll :loading-next])))
-       (when (empty? q)
-         {:db (assoc-in db [:infinite-scroll :loading-next] true)
-          :load-components {:limit (get sd :records-per-page)
-                            :offset (* page (get-in db [:infinite-scroll :records-per-page]))}})))))
+       (let [limit (get sd :records-per-page)
+             offset (* page (get-in db [:infinite-scroll :records-per-page]))]
+         (if (empty? q)
+           {:db (assoc-in db [:infinite-scroll :loading-next] true)
+            :load-components {:limit limit
+                              :offset offset}}
+           {:db (assoc-in db [:infinite-scroll :loading-next] true)
+            :load-components-by-ids [(subvec (get-in db [:filter :search]) offset (+ limit offset)) offset]}))))))
 
 (reg-event-db
  :error
@@ -133,13 +137,15 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
 
 (reg-fx
  :load-components-by-ids
- (fn [ids]
+ (fn [[ids offset]]
    (let [ch (indexeddb/load-components-by-ids ids)]
      (reset! loading-components-ch ch)
      (go (if-let [components (<! ch)]
            (dispatch [:components-loaded {:components components
                                           :count (count components)}
-                      0]))))))
+                      offset]))))))
+
+
 
 (reg-event-fx
  :components-loaded

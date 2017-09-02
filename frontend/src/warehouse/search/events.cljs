@@ -39,7 +39,7 @@ Channel is automatically closed when new value is set via `:close-previous-ch` w
      (if (empty? (get-in db [:filter :val]))
        (assoc eff :load-components {:limit (get-in db [:infinite-scroll :records-per-page])
                                     :offset 0})
-       (assoc eff :load-components-by-ids ids)))))
+       (assoc eff :load-components-by-ids [(take (get-in db [:infinite-scroll :records-per-page]) ids) 0])))))
 
 (reg-event-fx
  :filter-refresh
