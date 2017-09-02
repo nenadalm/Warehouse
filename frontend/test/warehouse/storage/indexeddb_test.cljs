@@ -186,34 +186,34 @@
   (async done
          (let [ch (indexeddb/filter-ids "")]
            (go (is (= (<! ch)
-                      #{}))
+                      []))
                (done)))))
 
 (deftest filter-ids--single-tag-query-test
   (async done
          (let [ch (indexeddb/filter-ids "oscillator")]
            (go (is (= (<! ch)
-                      #{5}))
-               (done)))))
+                      [5])
+                   (done))))))
 
 (deftest filter-ids--two-tags-query-test
   (async done
          (let [ch (indexeddb/filter-ids "oscillator crystal")]
            (go (is (= (<! ch)
-                      #{5}))
-               (done)))))
+                      [5])
+                   (done))))))
 
 (deftest filter-ids--partial-single-tag-query-test
   (async done
          (let [ch (indexeddb/filter-ids "osc")]
            (go (is (= (<! ch)
-                      #{5}))
-               (done)))))
+                      [5])
+                   (done))))))
 
 (deftest filter-ids--partial-two-results-test
   (async done
          (let [ch (indexeddb/filter-ids "o")]
            (go (is (= (<! ch)
-                      #{1 5}))
+                      [1 5]))
                (done)))))
 
