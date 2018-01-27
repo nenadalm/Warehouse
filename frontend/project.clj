@@ -23,23 +23,23 @@
                                   [binaryage/devtools "0.9.4"]
                                   [re-frisk "0.4.5"]
                                   [figwheel-sidecar "0.5.14"]
-                                  [com.cemerick/piggieback "0.2.2"]]}}
-
-  :git-dependencies [["https://github.com/nenadalm/karma-reporter.git" "master"]]
+                                  [com.cemerick/piggieback "0.2.2"]
+                                  [pjstadig/humane-test-output "0.8.3"]]
+                   :doo {:paths {:karma "./node_modules/.bin/karma"}}}}
 
   ; set plugins using aliases helps decrease "$ time lein help" significantly
   :aliases {"cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.14\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
-            "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]}
+            "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]
+            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.7\"]" "--" "doo"]}
 
   :source-paths ["src"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
-    :test-commands {"karma" ["./node_modules/.bin/karma" "start"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
@@ -54,7 +54,7 @@
                          :preloads [day8.re-frame.trace.preload
                                     devtools.preload]}}
              {:id "test"
-              :source-paths ["src" "test" ".lein-git-deps/karma-reporter/src"]
+              :source-paths ["src" "test"]
               :compiler {:main warehouse.run-all
                          :asset-path "../public/js/compiled/test/out"
                          :output-to "resources/public/js/compiled/warehouse-test.js"

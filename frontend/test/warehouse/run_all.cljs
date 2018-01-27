@@ -1,6 +1,7 @@
 (ns warehouse.run-all
   (:require
-   [jx.reporter.karma :refer-macros [run-tests run-all-tests]]
+   [doo.runner :refer-macros [doo-tests]]
+   [pjstadig.humane-test-output]
    [warehouse.util-test]
    [warehouse.process.events-test]
    [warehouse.notifications.db-test]
@@ -8,6 +9,7 @@
 
 (enable-console-print!)
 
-(defn ^:export run [karma]
-  (run-all-tests karma #"warehouse.*-test"))
-
+(doo-tests 'warehouse.util-test
+           'warehouse.process.events-test
+           'warehouse.notifications.db-test
+           'warehouse.storage.indexeddb-test)

@@ -42,7 +42,7 @@ before_script:
 script:
     - lein cljfmt check
     - alias firefox-bin='firefox'
-    - lein cljsbuild test
+    - lein doo firefox test once
     - 'SELENIUM_BROWSER=firefox lein test'
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon
