@@ -21,14 +21,16 @@
 
   :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.0"]
                                   [binaryage/devtools "0.9.4"]
-                                  [re-frisk "0.4.5"]]}}
+                                  [re-frisk "0.4.5"]
+                                  [figwheel-sidecar "0.5.14"]
+                                  [com.cemerick/piggieback "0.2.2"]]}}
 
   :git-dependencies [["https://github.com/nenadalm/karma-reporter.git" "master"]]
 
   ; set plugins using aliases helps decrease "$ time lein help" significantly
   :aliases {"cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
-            "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.4-7\"]" "--" "figwheel"]
+            "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.14\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]}
 
@@ -81,6 +83,7 @@
              ;; Start an nREPL server into the running figwheel process
              ;; :nrepl-port 7888
 
+             :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
              ;; Server Ring Handler (optional)
              ;; if you want to embed a ring handler into the figwheel http-kit
              ;; server, this is for simple ring servers, if this
