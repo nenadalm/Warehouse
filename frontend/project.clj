@@ -27,13 +27,20 @@
                                   [pjstadig/humane-test-output "0.8.3"]]
                    :doo {:paths {:karma "./node_modules/.bin/karma"}}}}
 
-  ; set plugins using aliases helps decrease "$ time lein help" significantly
-  :aliases {"cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
+
+  :aliases {
+            ;; set plugins using aliases helps decrease "$ time lein help" significantly
+            "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.14\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]
-            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.7\"]" "--" "doo"]}
+            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.7\"]" "--" "doo"]
+
+            ;; project tasks
+            "build" ["do"
+                     ["clean"]
+                     ["with-profile" "dev,repl" "figwheel" "dev"]]}
 
   :source-paths ["src"]
 
@@ -73,35 +80,8 @@
   :less {:source-paths ["resources/less"]
          :target-path "resources/public/css"}
 
-  :figwheel {
-             ;; :http-server-root "public" ;; default and assumes "resources" 
-             ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1" 
-
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
-
-             ;; Start an nREPL server into the running figwheel process
-             ;; :nrepl-port 7888
-
-             :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-             ;; Server Ring Handler (optional)
-             ;; if you want to embed a ring handler into the figwheel http-kit
-             ;; server, this is for simple ring servers, if this
-             ;; doesn't work for you just run your own server :)
-             ;; :ring-handler hello_world.server/handler
-
-             ;; To be able to open files in your editor from the heads up display
-             ;; you will need to put a script on your path.
-             ;; that script will have to take a file path and a line number
-             ;; ie. in  ~/bin/myfile-opener
-             ;; #! /bin/sh
-             ;; emacsclient -n +$2 $1
-             ;;
-             ;; :open-file-command "myfile-opener"
-
-             ;; if you want to disable the REPL
-             ;; :repl false
-
-             ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
-             })
+  :figwheel {:css-dirs ["resources/public/css"] ;; watch and update CSS
+             :nrepl-port 7000
+             :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl
+                                cider.nrepl/cider-middleware
+                                refactor-nrepl.middleware/wrap-refactor]})
