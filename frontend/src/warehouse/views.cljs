@@ -142,7 +142,10 @@
   [:ul {:class "components-list"}
    (for [[k v] components]
      ^{:key (:name v)} [:li {:class "component"}
-                        [item v k]])])
+                        [item v k]])
+   ^{:key "loading"} [:li
+                      {:style {:visibility (if @(subscribe [:loading-next-components]) "visible" "hidden")}}
+                      "Loading..."]])
 
 (defn component-list []
   (let [adding (atom false)

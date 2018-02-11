@@ -25,6 +25,12 @@
    (:infinite-scroll db)))
 
 (reg-sub
+ :loading-next-components
+ (fn
+   [db _]
+   (get-in db [:infinite-scroll :loading-next])))
+
+(reg-sub
  :scroll-data-visible-components
  (fn [_ _]
    [(subscribe [:visible-components])
