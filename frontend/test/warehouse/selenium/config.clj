@@ -1,17 +1,25 @@
 (ns warehouse.selenium.config
   (:use
-   [clj-webdriver.taxi :exclude [clear]]))
+   [etaoin.api :exclude [clear]])
+  (:require
+   [etaoin.keys :as k]))
 
-(set-driver! {:browser (or (keyword (System/getenv "SELENIUM_BROWSER"))
-                           :phantomjs)})
-(set-finder! xpath-finder)
+(def driver (firefox))
 
 (def base-url "http://localhost:3449")
 
-(defn clear [q]
-  "Function to clear input found using q"
-  (send-keys q (clojure.string/join
-                ""
-                (conj (repeat (count (value q)) (clj-webdriver.core/key-code :back_space))
-                      (clj-webdriver.core/key-code :end)))))
+(defn get-element-property-el [driver el property]
+  (with-resp driver :get
+    [:session (:session @driver) :element el :property (name property)]
+    nil
+    resp
+    (:value resp)))
 
+(defn get-element-property [driver q name]
+  (get-element-property-el driver (query driver q) name))
+
+(defn clear [driver q]
+  (fill driver q (clojure.string/join
+                  ""
+                  (repeat (count (get-element-property driver q :value))
+                          k/backspace))))

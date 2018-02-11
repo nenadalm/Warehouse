@@ -1,5 +1,5 @@
 (defproject warehouse "0.1.0-SNAPSHOT"
-  :description "Frontend for 'Warehouse' project"
+  :description "Frotend for 'Warehouse' project"
   :url "http://github.com/nenadalm/warehouse"
   :license {:name "MIT"}
 
@@ -7,17 +7,13 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/clojurescript "1.9.521"]
                  [reagent "0.6.1"]
-                 [org.seleniumhq.selenium/selenium-java "3.4.0"]
-                 [org.seleniumhq.selenium/selenium-htmlunit-driver "2.52.0"]
-                 [org.seleniumhq.selenium/selenium-firefox-driver "3.4.0"]
-                 [com.codeborne/phantomjsdriver "1.4.2"]
-                 [clj-webdriver "0.7.2"]
                  [alandipert/storage-atom "2.0.1"]
                  [cljs-ajax "0.5.9"]
                  [secretary "1.2.3"]
                  [re-frame "0.9.2"]
                  [pjstadig/humane-test-output "0.8.1"]
-                 [org.clojure/core.async "0.3.443"]]
+                 [org.clojure/core.async "0.3.443"]
+                 [etaoin "0.2.6"]]
 
   :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.0"]
                                   [binaryage/devtools "0.9.4"]
