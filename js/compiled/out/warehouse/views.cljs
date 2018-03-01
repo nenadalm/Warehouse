@@ -136,13 +136,16 @@
   [:a {:download "warehouse_components.json"
        :on-click (m/handler-fn
                   (set! (.-currentTarget.href e) @(subscribe [:state-data-uri])))}
-   [:button "Export"]])
+   [:button "Export visible"]])
 
 (defn selected-components [components]
   [:ul {:class "components-list"}
    (for [[k v] components]
      ^{:key (:name v)} [:li {:class "component"}
-                        [item v k]])])
+                        [item v k]])
+   ^{:key "loading"} [:li
+                      {:style {:visibility (if @(subscribe [:loading-next-components]) "visible" "hidden")}}
+                      "Loading..."]])
 
 (defn component-list []
   (let [adding (atom false)

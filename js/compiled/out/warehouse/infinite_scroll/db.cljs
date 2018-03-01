@@ -1,8 +1,7 @@
 (ns warehouse.infinite-scroll.db)
 
 (defn filter-by-data [items isd]
-  (take (* (:page isd) (:records-per-page isd))
-        items))
+  items)
 
 (defn should-load-next-page []
   (>= (+ (* 1.5 (.-innerHeight js/window))
