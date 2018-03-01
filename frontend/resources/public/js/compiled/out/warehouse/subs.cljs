@@ -16,15 +16,19 @@
  :visible-components
  (fn
    [db _]
-   (if (search/filter-active? db)
-     (select-keys (:components db) (map #(get % "ref") (search/filter-search db)))
-     (:components db))))
+   (:components db)))
 
 (reg-sub
  :infinite-scroll-state
  (fn
    [db _]
    (:infinite-scroll db)))
+
+(reg-sub
+ :loading-next-components
+ (fn
+   [db _]
+   (get-in db [:infinite-scroll :loading-next])))
 
 (reg-sub
  :scroll-data-visible-components

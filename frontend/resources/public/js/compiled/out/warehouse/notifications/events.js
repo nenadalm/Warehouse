@@ -4,9 +4,9 @@ goog.require('cljs.core');
 goog.require('cljs.core.constants');
 goog.require('warehouse.notifications.db');
 goog.require('re_frame.core');
-re_frame.core.reg_event_db.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$notification_DASH_close,(function (db,p__15260){
-var vec__15261 = p__15260;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15261,(0),null);
-var notification_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15261,(1),null);
+re_frame.core.reg_event_db.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$notification_DASH_close,(function (db,p__15274){
+var vec__15275 = p__15274;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15275,(0),null);
+var notification_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__15275,(1),null);
 return warehouse.notifications.db.remove_notification(db,notification_key);
 }));
