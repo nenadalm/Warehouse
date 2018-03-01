@@ -21,7 +21,7 @@ ssh-add .travis/id_rsa
 git config user.name "Travis CI"
 git config user.email "travis@example.com"
 git remote add premote "${REPO}"
-git fetch premote
+git fetch --unshallow premote
 
 function deploy_frontend {
     git clean -f
@@ -36,7 +36,7 @@ function deploy_frontend {
     pushd frontend/
     lein clean
     lein less once
-    lein cljsbuild once min
+    lein with-profile prod cljsbuild once min
     popd
 
     git add --force frontend/resources/public && git commit -m "Travis-CI: update resources" || true

@@ -2,8 +2,6 @@
 
 set -eu
 
-cd "$(dirname "${0}")/.."
-
 TEST_ARGS="$@"
 MESSAGE_EXPIRATION=60000 # 1 minute
 

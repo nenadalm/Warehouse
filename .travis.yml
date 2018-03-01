@@ -4,7 +4,6 @@ lein: 2.7.1
 
 cache:
     directories:
-        - travis_phantomjs
         - geckodriver
 
 jdk:
@@ -14,22 +13,13 @@ addons:
     firefox: latest
 
 before_install:
-    # phantomjs
-    - 'phantomjs --version'
-    - 'export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH'
-    - 'phantomjs --version'
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
-    - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
-    - 'phantomjs --version'
-
     # geckodriver
     - |
         export PATH=$PWD/geckodriver:$PATH
-        if ! type geckodriver > /dev/null 2>&1 || ! geckodriver --version | grep '0.16.1'; then
+        if ! type geckodriver > /dev/null 2>&1 || ! geckodriver --version | grep '0.19.1'; then
             rm -rf geckodriver
             mkdir geckodriver
-            wget https://github.com/mozilla/geckodriver/releases/download/v0.16.1/geckodriver-v0.16.1-linux64.tar.gz -O geckodriver/geckodriver.tar.gz
+            wget https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-linux64.tar.gz -O geckodriver/geckodriver.tar.gz
             tar -xvf geckodriver/geckodriver.tar.gz -C geckodriver
             rm geckodriver/geckodriver.tar.gz
         fi
@@ -40,26 +30,23 @@ before_install:
 before_script:
     - 'export DISPLAY=:99.0'
     - 'sh -e /etc/init.d/xvfb start'
-    - npm install
+    - npm install -g yarn
+    - yarn install
     - lein git-deps
     - 'npm install -g http-server'
     - 'http-server resources/public/ -p 3449 2>&1 | tee http-server.log &'
 
-    - 'lein cljsbuild once min 2>&1 | tee cljsbuild.log'
+    - 'lein with-profile prod cljsbuild once min 2>&1 | tee cljsbuild.log'
     - 'lein less once'
 
 script:
     - lein cljfmt check
     - alias firefox-bin='firefox'
-    - lein cljsbuild test
-    - 'SELENIUM_BROWSER=phantomjs lein test'
-    - 'SELENIUM_BROWSER=firefox lein test'
+    - lein doo firefox test once
+    - lein test
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon
     - "! grep --perl-regexp '^((?!favicon.ico).)*Error' http-server.log"
-    # check that there are no errors or warnings in clojurescript compilation
-    # also ignore redefining uuid by cognitect and dependency version warnings
-    - "! grep --perl-regexp '(ERROR|WARNING((?!(cognitect.transit/uuid|version ranges found for)).)*)$' cljsbuild.log"
 
 after_success:
     - cd ../
