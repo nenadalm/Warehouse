@@ -7,6 +7,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/clojurescript "1.10.145"]
                  [reagent "0.7.0"]
+                 [reagent-forms "0.5.36"]
                  [alandipert/storage-atom "2.0.1"]
                  [cljs-ajax "0.7.3"]
                  [secretary "1.2.3"]
