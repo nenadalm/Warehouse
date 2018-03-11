@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.9.521 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.145 {:static-fns true, :optimize-constants true}
 goog.provide('reagent.dom');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -20,9 +20,9 @@ if(typeof ReactDOM !== 'undefined'){
 return reagent.dom.imported = ReactDOM;
 } else {
 if(typeof require !== 'undefined'){
-var or__7026__auto__ = reagent.dom.imported = require("react-dom");
-if(cljs.core.truth_(or__7026__auto__)){
-return or__7026__auto__;
+var or__3922__auto__ = reagent.dom.imported = require("react-dom");
+if(cljs.core.truth_(or__3922__auto__)){
+return or__3922__auto__;
 } else {
 throw (new Error("require('react-dom') failed"));
 }
@@ -35,9 +35,7 @@ throw (new Error("js/ReactDOM is missing"));
 });
 if(typeof reagent.dom.roots !== 'undefined'){
 } else {
-reagent.dom.roots = (function (){var G__13819 = cljs.core.PersistentArrayMap.EMPTY;
-return (cljs.core.atom.cljs$core$IFn$_invoke$arity$1 ? cljs.core.atom.cljs$core$IFn$_invoke$arity$1(G__13819) : cljs.core.atom.call(null,G__13819));
-})();
+reagent.dom.roots = cljs.core.atom.cljs$core$IFn$_invoke$arity$1(cljs.core.PersistentArrayMap.EMPTY);
 }
 reagent.dom.unmount_comp = (function reagent$dom$unmount_comp(container){
 cljs.core.swap_BANG_.cljs$core$IFn$_invoke$arity$3(reagent.dom.roots,cljs.core.dissoc,container);
@@ -45,12 +43,12 @@ cljs.core.swap_BANG_.cljs$core$IFn$_invoke$arity$3(reagent.dom.roots,cljs.core.d
 return (reagent.dom.module()["unmountComponentAtNode"])(container);
 });
 reagent.dom.render_comp = (function reagent$dom$render_comp(comp,container,callback){
-var _STAR_always_update_STAR_13822 = reagent.impl.util._STAR_always_update_STAR_;
+var _STAR_always_update_STAR_9079 = reagent.impl.util._STAR_always_update_STAR_;
 reagent.impl.util._STAR_always_update_STAR_ = true;
 
-try{return (reagent.dom.module()["render"])((comp.cljs$core$IFn$_invoke$arity$0 ? comp.cljs$core$IFn$_invoke$arity$0() : comp.call(null)),container,((function (_STAR_always_update_STAR_13822){
+try{return (reagent.dom.module()["render"])((comp.cljs$core$IFn$_invoke$arity$0 ? comp.cljs$core$IFn$_invoke$arity$0() : comp.call(null)),container,((function (_STAR_always_update_STAR_9079){
 return (function (){
-var _STAR_always_update_STAR_13823 = reagent.impl.util._STAR_always_update_STAR_;
+var _STAR_always_update_STAR_9080 = reagent.impl.util._STAR_always_update_STAR_;
 reagent.impl.util._STAR_always_update_STAR_ = false;
 
 try{cljs.core.swap_BANG_.cljs$core$IFn$_invoke$arity$4(reagent.dom.roots,cljs.core.assoc,container,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [comp,container], null));
@@ -62,10 +60,10 @@ return (callback.cljs$core$IFn$_invoke$arity$0 ? callback.cljs$core$IFn$_invoke$
 } else {
 return null;
 }
-}finally {reagent.impl.util._STAR_always_update_STAR_ = _STAR_always_update_STAR_13823;
-}});})(_STAR_always_update_STAR_13822))
+}finally {reagent.impl.util._STAR_always_update_STAR_ = _STAR_always_update_STAR_9080;
+}});})(_STAR_always_update_STAR_9079))
 );
-}finally {reagent.impl.util._STAR_always_update_STAR_ = _STAR_always_update_STAR_13822;
+}finally {reagent.impl.util._STAR_always_update_STAR_ = _STAR_always_update_STAR_9079;
 }});
 reagent.dom.re_render_component = (function reagent$dom$re_render_component(comp,container){
 return reagent.dom.render_comp(comp,container,null);
@@ -79,23 +77,8 @@ return reagent.dom.render_comp(comp,container,null);
  *   Returns the mounted component instance.
  */
 reagent.dom.render = (function reagent$dom$render(var_args){
-var args13824 = [];
-var len__8139__auto___13827 = arguments.length;
-var i__8140__auto___13828 = (0);
-while(true){
-if((i__8140__auto___13828 < len__8139__auto___13827)){
-args13824.push((arguments[i__8140__auto___13828]));
-
-var G__13829 = (i__8140__auto___13828 + (1));
-i__8140__auto___13828 = G__13829;
-continue;
-} else {
-}
-break;
-}
-
-var G__13826 = args13824.length;
-switch (G__13826) {
+var G__9082 = arguments.length;
+switch (G__9082) {
 case 2:
 return reagent.dom.render.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
 
@@ -105,7 +88,7 @@ return reagent.dom.render.cljs$core$IFn$_invoke$arity$3((arguments[(0)]),(argume
 
 break;
 default:
-throw (new Error([cljs.core.str.cljs$core$IFn$_invoke$arity$1("Invalid arity: "),cljs.core.str.cljs$core$IFn$_invoke$arity$1(args13824.length)].join('')));
+throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(arguments.length)].join('')));
 
 }
 });
@@ -149,51 +132,53 @@ reagent.impl.template.find_dom_node = reagent.dom.dom_node;
 reagent.dom.force_update_all = (function reagent$dom$force_update_all(){
 reagent.ratom.flush_BANG_();
 
-var seq__13835_13839 = cljs.core.seq(cljs.core.vals((cljs.core.deref.cljs$core$IFn$_invoke$arity$1 ? cljs.core.deref.cljs$core$IFn$_invoke$arity$1(reagent.dom.roots) : cljs.core.deref.call(null,reagent.dom.roots))));
-var chunk__13836_13840 = null;
-var count__13837_13841 = (0);
-var i__13838_13842 = (0);
+var seq__9084_9088 = cljs.core.seq(cljs.core.vals(cljs.core.deref(reagent.dom.roots)));
+var chunk__9085_9089 = null;
+var count__9086_9090 = (0);
+var i__9087_9091 = (0);
 while(true){
-if((i__13838_13842 < count__13837_13841)){
-var v_13843 = chunk__13836_13840.cljs$core$IIndexed$_nth$arity$2(null,i__13838_13842);
-cljs.core.apply.cljs$core$IFn$_invoke$arity$2(reagent.dom.re_render_component,v_13843);
+if((i__9087_9091 < count__9086_9090)){
+var v_9092 = chunk__9085_9089.cljs$core$IIndexed$_nth$arity$2(null,i__9087_9091);
+cljs.core.apply.cljs$core$IFn$_invoke$arity$2(reagent.dom.re_render_component,v_9092);
 
-var G__13844 = seq__13835_13839;
-var G__13845 = chunk__13836_13840;
-var G__13846 = count__13837_13841;
-var G__13847 = (i__13838_13842 + (1));
-seq__13835_13839 = G__13844;
-chunk__13836_13840 = G__13845;
-count__13837_13841 = G__13846;
-i__13838_13842 = G__13847;
+
+var G__9093 = seq__9084_9088;
+var G__9094 = chunk__9085_9089;
+var G__9095 = count__9086_9090;
+var G__9096 = (i__9087_9091 + (1));
+seq__9084_9088 = G__9093;
+chunk__9085_9089 = G__9094;
+count__9086_9090 = G__9095;
+i__9087_9091 = G__9096;
 continue;
 } else {
-var temp__4657__auto___13848 = cljs.core.seq(seq__13835_13839);
-if(temp__4657__auto___13848){
-var seq__13835_13849__$1 = temp__4657__auto___13848;
-if(cljs.core.chunked_seq_QMARK_(seq__13835_13849__$1)){
-var c__7845__auto___13850 = cljs.core.chunk_first(seq__13835_13849__$1);
-var G__13851 = cljs.core.chunk_rest(seq__13835_13849__$1);
-var G__13852 = c__7845__auto___13850;
-var G__13853 = cljs.core.count(c__7845__auto___13850);
-var G__13854 = (0);
-seq__13835_13839 = G__13851;
-chunk__13836_13840 = G__13852;
-count__13837_13841 = G__13853;
-i__13838_13842 = G__13854;
+var temp__5457__auto___9097 = cljs.core.seq(seq__9084_9088);
+if(temp__5457__auto___9097){
+var seq__9084_9098__$1 = temp__5457__auto___9097;
+if(cljs.core.chunked_seq_QMARK_(seq__9084_9098__$1)){
+var c__4319__auto___9099 = cljs.core.chunk_first(seq__9084_9098__$1);
+var G__9100 = cljs.core.chunk_rest(seq__9084_9098__$1);
+var G__9101 = c__4319__auto___9099;
+var G__9102 = cljs.core.count(c__4319__auto___9099);
+var G__9103 = (0);
+seq__9084_9088 = G__9100;
+chunk__9085_9089 = G__9101;
+count__9086_9090 = G__9102;
+i__9087_9091 = G__9103;
 continue;
 } else {
-var v_13855 = cljs.core.first(seq__13835_13849__$1);
-cljs.core.apply.cljs$core$IFn$_invoke$arity$2(reagent.dom.re_render_component,v_13855);
+var v_9104 = cljs.core.first(seq__9084_9098__$1);
+cljs.core.apply.cljs$core$IFn$_invoke$arity$2(reagent.dom.re_render_component,v_9104);
 
-var G__13856 = cljs.core.next(seq__13835_13849__$1);
-var G__13857 = null;
-var G__13858 = (0);
-var G__13859 = (0);
-seq__13835_13839 = G__13856;
-chunk__13836_13840 = G__13857;
-count__13837_13841 = G__13858;
-i__13838_13842 = G__13859;
+
+var G__9105 = cljs.core.next(seq__9084_9098__$1);
+var G__9106 = null;
+var G__9107 = (0);
+var G__9108 = (0);
+seq__9084_9088 = G__9105;
+chunk__9085_9089 = G__9106;
+count__9086_9090 = G__9107;
+i__9087_9091 = G__9108;
 continue;
 }
 } else {
