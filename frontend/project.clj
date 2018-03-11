@@ -3,22 +3,22 @@
   :url "http://github.com/nenadalm/warehouse"
   :license {:name "MIT"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.clojure/clojurescript "1.9.521"]
-                 [reagent "0.6.1"]
+                 [org.clojure/clojurescript "1.10.145"]
+                 [reagent "0.7.0"]
                  [alandipert/storage-atom "2.0.1"]
-                 [cljs-ajax "0.5.9"]
+                 [cljs-ajax "0.7.3"]
                  [secretary "1.2.3"]
-                 [re-frame "0.9.2"]
-                 [pjstadig/humane-test-output "0.8.1"]
-                 [org.clojure/core.async "0.3.443"]
-                 [etaoin "0.2.6"]]
+                 [re-frame "0.10.5"]
+                 [pjstadig/humane-test-output "0.8.3"]
+                 [org.clojure/core.async "0.4.474"]
+                 [etaoin "0.2.8"]]
 
-  :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.0"]
-                                  [binaryage/devtools "0.9.4"]
-                                  [re-frisk "0.4.5"]
-                                  [figwheel-sidecar "0.5.14"]
+  :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.22"]
+                                  [binaryage/devtools "0.9.9"]
+                                  [re-frisk "0.5.3"]
+                                  [figwheel-sidecar "0.5.15"]
                                   [com.cemerick/piggieback "0.2.2"]
                                   [pjstadig/humane-test-output "0.8.3"]]
                    :doo {:paths {:karma "./node_modules/.bin/karma"}}}}
@@ -26,9 +26,9 @@
 
   :aliases {
             ;; set plugins using aliases helps decrease "$ time lein help" significantly
-            "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.4\"]" "--" "cljsbuild"]
+            "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.7\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
-            "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.14\"]" "--" "figwheel"]
+            "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.15\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]
             "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.7\"]" "--" "doo"]
