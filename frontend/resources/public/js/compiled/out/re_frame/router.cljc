@@ -74,6 +74,7 @@
   (push [this event])
   (add-post-event-callback [this id callack])
   (remove-post-event-callback [this f])
+  (purge [this])
 
   ;; -- Implementation via a Finite State Machine
   (-fsm-trigger [this trigger arg])
@@ -113,6 +114,8 @@
       (->> (dissoc post-event-callback-fns id)
            (set! post-event-callback-fns))))
 
+  (purge [_]
+    (set! queue empty-queue))
 
   ;; -- FSM Implementation ---------------------------------------------------
 
@@ -195,8 +198,8 @@
               (recur (dec n)))))))
 
   (-exception
-    [_ ex]
-    (set! queue empty-queue) ;; purge the queue
+    [this ex]
+    (purge this)   ;; purge the queue
     (throw ex))
 
   (-pause
@@ -227,14 +230,16 @@
 ;;
 
 (defn dispatch
-  "Queue the given event for processing by the registered event handler.
+  "Enqueue `event` for processing by event handling machinery.
 
-  Just to be clear: the event handler is not run immediately - it is not run
+  `event` is a vector of length >= 1. The 1st element identifies the kind of event.
+
+  Note: the event handler is not run immediately - it is not run
   synchronously. It will likely be run 'very soon', although it may be
   added to the end of a FIFO queue which already contain events.
 
   Usage:
-     (dispatch [:delete-item 42])"
+     (dispatch [:order-pizza {:supreme 2 :meatlovers 1 :veg 1})"
   [event]
   (if (nil? event)
       (throw (ex-info "re-frame: you called \"dispatch\" without an event vector." {}))
@@ -243,13 +248,18 @@
 
 
 (defn dispatch-sync
-  "Sychronously (immediately!) process the given event using the registered handler.
+  "Synchronously (immediately) process `event`. Do not queue.
 
-  Generally, you shouldn't use this - you should use `dispatch` instead.  It
-  is an error to use `dispatch-sync` within an event handler.
+  Generally, don't use this. Instead use `dispatch`. It is an error
+  to use `dispatch-sync` within an event handler.
+
+  Useful when any delay in processing is a problem:
+     1. the `:on-change` handler of a text field where we are expecting fast typing.
+     2  when initialising your app - see 'main' in todomvc examples
+     3. in a unit test where we don't want the action 'later'
 
   Usage:
-     (dispatch-sync [:delete-item 42])"
+     (dispatch-sync [:sing :falsetto 634])"
   [event-v]
   (handle event-v)
   (-call-post-event-callbacks event-queue event-v)  ;; slightly ugly hack. Run the registered post event callbacks.
