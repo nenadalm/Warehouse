@@ -6,6 +6,7 @@
    [warehouse.notifications.db :refer [add-notification]]
    [warehouse.search.db :as search]
    [warehouse.component-import.db :as component-import]
+   [warehouse.routes :refer [nav!]]
    [re-frame.core :refer [dispatch reg-event-db reg-cofx reg-event-fx reg-fx inject-cofx]]
    [warehouse.infinite-scroll.db :as scroll]
    [cljs.core.async :as a :refer [<!]]
@@ -19,7 +20,7 @@
                     :filter {:val ""
                              :search []}
                     :processes {}
-                    :page "index"
+                    :page :index
                     :infinite-scroll {:page 1
                                       :records-per-page 100
                                       :records-count 0
@@ -35,6 +36,16 @@
                                200)))))
 (def dispatch-infinite-scroll-bottom (debounce 100 #(dispatch [:infinite-scroll-bottom])))
 (.addEventListener js/document "scroll" #(dispatch-infinite-scroll-bottom))
+
+(reg-fx
+ :navigate
+ (fn [url]
+   (nav! url)))
+
+(reg-event-fx
+ ::navigate
+ (fn [_ [_ page]]
+   {:navigate page}))
 
 (reg-event-db
  :reset-infinite-scroll

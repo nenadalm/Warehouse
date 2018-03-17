@@ -1,6 +1,6 @@
-(ns warehouse.process.events
+(ns warehouse.pages.process.events
   (:require
-   [warehouse.process.db :as db]
+   [warehouse.pages.process.db :as db]
    [warehouse.util :as util]
    [re-frame.core :refer [reg-event-db reg-fx reg-cofx reg-event-fx inject-cofx]]))
 

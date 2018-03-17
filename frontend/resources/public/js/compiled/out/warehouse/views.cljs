@@ -2,14 +2,21 @@
   (:require
    [warehouse.routes :as routes]
    [warehouse.notifications.views :refer [notifications]]
-   [warehouse.process.views :refer [processes]]
+   [warehouse.pages.process.views :refer [processes]]
    [warehouse.pages.list.views :refer [component-list]]
-   [re-frame.core :refer [subscribe]]))
+   [warehouse.events :as events]
+   [re-frame.core :refer [subscribe dispatch]]))
+
+(def nav-items [{:title "List"
+                 :url (routes/path-for :index)}
+                {:title "Processes"
+                 :url (routes/path-for :processes)}])
 
 (defn nav []
   [:ul.menu
-   [:li [:a {:href (routes/homepage)} "List"]]
-   [:li [:a {:href (routes/processes)} "Processes"]]])
+   (for [item nav-items]
+     ^{:key (:title item)} [:li [:a {:href "#"
+                                     :on-click #(dispatch [::events/navigate (:url item)])} (:title item)]])])
 
 (defn page []
   (let [active-tab (subscribe [:active-tab])]
@@ -18,6 +25,7 @@
        [notifications]
        [nav]
        (case @active-tab
-         "index" [component-list]
-         "processes" [processes])])))
+         :index [component-list]
+         :processes [processes]
+         :not-found [:div "404 Page not found"])])))
 
