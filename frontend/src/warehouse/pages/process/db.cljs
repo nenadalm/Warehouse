@@ -1,4 +1,4 @@
-(ns warehouse.process.db
+(ns warehouse.pages.process.db
   (:require
    [ajax.core :refer [GET POST]]
    [re-frame.core :refer [dispatch]]))

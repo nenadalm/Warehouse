@@ -1,4 +1,4 @@
-(ns warehouse.process.subs
+(ns warehouse.pages.process.subs
   (:require
    [re-frame.core :refer [reg-sub]]))
 
