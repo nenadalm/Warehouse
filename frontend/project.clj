@@ -16,6 +16,8 @@
                  [org.clojure/core.async "0.4.474"]
                  [etaoin "0.2.8"]]
 
+  :plugins [[cljs-simple-cache-buster "0.2.1"]]
+
   :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.22"]
                                   [binaryage/devtools "0.9.9"]
                                   [re-frisk "0.5.3"]
@@ -43,6 +45,9 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
+  :cljs-simple-cache-buster {:cljsbuild-id ["min" "dev"]
+                             :template-file "resources/template/index.html"
+                             :output-to "resources/public/index.html"}
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src"]
