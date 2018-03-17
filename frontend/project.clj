@@ -34,13 +34,13 @@
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.15\"]" "--" "figwheel"]
             "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]
-            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.7\"]" "--" "doo"]
+            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.9\"]" "--" "doo"]
 
             ;; project tasks
             "build" ["do"
                      ["clean"]
                      ["with-profile" "dev,repl" "figwheel" "dev"]]
-            "test-watch" ["doo" "firefox" "test"]}
+            "test-watch" ["doo" "firefox-headless" "test"]}
 
   :source-paths ["src"]
 
