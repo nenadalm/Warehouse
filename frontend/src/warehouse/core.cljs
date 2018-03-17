@@ -1,7 +1,6 @@
 (ns warehouse.core
   (:require
    [reagent.core :as reagent :refer [atom]]
-   [secretary.core :as secretary]
    [warehouse.subs]
    [warehouse.events]
    [re-frame.core :refer [dispatch-sync]]

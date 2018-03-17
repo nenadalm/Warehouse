@@ -8,9 +8,9 @@
    [re-frame.core :refer [subscribe dispatch]]))
 
 (def nav-items [{:title "List"
-                 :url (routes/homepage)}
+                 :url (routes/path-for :index)}
                 {:title "Processes"
-                 :url (routes/processes)}])
+                 :url (routes/path-for :processes)}])
 
 (defn nav []
   [:ul.menu

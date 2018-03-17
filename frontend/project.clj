@@ -10,7 +10,7 @@
                  [reagent-forms "0.5.36"]
                  [alandipert/storage-atom "2.0.1"]
                  [cljs-ajax "0.7.3"]
-                 [secretary "1.2.3"]
+                 [bidi "2.1.3"]
                  [re-frame "0.10.5"]
                  [pjstadig/humane-test-output "0.8.3"]
                  [org.clojure/core.async "0.4.474"]
