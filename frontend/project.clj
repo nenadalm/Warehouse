@@ -39,7 +39,8 @@
             ;; project tasks
             "build" ["do"
                      ["clean"]
-                     ["with-profile" "dev,repl" "figwheel" "dev"]]}
+                     ["with-profile" "dev,repl" "figwheel" "dev"]]
+            "test-watch" ["doo" "firefox" "test"]}
 
   :source-paths ["src"]
 

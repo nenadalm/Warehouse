@@ -1,7 +1,7 @@
-(ns warehouse.process.events-test
+(ns warehouse.pages.process.events-test
   (:require
    [cljs.test :refer-macros [deftest is testing]]
-   [warehouse.process.events :as events]))
+   [warehouse.pages.process.events :as events]))
 
 (deftest process-create-test
   (is (=
