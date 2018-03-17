@@ -1,7 +1,6 @@
 /backend/target/
 
-/frontend/resources/public/js/compiled/**
-/frontend/resources/public/css/**
+/frontend/resources/public/
 /frontend/bower_components/
 /frontend/node_modules/
 
