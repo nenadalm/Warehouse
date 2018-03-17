@@ -1,8 +1,8 @@
-(ns warehouse.process.views
+(ns warehouse.pages.process.views
   (:require
    [re-frame.core :refer [subscribe]]
-   [warehouse.process.events]
-   [warehouse.process.subs]))
+   [warehouse.pages.process.events]
+   [warehouse.pages.process.subs]))
 
 (def process-data
   [["Title" #(:title %)]
