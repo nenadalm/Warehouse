@@ -20,4 +20,5 @@ target/
 .nrepl-port
 .lein-git-deps/
 .lein-failures
+.rebel_readline_history
 
