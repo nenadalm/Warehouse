@@ -2,9 +2,7 @@
   (:require
    [warehouse.util :as util]
    [warehouse.infinite-scroll.db :as scroll]
-   [warehouse.search.db :as search]
-   [re-frame.core :refer [reg-sub subscribe]]
-   [warehouse.search.db :as search]))
+   [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
  :components
@@ -35,7 +33,7 @@
  (fn [_ _]
    [(subscribe [:visible-components])
     (subscribe [:infinite-scroll-state])])
- (fn [[vc s] _]
+ (fn [[_ s] _]
    {:page (:page s)
     :pages-count (:pages-count s)
     :records-per-page 100}))
