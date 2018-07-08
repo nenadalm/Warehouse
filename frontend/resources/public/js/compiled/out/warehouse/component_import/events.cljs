@@ -3,7 +3,6 @@
    [warehouse.util :as util]
    [warehouse.storage.indexeddb :as indexeddb]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch]]
-   [ajax.core :refer [GET]]
    [cljs.core.async :as a :refer [<!]]
    [clojure.string :as string])
   (:require-macros
@@ -51,7 +50,7 @@
 (reg-event-fx
  :import-document
  (fn
-   [{:keys [db]} [_ document]]
+   [_ [_ document]]
    {:component-import/load-components-by-ids [(map :id (:components document)) document]}))
 
 (reg-fx

@@ -3,8 +3,9 @@
    [re-frame.core :refer [dispatch]]
    [bidi.bidi :as bidi]
    [goog.history.EventType :as EventType]
-   [goog.History]
-   [goog.events]))
+   [goog.events])
+  (:import
+   goog.History))
 
 (def routes ["" {#{""  "/"} :index
                  "/processes" :processes
@@ -17,7 +18,7 @@
   (dispatch [:page-change handler]))
 
 (defn init []
-  (defonce history (doto (goog.History.)
+  (defonce history (doto (History.)
                      (goog.events/listen EventType/NAVIGATE #(handler (bidi/match-route routes (.-token %))))
                      (.setEnabled true)))
 

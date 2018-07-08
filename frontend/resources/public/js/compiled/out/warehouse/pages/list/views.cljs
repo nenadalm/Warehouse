@@ -32,8 +32,8 @@
 
 (defn export []
   [:a {:download "warehouse_components.json"
-       :on-click (m/handler-fn
-                  (set! (.-currentTarget.href e) @(subscribe [:state-data-uri])))}
+       :on-click (fn [e]
+                   (set! (.-currentTarget.href e) @(subscribe [:state-data-uri])))}
    [:button "Export visible"]])
 
 (defn key->label [key]

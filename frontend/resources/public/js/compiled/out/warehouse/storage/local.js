@@ -1,9 +1,9 @@
-// Compiled by ClojureScript 1.10.145 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.339 {:static-fns true, :optimize-constants true}
 goog.provide('warehouse.storage.local');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
 goog.require('alandipert.storage_atom');
-if(typeof warehouse.storage.local.app_state !== 'undefined'){
+if((typeof warehouse !== 'undefined') && (typeof warehouse.storage !== 'undefined') && (typeof warehouse.storage.local !== 'undefined') && (typeof warehouse.storage.local.app_state !== 'undefined')){
 } else {
 warehouse.storage.local.app_state = alandipert.storage_atom.local_storage(cljs.core.atom.cljs$core$IFn$_invoke$arity$1(new cljs.core.PersistentArrayMap(null, 1, [cljs.core.cst$kw$components,cljs.core.PersistentVector.EMPTY], null)),cljs.core.cst$kw$app_DASH_state);
 }
