@@ -2,7 +2,8 @@
   (:require
    [warehouse.storage.local :as local]
    [cljs.core.async :as a :refer [<! >!]]
-   [clojure.set :as clojure.set])
+   [clojure.set :as clojure.set]
+   [clojure.string :as string])
   (:require-macros
    [cljs.core.async.macros :refer [go]]))
 
@@ -10,7 +11,7 @@
 (def db-version 1)
 
 (defn normalize-keyword [keyword]
-  (clojure.string/lower-case keyword))
+  (string/lower-case keyword))
 
 (defn component->obj [c]
   (let [keywords (->> (conj (:tags c) (:name c))
@@ -48,20 +49,19 @@
                (set! (.-onsuccess request)
                      (fn [e]
                        (if-let [cursor (.-target.result e)]
-                         (let [component (.-value cursor)]
-                           (if cursor
-                             (if (true? @advanced)
-                               (do
-                                 (swap! components conj (obj->component (.-value cursor)))
-                                 (if (= (count @components) n)
-                                   (f {:count cnt
-                                       :components @components})
-                                   (.continue cursor)))
-                               (do
-                                 (.advance cursor offset)
-                                 (reset! advanced true)))
-                             (f {:count cnt
-                                 :components @components})))
+                         (if cursor
+                           (if (true? @advanced)
+                             (do
+                               (swap! components conj (obj->component (.-value cursor)))
+                               (if (= (count @components) n)
+                                 (f {:count cnt
+                                     :components @components})
+                                 (.continue cursor)))
+                             (do
+                               (.advance cursor offset)
+                               (reset! advanced true)))
+                           (f {:count cnt
+                               :components @components}))
                          (f {:count cnt
                              :components @components}))))))))))
 
@@ -86,20 +86,19 @@
                (set! (.-onsuccess request)
                      (fn [e]
                        (if-let [cursor (.-target.result e)]
-                         (let [component (.-value cursor)]
-                           (if cursor
-                             (if (true? @advanced)
-                               (do
-                                 (swap! components conj (js->clj (.-value cursor) :keywordize-keys true))
-                                 (if (= (count @components) n)
-                                   (f {:count cnt
-                                       :components @components})
-                                   (.continue cursor)))
-                               (do
-                                 (.advance cursor offset)
-                                 (reset! advanced true)))
-                             (f {:count cnt
-                                 :components @components})))
+                         (if cursor
+                           (if (true? @advanced)
+                             (do
+                               (swap! components conj (js->clj (.-value cursor) :keywordize-keys true))
+                               (if (= (count @components) n)
+                                 (f {:count cnt
+                                     :components @components})
+                                 (.continue cursor)))
+                             (do
+                               (.advance cursor offset)
+                               (reset! advanced true)))
+                           (f {:count cnt
+                               :components @components}))
                          (f {:count cnt
                              :components @components}))))))))))
 
@@ -114,12 +113,11 @@
     (set! (.-onsuccess request)
           (fn [e]
             (if-let [cursor (.-target.result e)]
-              (let [component (.-value cursor)]
-                (if cursor
-                  (do
-                    (swap! keys conj (js->clj (.-value.id cursor)))
-                    (.continue cursor))
-                  (f @keys)))
+              (if cursor
+                (do
+                  (swap! keys conj (js->clj (.-value.id cursor)))
+                  (.continue cursor))
+                (f @keys))
               (f @keys))))))
 
 (defn filter-components [ids f request]
@@ -134,13 +132,12 @@
     (set! (.-onsuccess request)
           (fn [e]
             (if-let [cursor (.-target.result e)]
-              (let [component (.-value cursor)]
-                (do
-                  (swap! components conj (obj->component (.-value cursor)))
-                  (let [current-idx (swap! prev-idx inc)]
-                    (if-let [next-id (nth sorted-ids current-idx nil)]
-                      (.continue cursor next-id) ;; this needs to be fixed in case of spaces between existing keys
-                      (f @components)))))
+              (do
+                (swap! components conj (obj->component (.-value cursor)))
+                (let [current-idx (swap! prev-idx inc)]
+                  (if-let [next-id (nth sorted-ids current-idx nil)]
+                    (.continue cursor next-id) ;; this needs to be fixed in case of spaces between existing keys
+                    (f @components))))
               (f @components))))))
 
 (defn open-request [f]
@@ -202,7 +199,7 @@
   "Takes query `q` and returns channel receiving ids of components
 matching the `q`"
   [q]
-  (let [col (filter (complement empty?) (clojure.string/split q " "))
+  (let [col (filter (complement empty?) (string/split q " "))
         n (count col)
         ch (a/merge (map filter-ids-by-keyword col))
         key-sets (atom [])

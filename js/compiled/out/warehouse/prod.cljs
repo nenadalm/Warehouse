@@ -1,8 +1,7 @@
 (ns warehouse.prod
   (:require
    [warehouse.core]
-   [warehouse.component-import.events]
-   [re-frame.core :refer [reg-event-db]]))
+   [warehouse.component-import.events]))
 
 (warehouse.core/main)
 

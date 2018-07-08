@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.145 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.339 {:static-fns true, :optimize-constants true}
 goog.provide('cljs.core.async.impl.dispatch');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -13,16 +13,16 @@ cljs.core.async.impl.dispatch.running_QMARK_ = true;
 
 cljs.core.async.impl.dispatch.queued_QMARK_ = false;
 
-var count_10289 = (0);
+var count_6784 = (0);
 while(true){
-var m_10290 = cljs.core.async.impl.dispatch.tasks.pop();
-if((m_10290 == null)){
+var m_6785 = cljs.core.async.impl.dispatch.tasks.pop();
+if((m_6785 == null)){
 } else {
-(m_10290.cljs$core$IFn$_invoke$arity$0 ? m_10290.cljs$core$IFn$_invoke$arity$0() : m_10290.call(null));
+(m_6785.cljs$core$IFn$_invoke$arity$0 ? m_6785.cljs$core$IFn$_invoke$arity$0() : m_6785.call(null));
 
-if((count_10289 < cljs.core.async.impl.dispatch.TASK_BATCH_SIZE)){
-var G__10291 = (count_10289 + (1));
-count_10289 = G__10291;
+if((count_6784 < cljs.core.async.impl.dispatch.TASK_BATCH_SIZE)){
+var G__6786 = (count_6784 + (1));
+count_6784 = G__6786;
 continue;
 } else {
 }

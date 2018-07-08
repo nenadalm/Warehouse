@@ -1,4 +1,4 @@
-// Compiled by ClojureScript 1.10.145 {:static-fns true, :optimize-constants true}
+// Compiled by ClojureScript 1.10.339 {:static-fns true, :optimize-constants true}
 goog.provide('ajax.transit');
 goog.require('cljs.core');
 goog.require('cljs.core.constants');
@@ -6,23 +6,23 @@ goog.require('cognitect.transit');
 goog.require('ajax.interceptors');
 goog.require('ajax.protocols');
 goog.require('ajax.util');
-ajax.transit.transit_type = (function ajax$transit$transit_type(p__11156){
-var map__11157 = p__11156;
-var map__11157__$1 = ((((!((map__11157 == null)))?(((((map__11157.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__11157.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__11157):map__11157);
-var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__11157__$1,cljs.core.cst$kw$type);
-var or__3922__auto__ = type;
-if(cljs.core.truth_(or__3922__auto__)){
-return or__3922__auto__;
+ajax.transit.transit_type = (function ajax$transit$transit_type(p__7301){
+var map__7302 = p__7301;
+var map__7302__$1 = ((((!((map__7302 == null)))?(((((map__7302.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__7302.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__7302):map__7302);
+var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__7302__$1,cljs.core.cst$kw$type);
+var or__3949__auto__ = type;
+if(cljs.core.truth_(or__3949__auto__)){
+return or__3949__auto__;
 } else {
 return cljs.core.cst$kw$json;
 }
 });
-ajax.transit.transit_write_fn = (function ajax$transit$transit_write_fn(type,request){
-var writer = (function (){var or__3922__auto__ = cljs.core.cst$kw$writer.cljs$core$IFn$_invoke$arity$1(request);
-if(cljs.core.truth_(or__3922__auto__)){
-return or__3922__auto__;
+ajax.transit.transit_write_fn = (function ajax$transit$transit_write_fn(type,opts){
+var writer = (function (){var or__3949__auto__ = cljs.core.cst$kw$writer.cljs$core$IFn$_invoke$arity$1(opts);
+if(cljs.core.truth_(or__3949__auto__)){
+return or__3949__auto__;
 } else {
-return cognitect.transit.writer.cljs$core$IFn$_invoke$arity$2(type,request);
+return cognitect.transit.writer.cljs$core$IFn$_invoke$arity$2(type,opts);
 }
 })();
 return ((function (writer){
@@ -31,9 +31,18 @@ return cognitect.transit.write(writer,params);
 });
 ;})(writer))
 });
+/**
+ * Returns a Transit request format.
+ * 
+ * Options include:
+ * :writer Explicit Transit writer. If not supplied one will be created using the other options.
+ *         The default type is :json for ClojureScript and :msgpack for Clojure.
+ * :type Override the default transit type with value :json, :json-verbose or :msgpack
+ * :handlers Custom Transit handlers (refer to Transit documentation)
+ */
 ajax.transit.transit_request_format = (function ajax$transit$transit_request_format(var_args){
-var G__11160 = arguments.length;
-switch (G__11160) {
+var G__7305 = arguments.length;
+switch (G__7305) {
 case 0:
 return ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$0();
 
@@ -52,20 +61,20 @@ ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$0 = (function ()
 return ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$1(cljs.core.PersistentArrayMap.EMPTY);
 });
 
-ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$1 = (function (request){
-var type = ajax.transit.transit_type(request);
-var mime_type = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(type,cljs.core.cst$kw$json))?"json":"msgpack");
-return new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$write,ajax.transit.transit_write_fn(type,request),cljs.core.cst$kw$content_DASH_type,["application/transit+",cljs.core.str.cljs$core$IFn$_invoke$arity$1(mime_type)].join('')], null);
+ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$1 = (function (opts){
+var type = ajax.transit.transit_type(opts);
+var mime_type = ((((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(type,cljs.core.cst$kw$json)) || (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(type,cljs.core.cst$kw$json_DASH_verbose))))?"json":"msgpack");
+return new cljs.core.PersistentArrayMap(null, 2, [cljs.core.cst$kw$write,ajax.transit.transit_write_fn(type,opts),cljs.core.cst$kw$content_DASH_type,["application/transit+",cljs.core.str.cljs$core$IFn$_invoke$arity$1(mime_type)].join('')], null);
 });
 
 ajax.transit.transit_request_format.cljs$lang$maxFixedArity = 1;
 
-ajax.transit.transit_read_fn = (function ajax$transit$transit_read_fn(request){
-var reader = (function (){var or__3922__auto__ = cljs.core.cst$kw$reader.cljs$core$IFn$_invoke$arity$1(request);
-if(cljs.core.truth_(or__3922__auto__)){
-return or__3922__auto__;
+ajax.transit.transit_read_fn = (function ajax$transit$transit_read_fn(opts){
+var reader = (function (){var or__3949__auto__ = cljs.core.cst$kw$reader.cljs$core$IFn$_invoke$arity$1(opts);
+if(cljs.core.truth_(or__3949__auto__)){
+return or__3949__auto__;
 } else {
-return cognitect.transit.reader.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$json,request);
+return cognitect.transit.reader.cljs$core$IFn$_invoke$arity$2(cljs.core.cst$kw$json,opts);
 }
 })();
 return ((function (reader){
@@ -74,9 +83,16 @@ return cognitect.transit.read(reader,ajax.protocols._body(response));
 });
 ;})(reader))
 });
+/**
+ * Returns a Transit request format.
+ * 
+ * Options include:
+ * :reader (CLJS only) Explicit Transit reader. If not supplied one will be created using the other options.
+ * :handlers Custom Transit handlers (refer to Transit documentation)
+ */
 ajax.transit.transit_response_format = (function ajax$transit$transit_response_format(var_args){
-var G__11163 = arguments.length;
-switch (G__11163) {
+var G__7308 = arguments.length;
+switch (G__7308) {
 case 0:
 return ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$0();
 
@@ -99,12 +115,12 @@ ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$0 = (function (
 return ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$1(cljs.core.PersistentArrayMap.EMPTY);
 });
 
-ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$1 = (function (request){
-return ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$2(ajax.transit.transit_type(request),request);
+ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$1 = (function (opts){
+return ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$2(ajax.transit.transit_type(opts),opts);
 });
 
-ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$2 = (function (type,request){
-return ajax.interceptors.map__GT_ResponseFormat(new cljs.core.PersistentArrayMap(null, 3, [cljs.core.cst$kw$read,ajax.transit.transit_read_fn(request),cljs.core.cst$kw$description,"Transit",cljs.core.cst$kw$content_DASH_type,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, ["application/transit+json"], null)], null));
+ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$2 = (function (type,opts){
+return ajax.interceptors.map__GT_ResponseFormat(new cljs.core.PersistentArrayMap(null, 3, [cljs.core.cst$kw$read,ajax.transit.transit_read_fn(opts),cljs.core.cst$kw$description,"Transit",cljs.core.cst$kw$content_DASH_type,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, ["application/transit+json"], null)], null));
 });
 
 ajax.transit.transit_response_format.cljs$lang$maxFixedArity = 2;

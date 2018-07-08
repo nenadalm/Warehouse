@@ -1,7 +1,5 @@
 (ns warehouse.search.events
   (:require
-   [warehouse.index :as index]
-   [warehouse.search.db :as search-db]
    [re-frame.core :refer [reg-cofx reg-event-fx inject-cofx reg-fx dispatch reg-event-db]]
    [warehouse.storage.indexeddb :as indexeddb]
    [cljs.core.async :as a :refer [<!]])
