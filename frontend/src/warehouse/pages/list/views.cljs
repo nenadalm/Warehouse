@@ -1,32 +1,34 @@
 (ns warehouse.pages.list.views
   (:require
    [reagent.core :as reagent :refer [atom]]
-   [reagent-forms.core :refer [bind-fields]]
    [re-frame.core :refer [subscribe dispatch]]
+   [imatic.re-frame.form.subs :as isubs]
    [warehouse.util :as util]
    [warehouse.search.views :refer [search]]
-   [warehouse.component-import.views :refer [import-button import-form]])
+   [warehouse.component-import.views :refer [import-button import-form]]
+   [warehouse.form :as form])
   (:require-macros [warehouse.macro :as m]))
 
-(def form-template
+(defn form-fields [{:keys [field-props]}]
   [:div
-   [:label "Name: "
-    [:input {:name "name"
-             :type :text
-             :field :text
-             :id :name}]]
+   [:div
+    [:label "Name: "
+     [form/field (field-props {:component :input
+                               :path :name
+                               :field-props {:type :text
+                                             :name "name"}})]]]
    [:div
     [:label "Tags: "
-     [:input {:name "tags"
-              :type :text
-              :field :text
-              :id :tags}]]]
+     [form/field (field-props {:component :input
+                               :path :tags
+                               :field-props {:type :text
+                                             :name "tags"}})]]]
    [:div
     [:label "Amount: "
-     [:input {:name "amount"
-              :type :number
-              :field :numeric
-              :id :amount}]]]])
+     [form/field (field-props {:component :input
+                               :path :amount
+                               :field-props {:type :number
+                                             :name "amount"}})]]]])
 
 (defn export []
   [:a {:download "warehouse_components.json"
@@ -77,10 +79,13 @@
 (defn item-edit-view [data editing k]
   (let [edited-item (atom (assoc data :tags (util/array->string (:tags data))))]
     [:form
-     [bind-fields form-template edited-item]
+     [form/form-fields
+      {:id :edit-component
+       :initial-data @edited-item}
+      form-fields]
      [:button {:type "button"
                :on-click (m/handler-fn
-                          (dispatch [:item-save k @edited-item])
+                          (dispatch [:item-save k @(subscribe [::isubs/field-values :edit-component])])
                           (reset! editing false))} "Save"]
      [:button {:type "button" :on-click (m/handler-fn (reset! editing false))} "Cancel"]]))
 
@@ -144,7 +149,8 @@
 (defn component-list []
   (let [adding (atom false)
         showing-changeset (atom false)
-        new-item (atom {:name "" :tags "" :amount 1})
+        new-item-initial-data {:name "" :tags "" :amount 1}
+        new-item (atom new-item-initial-data)
         visible-components (subscribe [:scroll-visible-components])
         change-sets (subscribe [:change-sets])
         import-form-data (subscribe [:import-form])]
@@ -162,11 +168,14 @@
        (if (not-empty @import-form-data) [import-form @import-form-data])
        (if (true? @adding)
          [:form
-          [bind-fields form-template new-item]
+          [form/form-fields
+           {:id :new-component
+            :initial-data new-item-initial-data}
+           form-fields]
           [:button {:type "button"
                     :on-click (m/handler-fn
-                               (dispatch [:item-create @new-item])
-                               (reset! new-item {:name "" :tags "" :amount 1})
+                               (dispatch [:item-create @(subscribe [::isubs/field-values :new-component])])
+                               (reset! new-item new-item-initial-data)
                                (reset! adding false))} "Save"]
           [:button {:type "button" :on-click (m/handler-fn (reset! adding false))} "Cancel"]])
        (when (true? @showing-changeset)
