@@ -6,7 +6,7 @@
     (assoc-in db [:notifications k] notification)))
 
 (defn remove-notification [db notification-key]
-  (if-let [notifications (:notifications db)]
+  (if (:notifications db)
     (assoc db
            :notifications
            (dissoc (:notifications db) notification-key))

@@ -1,0 +1,11 @@
+{:ignored-unused-namespaces [warehouse.notifications.events
+                             warehouse.notifications.subs
+                             warehouse.pages.process.events
+                             warehouse.pages.process.subs
+                             warehouse.component-import.events
+                             warehouse.component-import.subs
+                             warehouse.search.events
+                             warehouse.events
+                             warehouse.subs]
+ :known-macros [reagent.core/with-let]
+ :known-namespaces [Math]}

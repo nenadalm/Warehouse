@@ -1,8 +1,6 @@
 (ns ^:figwheel-always warehouse.dev
   (:require
    [re-frisk.core :refer [enable-re-frisk!]]
-   [warehouse.storage.storage :as storage]
-   [warehouse.storage.test :as test-storage]
    [warehouse.events :refer [default-state]]
    [warehouse.core]))
 

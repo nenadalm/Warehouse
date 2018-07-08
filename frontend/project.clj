@@ -5,10 +5,10 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.clojure/clojurescript "1.10.145"]
-                 [reagent "0.7.0"]
+                 [org.clojure/clojurescript "1.10.339"]
+                 [reagent "0.8.1"]
                  [alandipert/storage-atom "2.0.1"]
-                 [cljs-ajax "0.7.3"]
+                 [cljs-ajax "0.7.4"]
                  [bidi "2.1.3"]
                  [re-frame "0.10.5"]
                  [pjstadig/humane-test-output "0.8.3"]
@@ -18,10 +18,10 @@
 
   :plugins [[cljs-simple-cache-buster "0.2.1"]]
 
-  :profiles {:dev {:dependencies [[day8.re-frame/trace "0.1.22"]
+  :profiles {:dev {:dependencies [[day8.re-frame/re-frame-10x "0.3.3-react16"]
                                   [day8.re-frame/tracing "0.5.1"]
-                                  [binaryage/devtools "0.9.9"]
-                                  [re-frisk "0.5.3"]
+                                  [binaryage/devtools "0.9.10"]
+                                  [re-frisk "0.5.4"]
                                   [figwheel-sidecar "0.5.16"]
                                   [com.cemerick/piggieback "0.2.2"]
                                   [pjstadig/humane-test-output "0.8.3"]]
@@ -34,8 +34,7 @@
             "cljsbuild" ["update-in" ":plugins" "conj" "[lein-cljsbuild \"1.1.7\"]" "--" "cljsbuild"]
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.16\"]" "--" "figwheel"]
-            "git-deps" ["update-in" ":plugins" "conj" "[lein-git-deps \"0.0.2\"]" "--" "git-deps"]
-            "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.6\"]" "--" "cljfmt"]
+            "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.7\"]" "--" "cljfmt"]
             "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.9\"]" "--" "doo"]
 
             ;; project tasks

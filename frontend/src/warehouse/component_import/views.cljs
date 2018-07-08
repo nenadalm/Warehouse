@@ -23,25 +23,25 @@
   (let [component-providers (subscribe [:component-providers])]
     (fn []
       [:div.dropdown
-       {:on-click (m/handler-fn
-                   (when (not= (.-tagName (.-target e)) "INPUT")
-                     (.toggle (.-classList (.-currentTarget e)) "open")))}
+       {:on-click (fn [e]
+                    (when (not= (.-tagName (.-target e)) "INPUT")
+                      (.toggle (.-classList (.-currentTarget e)) "open")))}
        [:button "Import"]
        [:ul
         [:li
-         [file-input "From file" (m/handler-fn
-                                  (let [reader (js/FileReader.)
-                                        this (aget e "currentTarget")]
-                                    (aset reader
-                                          "onload"
-                                          (fn [reader-event]
-                                            (dispatch
-                                             [:import-document
-                                              (->> (.-target.result reader-event)
-                                                   (.parse js/JSON)
-                                                   (#(js->clj % :keywordize-keys true)))])
-                                            (aset this "value" "")))
-                                    (.readAsText reader (aget e "target" "files" "0"))))]]
+         [file-input "From file" (fn [e]
+                                   (let [reader (js/FileReader.)
+                                         this (aget e "currentTarget")]
+                                     (aset reader
+                                           "onload"
+                                           (fn [reader-event]
+                                             (dispatch
+                                              [:import-document
+                                               (->> (.-target.result reader-event)
+                                                    (.parse js/JSON)
+                                                    (#(js->clj % :keywordize-keys true)))])
+                                             (aset this "value" "")))
+                                     (.readAsText reader (aget e "target" "files" "0"))))]]
         (for [provider @component-providers]
           ^{:key (:type provider)} [component-provider provider])]])))
 
