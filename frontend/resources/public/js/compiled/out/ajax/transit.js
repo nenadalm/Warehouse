@@ -6,10 +6,10 @@ goog.require('cognitect.transit');
 goog.require('ajax.interceptors');
 goog.require('ajax.protocols');
 goog.require('ajax.util');
-ajax.transit.transit_type = (function ajax$transit$transit_type(p__11152){
-var map__11153 = p__11152;
-var map__11153__$1 = ((((!((map__11153 == null)))?(((((map__11153.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__11153.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__11153):map__11153);
-var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__11153__$1,cljs.core.cst$kw$type);
+ajax.transit.transit_type = (function ajax$transit$transit_type(p__11156){
+var map__11157 = p__11156;
+var map__11157__$1 = ((((!((map__11157 == null)))?(((((map__11157.cljs$lang$protocol_mask$partition0$ & (64))) || ((cljs.core.PROTOCOL_SENTINEL === map__11157.cljs$core$ISeq$))))?true:false):false))?cljs.core.apply.cljs$core$IFn$_invoke$arity$2(cljs.core.hash_map,map__11157):map__11157);
+var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__11157__$1,cljs.core.cst$kw$type);
 var or__3922__auto__ = type;
 if(cljs.core.truth_(or__3922__auto__)){
 return or__3922__auto__;
@@ -32,8 +32,8 @@ return cognitect.transit.write(writer,params);
 ;})(writer))
 });
 ajax.transit.transit_request_format = (function ajax$transit$transit_request_format(var_args){
-var G__11156 = arguments.length;
-switch (G__11156) {
+var G__11160 = arguments.length;
+switch (G__11160) {
 case 0:
 return ajax.transit.transit_request_format.cljs$core$IFn$_invoke$arity$0();
 
@@ -75,8 +75,8 @@ return cognitect.transit.read(reader,ajax.protocols._body(response));
 ;})(reader))
 });
 ajax.transit.transit_response_format = (function ajax$transit$transit_response_format(var_args){
-var G__11159 = arguments.length;
-switch (G__11159) {
+var G__11163 = arguments.length;
+switch (G__11163) {
 case 0:
 return ajax.transit.transit_response_format.cljs$core$IFn$_invoke$arity$0();
 
