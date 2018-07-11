@@ -59,7 +59,7 @@ script:
     - lein cljfmt check
     - 'find src/ \( -name "*.cljs" -or -name "*.clj" \) -print0 | xargs -0i --no-run-if-empty joker --lint {} 2>&1 | tee joker.out && [[ ! -s ./joker.out ]]'
     - alias firefox-bin='firefox'
-    - lein doo firefox test once
+    - lein doo firefox-headless test once
     - lein test
     # check that there are no errors in http server after running selenium tests (like 404 on styles...)
     # also ignore missing favicon

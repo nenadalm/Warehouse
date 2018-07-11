@@ -35,7 +35,7 @@
             "less" ["update-in" ":plugins" "conj" "[lein-less \"1.7.5\"]" "--" "less"]
             "figwheel" ["update-in" ":plugins" "conj" "[lein-figwheel \"0.5.16\"]" "--" "figwheel"]
             "cljfmt" ["update-in" ":plugins" "conj" "[lein-cljfmt \"0.5.7\"]" "--" "cljfmt"]
-            "doo" ["update-in" ":plugins" "conj" "[lein-doo \"0.1.9\"]" "--" "doo"]
+            "doo" ["update-in" ":plugins" "conj" "[org.clojars.nenadalm/lein-doo \"0.1.11-SNAPSHOT\"]" "--" "doo"]
 
             ;; project tasks
             "build" ["do"
