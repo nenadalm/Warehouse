@@ -55,8 +55,7 @@
 
 (defn load-by-ids [db store {:keys [ids]}]
   (if (empty? ids)
-    (let [ch (a/chan 1)]
-      (go []))
+    (go [])
     (open-request db (fn [request ch]
                        (let [db (.-result request)
                              tx (.transaction db store "readonly")
