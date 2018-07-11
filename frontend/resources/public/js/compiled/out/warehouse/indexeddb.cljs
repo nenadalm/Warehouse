@@ -55,28 +55,22 @@
 
 (defn load-by-ids [db store {:keys [ids]}]
   (if (empty? ids)
-    (let [ch (a/chan 1)]
-      (go (>! ch []))
-      ch)
+    (go [])
     (open-request db (fn [request ch]
                        (let [db (.-result request)
                              tx (.transaction db store "readonly")
                              store (.objectStore tx store)
                              components (atom [])
-                             prev-idx (atom 0)
-                             sorted-ids (sort ids)
-                             keyRange (.bound js/IDBKeyRange (first sorted-ids) (last sorted-ids))
-                             request (.openCursor store keyRange)]
-                         (set! (.-onsuccess request)
-                               (fn [e]
-                                 (if-let [cursor (.-target.result e)]
-                                   (do
-                                     (swap! components conj (.-value cursor))
-                                     (let [current-idx (swap! prev-idx inc)]
-                                       (if-let [next-id (nth sorted-ids current-idx nil)]
-                                         (.continue cursor next-id) ;; this needs to be fixed in case of spaces between existing keys
-                                         (go (>! ch @components)))))
-                                   (go (>! ch @components))))))))))
+                             remaining (atom (count ids))]
+                         (doseq [id ids]
+                           (let [request (.get store id)]
+                             (set! (.-onsuccess request)
+                                   (fn [e]
+                                     (when-let [value (.-target.result e)]
+                                       (swap! components conj value))
+                                     (swap! remaining dec)
+                                     (when (= 0 @remaining)
+                                       (go (>! ch @components))))))))))))
 
 (defn load-ids-by-string-index [db store {:keys [index-name q]}]
   (open-request db (fn [request ch]

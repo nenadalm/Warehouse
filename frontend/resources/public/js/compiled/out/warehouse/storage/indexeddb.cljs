@@ -54,7 +54,9 @@
   "Returns channel receiving components by `ids`"
   [ids]
   (go (let [res (<! (indexeddb/load-by-ids db "components" {:ids ids}))]
-        (mapv obj->component res))))
+        (->> res
+             (sort-by #(.-id %))
+             (mapv obj->component)))))
 
 (defn filter-ids-by-keyword
   "Returns channel receiving ids of components filtered by `keyword`"
