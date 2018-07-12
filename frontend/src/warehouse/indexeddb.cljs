@@ -1,6 +1,7 @@
 (ns warehouse.indexeddb
   (:require
-   [cljs.core.async :as a :refer [<! >!]])
+   [cljs.core.async :as a :refer [<! >!]]
+   [clojure.set :as clojure.set])
   (:require-macros
    [cljs.core.async.macros :refer [go]]))
 
@@ -16,8 +17,9 @@
   "Returns channel receiving `true` once update completed."
   (open-request db (fn [request ch]
                      (let [db (.-result request)
-                           tx (.transaction db store "readwrite")
-                           store (.objectStore tx store)]
+                           store-name (name store)
+                           tx (.transaction db store-name "readwrite")
+                           store (.objectStore tx store-name)]
                        (if (coll? data)
                          (doseq [v data]
                            (.put store v))
@@ -25,66 +27,87 @@
                        (set! (.-oncomplete tx)
                              #(go (>! ch true)))))))
 
-(defn load-page [db store {:keys [offset limit]}]
-  (open-request db (fn [request ch]
-                     (let [db (.-result request)
-                           tx (.transaction db store "readonly")
-                           store (.objectStore tx store)
-                           request (.count store)]
-                       (set! (.-onsuccess request)
-                             (fn [e]
-                               (let [cnt (.-target.result e)
-                                     result (atom [])
-                                     advanced (atom (= 0 offset))
-                                     request (.openCursor store)]
-                                 (set! (.-onsuccess request)
-                                       (fn [e]
-                                         (if-let [cursor (.-target.result e)]
-                                           (if (true? @advanced)
-                                             (do
-                                               (swap! result conj (.-value cursor))
-                                               (if (= (count @result) limit)
-                                                 (go (>! ch {:count cnt
-                                                             :data @result}))
-                                                 (.continue cursor)))
-                                             (do
-                                               (.advance cursor offset)
-                                               (reset! advanced true)))
-                                           (go (>! ch {:count cnt
-                                                       :data @result}))))))))))))
+(defmulti where-cond (fn [db v] (first v)))
 
-(defn load-by-ids [db store {:keys [ids]}]
-  (if (empty? ids)
-    (go [])
-    (open-request db (fn [request ch]
-                       (let [db (.-result request)
-                             tx (.transaction db store "readonly")
-                             store (.objectStore tx store)
-                             components (atom [])
-                             remaining (atom (count ids))]
-                         (doseq [id ids]
-                           (let [request (.get store id)]
-                             (set! (.-onsuccess request)
-                                   (fn [e]
-                                     (when-let [value (.-target.result e)]
-                                       (swap! components conj value))
-                                     (swap! remaining dec)
-                                     (when (= 0 @remaining)
-                                       (go (>! ch @components))))))))))))
+(defmethod where-cond nil [db v]
+  (let [store (:idb/store db)
+        request (.count store)]
+    (set! (.-onsuccess request)
+          (fn [e]
+            (let [cnt (.-target.result e)
+                  q (:idb/q db)
+                  result (volatile! [])
+                  advanced (volatile! (= 0 (:offset q)))
+                  request (.openCursor store)]
+              (set! (.-onsuccess request)
+                    (fn [e]
+                      (if-let [cursor (.-target.result e)]
+                        (if @advanced
+                          (do
+                            (vswap! result conj (.-value cursor))
+                            (if (= (count @result) (:limit q))
+                              (go (>! (:idb/ch db) {:count cnt
+                                                    :data @result}))
+                              (.continue cursor)))
+                          (do
+                            (.advance cursor (:offset q))
+                            (vreset! advanced true)))
+                        (go (>! (:idb/ch db) {:count cnt
+                                              :data @result}))))))))))
 
-(defn load-ids-by-string-index [db store {:keys [index-name q]}]
+(defmethod where-cond 'in [db v]
+  (let [[_ _ values] v]
+    (if (seq values)
+      (let [store (:idb/store db)
+            result (volatile! [])
+            remaining (volatile! (count values))]
+        (doseq [value values]
+          (let [request (.get store value)]
+            (set! (.-onsuccess request)
+                  (fn [e]
+                    (when-let [res (.-target.result e)]
+                      (vswap! result conj res))
+                    (vswap! remaining dec)
+                    (when (= 0 @remaining)
+                      (go (>! (:idb/ch db) @result))))))))
+      (go (>! (:idb/ch db) [])))))
+
+(defmethod where-cond '= [db v]
+  (let [[_ x y] v
+        [column value] (if (keyword? x) [x y] [y x])
+        index (.index (:idb/store db) (name column))
+        key-range (.bound js/IDBKeyRange value (str value "z"))
+        result (volatile! [])
+        request (.openCursor index key-range)]
+    (set! (.-onsuccess request)
+          (fn [e]
+            (if-let [cursor (.-target.result e)]
+              (do (vswap! result conj (.-value.id cursor))
+                  (.continue cursor))
+              (go (>! (:idb/ch db) @result)))))))
+
+(defmethod where-cond 'and [db v]
+  (let [conds (rest v)
+        n (count conds)
+        results (volatile! [])
+        ch (a/chan n)]
+    (doseq [cond conds]
+      (where-cond (assoc db :idb/ch ch) cond))
+    (a/go-loop []
+      (vswap! results conj (set (<! ch)))
+      (if (= n (count @results))
+        (let [result (vec (apply clojure.set/intersection @results))]
+          (>! (:idb/ch db) result))
+        (recur)))))
+
+(defn query [db q]
   (open-request db (fn [request ch]
-                     (let [db (.-result request)
-                           tx (.transaction db store "readonly")
-                           store (.objectStore tx store)
-                           index (.index store index-name)
-                           keyRange (.bound js/IDBKeyRange q (str q "z"))
-                           keys (atom [])
-                           request (.openCursor index keyRange)]
-                       (set! (.-onsuccess request)
-                             (fn [e]
-                               (if-let [cursor (.-target.result e)]
-                                 (do
-                                   (swap! keys conj (js->clj (.-value.id cursor)))
-                                   (.continue cursor))
-                                 (go (>! ch @keys)))))))))
+                     (let [store-name (name (:from q))
+                           idb (.-result request)
+                           tx (.transaction idb store-name "readonly")
+                           store (.objectStore tx store-name)
+                           cond-db (assoc db
+                                          :idb/store store
+                                          :idb/ch ch
+                                          :idb/q q)]
+                       (where-cond cond-db (:where q))))))
