@@ -5,11 +5,14 @@
    [warehouse.util-test]
    [warehouse.pages.process.events-test]
    [warehouse.notifications.db-test]
-   [warehouse.storage.indexeddb-test]))
+   [warehouse.storage.indexeddb-test]
+   [warehouse.indexeddb-test]))
 
 (enable-console-print!)
 
-(doo-tests 'warehouse.util-test
-           'warehouse.pages.process.events-test
-           'warehouse.notifications.db-test
-           'warehouse.storage.indexeddb-test)
+(doo-tests
+ 'warehouse.util-test
+ 'warehouse.pages.process.events-test
+ 'warehouse.notifications.db-test
+ 'warehouse.storage.indexeddb-test
+ 'warehouse.indexeddb-test)
