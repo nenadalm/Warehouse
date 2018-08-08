@@ -60,15 +60,16 @@
                                          :from :components
                                          :where `(~'in :idb/key ~ids)}))]
         (->> res
+             :data
              (sort-by #(.-id %))
              (mapv obj->component)))))
 
 (defn filter-ids-by-keyword
   "Returns channel receiving ids of components filtered by `keyword`"
   [keyword]
-  (indexeddb/query db {:select :idb/key
-                       :from :components
-                       :where `(~'= :by_keyword ~(normalize-keyword keyword))}))
+  (go (:data (<! (indexeddb/query db {:select :idb/key
+                                      :from :components
+                                      :where `(~'= :by_keyword ~(normalize-keyword keyword))})))))
 
 (defn filter-ids
   "Takes query `q` and returns channel receiving ids of components
@@ -78,9 +79,9 @@
         conds (map (fn [kw] `(~'= :by_keyword ~(normalize-keyword kw)))
                    col)]
     (if (seq conds)
-      (indexeddb/query db {:select :idb/key
-                           :from :components
-                           :where `(~'and ~@conds)})
+      (go (:data (<! (indexeddb/query db {:select :idb/key
+                                          :from :components
+                                          :where `(~'and ~@conds)}))))
       (go []))))
 
 (defn store-components
