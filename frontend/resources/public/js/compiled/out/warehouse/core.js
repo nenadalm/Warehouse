@@ -12,12 +12,12 @@ goog.require('warehouse.routes');
 warehouse.core.main = (function warehouse$core$main(){
 warehouse.routes.init();
 
-var G__13007_13010 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$initialize_DASH_db], null);
-(re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1(G__13007_13010) : re_frame.core.dispatch_sync.call(null,G__13007_13010));
+var G__12991_12994 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.cst$kw$initialize_DASH_db], null);
+(re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1 ? re_frame.core.dispatch_sync.cljs$core$IFn$_invoke$arity$1(G__12991_12994) : re_frame.core.dispatch_sync.call(null,G__12991_12994));
 
-var G__13008_13011 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [warehouse.views.page], null);
-var G__13009_13012 = document.getElementById("app");
-(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__13008_13011,G__13009_13012) : reagent.core.render_component.call(null,G__13008_13011,G__13009_13012));
+var G__12992_12995 = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [warehouse.views.page], null);
+var G__12993_12996 = document.getElementById("app");
+(reagent.core.render_component.cljs$core$IFn$_invoke$arity$2 ? reagent.core.render_component.cljs$core$IFn$_invoke$arity$2(G__12992_12995,G__12993_12996) : reagent.core.render_component.call(null,G__12992_12995,G__12993_12996));
 
 return warehouse.index.initialize();
 });
