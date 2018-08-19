@@ -69,14 +69,14 @@
   [keyword]
   (go (:data (<! (indexeddb/query db {:select :idb/key
                                       :from :components
-                                      :where `(~'= :by_keyword ~(normalize-keyword keyword))})))))
+                                      :where `(~'starts-with :by_keyword ~(normalize-keyword keyword))})))))
 
 (defn filter-ids
   "Takes query `q` and returns channel receiving ids of components
   matching the `q`"
   [q]
   (let [col (filter (complement empty?) (string/split q " "))
-        conds (map (fn [kw] `(~'= :by_keyword ~(normalize-keyword kw)))
+        conds (map (fn [kw] `(~'starts-with :by_keyword ~(normalize-keyword kw)))
                    col)]
     (if (seq conds)
       (go (:data (<! (indexeddb/query db {:select :idb/key
